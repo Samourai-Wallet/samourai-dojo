@@ -1,0 +1,42 @@
+{
+  "name": "samourai-dojo",
+  "version": "1.0.0",
+  "description": "Backend server for Samourai Wallet",
+  "main": "accounts/index.js",
+  "scripts": {
+    "test": "mocha --recursive --reporter spec"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com:Samourai-Wallet/samourai-dojo.git"
+  },
+  "author": "Katana Cryptographic Ltd.",
+  "license": "AGPL-3.0-only",
+  "homepage": "https://github.com/Samourai-Wallet/samourai-dojo",
+  "dependencies": {
+    "async-sema": "2.1.2",
+    "bip39": "2.4.0",
+    "bitcoind-rpc-client": "0.3.1",
+    "bitcoinjs-lib": "3.2.0",
+    "bitcoinjs-message": "1.0.1",
+    "body-parser": "1.18.3",
+    "express": "4.16.3",
+    "express-jwt": "5.3.1",
+    "generic-pool": "3.4.2",
+    "heapdump": "0.3.9",
+    "helmet": "3.12.1",
+    "lru-cache": "4.0.2",
+    "mysql": "2.16.0",
+    "passport": "0.4.0",
+    "passport-localapikey-update": "0.6.0",
+    "request": "2.88.0",
+    "request-promise-native": "1.0.5",
+    "socks-proxy-agent": "4.0.1",
+    "validator": "10.8.0",
+    "websocket": "1.0.28",
+    "zeromq": "4.2.0"
+  },
+  "devDependencies": {
+    "mocha": "^3.5.0"
+  }
+}

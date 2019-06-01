@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>DOJO // MAINTENANCE TOOL</title>
+  <link rel="stylesheet" type="text/css" href="../css/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="../css/bootstrap-theme.min.css">
+  <link rel="stylesheet" type="text/css" href="../css/style.css">
+  <script src="../lib/jquery-3.2.1.min.js"></script>
+  <script src="../lib/jquery.qrcode.min.js"></script>
+  <script src="../conf/index.js"></script>
+  <script src="../lib/common-script.js"></script>
+  <script src="../lib/api-wrapper.js"></script>
+  <script src="../lib/auth-utils.js"></script>
+  <script src="../lib/format-utils.js"></script>
+  <script src="index.js"></script>
+</head>
+
+<body>
+  <div id="info-xpub" class="container">
+    <!-- HEADER -->
+    <div id="header" class="row">
+      <div class="col-xs-9">
+        <h1 class="title"><span>DOJO // MAINTENANCE TOOL</span> <span class="beta">beta</span></h1>
+      </div>
+      <div class="col-xs-3 login-box">
+        <a id="btn-logout" style="display: inline;" href="#" title="DISCONNECT">
+         <img src="../icons/ic_power_settings_new_white_24dp_1x.png" class="mini-icon"/>
+        </a>
+      </div>
+    </div>
+
+    <div class="spacer60"></div>
+    
+    <!-- TAB MENU -->
+    <div id="tab-menu" class="row">
+      <div class="col-xs-12" >
+        <ul id="tab-menu_list" class="nav nav-pills">
+          <li id="link-pairing">
+            <a href="#">PAIRING</a>
+          </li>
+          <li id="link-status-api">
+            <a href="#">API</a>
+          </li>
+          <li id="link-status-pushtx">
+            <a href="#">PUSHTX</a>
+          </li>
+          <li id="link-orchestrator">
+            <a href="#">ORCHESTRATOR</a>
+          </li>
+          <li id="link-info-xpub">
+            <a href="#">XPUB INFO</a>
+          </li>
+          <li id="link-rescan-xpub">
+            <a href="#">XPUB RESCAN</a>
+          </li>
+          <li id="link-xpub">
+            <a href="#">XPUB</a>
+          </li>
+          <li id="link-info-address">
+            <a href="#">ADDR. INFO</a>
+          </li>
+          <li id="link-rescan-address">
+            <a href="#">ADDR. RESCAN</a>
+          </li>
+          <li id="link-multiaddr">
+            <a href="#">MULTIADDR</a>
+          </li>
+          <li id="link-unspent">
+            <a href="#">UNSPENT</a>
+          </li>
+          <li id="link-tx">
+            <a href="#">TRANSACTION</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- BODY -->
+    <div id="body" class="row">
+      <div class="col-xs-1"></div>
+      <div class="col-xs-10 json-data-container">
+        <!-- PAIRING -->
+        <div id="screen-pairing">
+          <div class="center" id="qr-label">
+            PAIR YOUR SAMOURAI WALLET WITH YOUR DOJO BY SCANNING THIS QRCODE
+          </div>
+          <div class="center" id="qr-pairing"></div>
+        </div>
+        <!-- MAINTENANCE -->
+        <div id="form-maintenance">
+          <div id="row-form-field">
+            <div id="cell-args">
+              <input type="text" id="args" placeholder="">
+            </div>
+            <div id="cell-args2">
+              <input type="text" id="args2" placeholder="">
+            </div>
+            <div id="cell-args3">
+              <input type="text" id="args3" placeholder="">
+            </div>
+          </div>
+          <div id="row-form-button" class="center">
+            <button id="btn-go"
+                    class="btn btn-success"
+                    type="button">GO</button>
+          </div>
+          <div class="center">
+            <pre id="json-data" style="min-height: 300px"></pre>
+          </div>
+        </div>    
+      </div>
+      <div class="col-xs-1"></div>
+    </div>
+
+  </div>
+</body>
+
+</html>

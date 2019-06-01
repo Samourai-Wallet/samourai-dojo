@@ -1,0 +1,130 @@
+version: "3.2"
+
+services:
+  db:
+    image: "samouraiwallet/dojo-db:1.0.0"
+    container_name: db
+    build:
+      context: ./../..
+      dockerfile: ./docker/my-dojo/mysql/Dockerfile
+    env_file:
+      - ./.env
+      - ./conf/docker-mysql.conf
+    restart: on-failure
+    expose:
+      - "3306"
+    volumes:
+      - data-mysql:/var/lib/mysql
+    networks:
+      dojonet:
+        ipv4_address: 172.28.1.1
+
+  bitcoind:
+    image: "samouraiwallet/dojo-bitcoind:1.0.0"
+    container_name: bitcoind
+    build:
+      context: ./bitcoin
+    env_file:
+      - ./.env
+      - ./conf/docker-bitcoind.conf
+    restart: on-failure
+    command: "/wait-for-it.sh tor:9050 --timeout=360 --strict -- /restart.sh"
+    expose:
+      - "28256"
+      - "9501"
+      - "9502"
+    volumes:
+      - data-bitcoind:/home/bitcoin/.bitcoin
+    depends_on:
+      - db
+      - tor
+    networks:
+      dojonet:
+        ipv4_address: 172.28.1.5
+
+  node:
+    image: "samouraiwallet/dojo-nodejs:1.0.0"
+    container_name: nodejs
+    build:
+      context: ./../..
+      dockerfile: ./docker/my-dojo/node/Dockerfile
+    env_file:
+      - ./.env
+      - ./conf/docker-mysql.conf
+      - ./conf/docker-bitcoind.conf
+      - ./conf/docker-node.conf
+    restart: on-failure
+    command: "/home/node/app/wait-for-it.sh db:3306 --timeout=360 --strict -- /home/node/app/restart.sh"
+    expose:
+      - "8080"
+      - "8081"
+    volumes:
+      - data-nodejs:/data
+    depends_on:
+      - bitcoind
+      - db
+    networks:
+      dojonet:
+        ipv4_address: 172.28.1.2
+
+  nginx:
+    image: "samouraiwallet/dojo-nginx:1.0.0"
+    container_name: nginx
+    build:
+      context: ./nginx
+    env_file:
+      - ./.env
+    restart: on-failure
+    command: "/wait-for node:8080 --timeout=360 -- nginx"
+    expose:
+      - "80"
+    volumes:
+      - data-nginx:/data
+    depends_on:
+      - node
+    networks:
+      dmznet:
+        ipv4_address: 172.29.1.3
+      dojonet:
+        ipv4_address: 172.28.1.3
+
+  tor:
+    image: "samouraiwallet/dojo-tor:1.0.0"
+    container_name: tor
+    build:
+      context: ./tor
+    env_file:
+      - ./.env
+    restart: on-failure
+    command: tor
+    ports:
+      - "80:80"
+    volumes:
+      - data-tor:/var/lib/tor
+    networks:
+      dmznet:
+        ipv4_address: 172.29.1.4
+      dojonet:
+        ipv4_address: 172.28.1.4
+
+networks:
+  dojonet:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.28.0.0/16
+  dmznet:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.29.0.0/16
+
+volumes:
+  data-mysql:
+  data-bitcoind:
+  data-bitcoind-tor:
+  data-nodejs:
+  data-nginx:
+  data-tor:

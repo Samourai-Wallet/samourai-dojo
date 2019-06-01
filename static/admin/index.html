@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<!-- Home/Login page -->
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>DOJO MAINTENANCE TOOL</title>
+  <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="css/bootstrap-theme.min.css">
+  <link rel="stylesheet" type="text/css" href="css/style.css">
+  <script src="lib/jquery-3.2.1.min.js"></script>
+  <script src="conf/index.js"></script>
+  <script src="lib/common-script.js"></script>
+  <script src="lib/api-wrapper.js"></script>
+  <script src="lib/auth-utils.js"></script>
+  <script src="lib/messages.js"></script>
+  <script src="index.js"></script>
+</head>
+
+<body class="home">
+  <div id="login-page" class="container">
+    <!-- WELCOME MESSAGE -->
+    <div id="welcome-msg" class="row">
+      <div class="col-xs-12">
+        <img src="icons/samourai-logo-trans@2x.png" class="medium-icon"/>
+        <h1 class="title"><span>DOJO // MAINTENANCE TOOL</span> <span class="beta">beta</span></h1>
+      </div>
+    </div>
+
+    <!-- LOGIN FORM -->
+    <div id="inputs" class="row">
+      <div class="col-xs-4"></div>
+      <div class="col-xs-4 box-content">
+        <input type="password" id="apikey" placeholder="ENTER YOUR ADMIN KEY">
+        <div class="box-actions">
+          <button id="signin"
+                  class="btn btn-success"
+                  type="button">CONNECT</button>
+        </div>
+      </div>
+      <div class="col-xs-4"></div>
+    </div>
+
+    <!-- MESSAGES -->
+    <div class="row msg-boxes">
+      <div class="col-xs-4"></div>
+      <div class="col-xs-4">
+          <div id="msg" class="msg"></div>
+          <div id="errors" class="msg-error"></div>
+          <div id="info" class="msg-info"></div>
+      </div>
+      <div class="col-xs-4"></div>
+    </div>
+  </div>
+</body>
+
+</html>
