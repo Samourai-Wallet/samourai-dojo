@@ -1,7 +1,14 @@
 #!/bin/bash
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
-source "$DIR/conf/docker-bitcoind.conf"
+
+if [ -f "$DIR/conf/docker-bitcoind.conf" ]; then
+  source "$DIR/conf/docker-bitcoind.conf"
+fi
+
+if [ -f "$DIR/.env" ]; then
+  source "$DIR/.env"
+fi
 
   
 # Start
@@ -42,8 +49,22 @@ restart() {
 
 # Install
 install() {
-  docker-compose up -d --remove-orphans
-  docker-compose logs --tail=0 --follow
+  source "$DIR/install/install-scripts.sh"
+
+  launchInstall=1
+
+  if [ -z "$1" ]; then
+    get_confirmation
+    launchInstall=$?
+  else
+    launchInstall=0
+  fi
+
+  if [ $launchInstall -eq 0 ]; then
+    init_config_files
+    docker-compose up -d --remove-orphans
+    docker-compose logs --tail=0 --follow
+  fi
 }
 
 # Delete everything
@@ -51,13 +72,35 @@ uninstall() {
   docker-compose rm
   docker-compose down
 
-  docker image rm samouraiwallet/dojo-db:1.0.0
-  docker image rm samouraiwallet/dojo-bitcoind:1.0.0
-  docker image rm samouraiwallet/dojo-nodejs:1.0.0
-  docker image rm samouraiwallet/dojo-nginx:1.0.0
-  docker image rm samouraiwallet/dojo-tor:1.0.0
+  docker image rm samouraiwallet/dojo-db:"$DOJO_DB_VERSION_TAG"
+  docker image rm samouraiwallet/dojo-bitcoind:"$DOJO_BITCOIND_VERSION_TAG"
+  docker image rm samouraiwallet/dojo-nodejs:"$DOJO_NODEJS_VERSION_TAG"
+  docker image rm samouraiwallet/dojo-nginx:"$DOJO_NGINX_VERSION_TAG"
+  docker image rm samouraiwallet/dojo-tor:"$DOJO_TOR_VERSION_TAG"
 
   docker volume prune
+}
+
+# Upgrade
+upgrade() {
+  source "$DIR/install/upgrade-scripts.sh"
+
+  launchUpgrade=1
+
+  if [ -z "$1" ]; then
+    get_confirmation
+    launchUpgrade=$?
+  else
+    launchUpgrade=0
+  fi
+
+  if [ $launchUpgrade -eq 0 ]; then
+    update_config_files
+    docker-compose build
+    docker-compose up -d --remove-orphans
+    update_dojo_db
+    docker-compose logs --tail=0 --follow
+  fi
 }
 
 # Display the onion address
@@ -67,6 +110,11 @@ onion() {
 
   echo "API Hidden Service address (v3) = $V3_ADDR"
   echo "API Hidden Service address (v2) = $V2_ADDR"
+}
+
+# Display the version of this dojo
+version() {
+  echo "Dojo v$DOJO_VERSION_TAG"
 }
 
 # Display logs
@@ -137,6 +185,10 @@ help() {
   echo "  stop                          Stop your dojo."
   echo " "
   echo "  uninstall                     Delete your dojo. Be careful! This command will also remove all data."
+  echo " "
+  echo "  upgrade                       Upgrade your dojo."
+  echo " "
+  echo "  version                       Display the version of dojo"
 }
 
 
@@ -174,7 +226,7 @@ case "$subcommand" in
     help
     ;;
   install )
-    install
+    install $1
     ;;
   logs )
     module=$1; shift
@@ -218,5 +270,11 @@ case "$subcommand" in
     ;;
   uninstall )
     uninstall
+    ;;
+  upgrade )
+    upgrade $1
+    ;;
+  version )
+    version
     ;;
 esac
