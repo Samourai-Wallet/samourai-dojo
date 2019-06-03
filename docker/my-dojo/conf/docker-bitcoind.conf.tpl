@@ -30,3 +30,11 @@ BITCOIND_MEMPOOL_EXPIRY=72
 # Min relay tx fee in BTC
 # Type: numeric
 BITCOIND_MIN_RELAY_TX_FEE=0.00001
+
+# New config option 1
+# Type: alphanumeric
+BITCOIND_NEW_CONFIG_OPTION1=test
+
+# New config option 2
+# Type: alphanumeric
+BITCOIND_NEW_CONFIG_OPTION2=test
