@@ -54,7 +54,9 @@ MyDojo is a set of Docker containers providing a full Samourai backend composed 
 * Tor Browser installed on the host machine (or on another machine if your host is a headless server)
 
 
-## Setup ##
+## First-time Setup ##
+
+This procedure allows to install a new Dojo from scratch.
 
 * Install [Docker and Docker Compose](https://docs.docker.com/compose/install/) on the host machine and check that your installation is working.
 
@@ -116,6 +118,31 @@ Exit the logs with CTRL+C when the syncing of the database has completed.
 ```
 
 * Restrict the access to your host machine as much as possible by configuring its firewall.
+
+
+## Upgrade ##
+
+This procedure allows to upgrade your Dojo with a new version.
+
+* Stop your Dojo with
+
+```
+./dojo.sh stop
+```
+
+* Download the most recent release of Dojo from [Github](https://github.com/Samourai-Wallet/samourai-dojo/releases)
+
+* Uncompress the archive on the host machine in a temporary directory of your choice (named /tmp_dir in this doc)
+
+* Copy the content of the "/tmp_dir/samourai-dojo-1.x.y" directory into the "/dojo_dir" directory (overwrite).
+
+* Launch the upgrade of your Dojo with
+
+```
+./dojo.sh upgrade
+```
+
+Docker and Docker Compose are going to build new images and containers for your Dojo. After completion, the updated version of your Dojo will be launched automatically.
 
 
 ## Dojo shell script ##
