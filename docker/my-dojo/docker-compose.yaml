@@ -2,7 +2,7 @@ version: "3.2"
 
 services:
   db:
-    image: "samouraiwallet/dojo-db:1.0.0"
+    image: "samouraiwallet/dojo-db:${DOJO_DB_VERSION_TAG}"
     container_name: db
     build:
       context: ./../..
@@ -20,7 +20,7 @@ services:
         ipv4_address: 172.28.1.1
 
   bitcoind:
-    image: "samouraiwallet/dojo-bitcoind:1.0.0"
+    image: "samouraiwallet/dojo-bitcoind:${DOJO_BITCOIND_VERSION_TAG}"
     container_name: bitcoind
     build:
       context: ./bitcoin
@@ -43,7 +43,7 @@ services:
         ipv4_address: 172.28.1.5
 
   node:
-    image: "samouraiwallet/dojo-nodejs:1.0.0"
+    image: "samouraiwallet/dojo-nodejs:${DOJO_NODEJS_VERSION_TAG}"
     container_name: nodejs
     build:
       context: ./../..
@@ -68,7 +68,7 @@ services:
         ipv4_address: 172.28.1.2
 
   nginx:
-    image: "samouraiwallet/dojo-nginx:1.0.0"
+    image: "samouraiwallet/dojo-nginx:${DOJO_NGINX_VERSION_TAG}"
     container_name: nginx
     build:
       context: ./nginx
@@ -89,7 +89,7 @@ services:
         ipv4_address: 172.28.1.3
 
   tor:
-    image: "samouraiwallet/dojo-tor:1.0.0"
+    image: "samouraiwallet/dojo-tor:${DOJO_TOR_VERSION_TAG}"
     container_name: tor
     build:
       context: ./tor
