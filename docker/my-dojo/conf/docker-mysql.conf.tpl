@@ -14,10 +14,8 @@ MYSQL_USER=samourai
 # Type: alphanumeric
 MYSQL_PASSWORD=password
 
-# New config option 1
-# Type: alphanumeric
+# New config option 1 (alphanumeric)
 MYSQL_NEW_CONFIG_OPTION1=test
 
-# New config option 2
-# Type: alphanumeric
+# New config option 2 (alphanumeric)
 MYSQL_NEW_CONFIG_OPTION2=test

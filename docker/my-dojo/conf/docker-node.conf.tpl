@@ -29,10 +29,8 @@ NODE_IMPORT_FROM_BITCOIND=active
 # Allowed values are ECONOMICAL or CONSERVATIVE
 NODE_FEE_TYPE=ECONOMICAL
 
-# New config option 1
-# Type: alphanumeric
+# New config option 1 (alphanumeric)
 NODE_NEW_CONFIG_OPTION1=test
 
-# New config option 2
-# Type: alphanumeric
+# New config option 2 (alphanumeric)
 NODE_NEW_CONFIG_OPTION2=test

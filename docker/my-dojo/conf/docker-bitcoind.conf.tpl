@@ -31,10 +31,8 @@ BITCOIND_MEMPOOL_EXPIRY=72
 # Type: numeric
 BITCOIND_MIN_RELAY_TX_FEE=0.00001
 
-# New config option 1
-# Type: alphanumeric
+# New config option 1 (alphanumeric)
 BITCOIND_NEW_CONFIG_OPTION1=test
 
-# New config option 2
-# Type: alphanumeric
+# New config option 2 (alphanumeric)
 BITCOIND_NEW_CONFIG_OPTION2=test
