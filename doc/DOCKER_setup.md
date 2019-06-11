@@ -54,41 +54,43 @@ MyDojo is a set of Docker containers providing a full Samourai backend composed 
 * Tor Browser installed on the host machine (or on another machine if your host is a headless server)
 
 
-## Setup ##
+## First-time Setup ##
+
+This procedure allows to install a new Dojo from scratch.
 
 * Install [Docker and Docker Compose](https://docs.docker.com/compose/install/) on the host machine and check that your installation is working.
 
 * Install [Tor Browser](https://www.torproject.org/projects/torbrowser.html.en) on the host machine.
 
-* Download the most recent version of Dojo from [Github](https://github.com/Samourai-Wallet/samourai-dojo/archive/master.zip)
+* Download the most recent release of Dojo from [Github](https://github.com/Samourai-Wallet/samourai-dojo/archive/master.zip)
 
-* Uncompress the archive on the host machine in a temporary directory of your choice (named /tmp_dir in this doc)
+* Uncompress the archive on the host machine in a temporary directory of your choice (named <tmp_dir> in this doc)
 
-* Create a directory for Dojo (named /dojo_dir in this doc)
+* Create a directory for Dojo (named <dojo_dir> in this doc)
 
-* Copy the content of the "/tmp_dir/samourai-dojo-master" directory into the "/dojo_dir" directory
+* Copy the content of the "<tmp_dir>/samourai-dojo-master" directory into the <dojo_dir> directory
 
 * Customize the configuration of your Dojo
 
-  * Go to the "/dojo_dir/docker/my_dojo/conf" directory
+  * Go to the "<dojo_dir>/docker/my_dojo/conf" directory
 
-  * Edit docker-bitcoin.conf and provide a new value for the following parameters:
+  * Edit docker-bitcoin.conf.tpl and provide a new value for the following parameters:
       * BITCOIND_RPC_USER = login protecting the access to the RPC API of your full node,
       * BITCOIND_RPC_PASSWORD = password protecting the access to the RPC API of your full node.
       * If your machine has a lot of RAM, it's recommended that you increase the value of BITCOIND_DB_CACHE for a faster Initial Block Download.
 
-  * Edit docker-mysql.conf and provide a new value for the following parameters:
+  * Edit docker-mysql.conf.tpl and provide a new value for the following parameters:
       * MYSQL_ROOT_PASSWORD = password protecting the root account of MySQL,
       * MYSQL_USER = login of the account used to access the database of your Dojo,
       * MYSQL_PASSWORD = password of the account used to access the database of your Dojo.
 
-  * Edit docker-node.conf and provide a new value for the following parameters:
+  * Edit docker-node.conf.tpl and provide a new value for the following parameters:
       * NODE_API_KEY = API key which will be required from your Samourai Wallet / Sentinel for its interactions with the API of your Dojo,
       * NODE_ADMIN_KEY = API key which will be required from the maintenance tool for accessing a set of advanced features provided by the API of your Dojo,
       * NODE_JWT_SECRET = secret used by your Dojo for the initialization of a cryptographic key signing Json Web Tokens.
     These parameters will protect the access to your Dojo. Be sure to provide alphanumeric values with enough entropy.
 
-* Open the docker quickstart terminal or a terminal console and go to the "/dojo_dir/docker/my_dojo" directory. This directory contains a script named dojo.sh which will be your entrypoint for all operations related to the management of your Dojo.
+* Open the docker quickstart terminal or a terminal console and go to the "<dojo_dir>/docker/my_dojo" directory. This directory contains a script named dojo.sh which will be your entrypoint for all operations related to the management of your Dojo.
 
 
 * Launch the installation of your Dojo with
@@ -116,6 +118,31 @@ Exit the logs with CTRL+C when the syncing of the database has completed.
 ```
 
 * Restrict the access to your host machine as much as possible by configuring its firewall.
+
+
+## Upgrade ##
+
+This procedure allows to upgrade your Dojo with a new version.
+
+* Stop your Dojo with
+
+```
+./dojo.sh stop
+```
+
+* Download the most recent release of Dojo from [Github](https://github.com/Samourai-Wallet/samourai-dojo/releases)
+
+* Uncompress the archive on the host machine in a temporary directory of your choice (named <tmp_dir> in this doc)
+
+* Copy the content of the "<tmp_dir>/samourai-dojo-1.x.y" directory into the <dojo_dir> directory (overwrite).
+
+* Launch the upgrade of your Dojo with
+
+```
+./dojo.sh upgrade
+```
+
+Docker and Docker Compose are going to build new images and containers for your Dojo. After completion, the updated version of your Dojo will be launched automatically.
 
 
 ## Dojo shell script ##
@@ -160,6 +187,9 @@ Available commands:
 
   uninstall                     Delete your Dojo. Be careful! This command will also remove all data.
 
+  upgrade                       Upgrade your Dojo.
+
+  version                       Display the version of dojo.
 ```
 
 
