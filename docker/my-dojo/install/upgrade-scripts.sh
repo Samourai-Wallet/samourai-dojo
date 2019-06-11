@@ -35,20 +35,18 @@ update_config_files() {
 
 # Update a configuration file from template
 update_config_file() {
-  sed "/^#.*/P;s/=.*//g;/^$/d" $1 > ./original.raw
-  sed "/^#.*/P;s/=.*//g;/^$/d" $2 > ./tpl.raw
-  grep -vf ./original.raw ./tpl.raw > ./newvals.dat
+  sed "s/^#.*//g;s/=.*//g;/^$/d" $1 > ./original.keys.raw
+  grep -f ./original.keys.raw $1 > ./original.lines.raw
 
   cp -p $1 "$1.save"
+  cp -p $2 $1
 
-  echo "
-  " >> $1
+  while IFS='=' read -r key val ; do 
+    sed -i "s/$key=.*/$key=$val/g" "$1"
+  done < ./original.lines.raw
 
-  grep -f ./newvals.dat $2 >> $1
-
-  rm ./original.raw
-  rm ./tpl.raw
-  rm ./newvals.dat
+  rm ./original.keys.raw
+  rm ./original.lines.raw
 }
 
 # Update dojo database
