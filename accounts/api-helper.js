@@ -28,10 +28,10 @@ class ApiHelper {
    */
   parseEntities(str) {
     const ret = new WalletEntities()
-    
+
     if (typeof str !== 'string')
       return ret
-    
+
     for (let item of str.split('|')) {
       try {
 
@@ -47,7 +47,7 @@ class ApiHelper {
 
         } else if (addrHelper.isSupportedPubKey(item) && !ret.hasPubKey(item)) {
           // Derive pubkey as 3 addresses (P1PKH, P2WPKH/P2SH, BECH32)
-          const bufItem = new Buffer(item, 'hex')
+          const bufItem = Buffer.from(item, 'hex')
 
           const funcs = [
             addrHelper.p2pkhAddress,
