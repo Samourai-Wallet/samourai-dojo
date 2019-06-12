@@ -80,21 +80,21 @@ const VECTOR_5 = [
 
 
 describe('AddressesHelper', function() {
-  
+
   describe('p2pkhAddress()', function() {
     it('should successfully derive P2PKH addresses from pubkeys', function() {
       for (const v of VECTOR_1) {
-        const pkb = new Buffer(v[0], 'hex')
+        const pkb = Buffer.from(v[0], 'hex')
         const addr = addrHelper.p2pkhAddress(pkb)
         assert(addr == v[1])
       }
     })
   })
-  
+
   describe('p2wpkhP2shAddress()', function() {
     it('should successfully derive P2WPKH-P2SH addresses from pubkeys', function() {
       for (const v of VECTOR_1) {
-        const pkb = new Buffer(v[0], 'hex')
+        const pkb = Buffer.from(v[0], 'hex')
         const addr = addrHelper.p2wpkhP2shAddress(pkb)
         assert(addr == v[2])
       }
@@ -104,7 +104,7 @@ describe('AddressesHelper', function() {
   describe('p2wpkhAddress()', function() {
     it('should successfully derive bech32 addresses from pubkeys', function() {
       for (const v of VECTOR_1) {
-        const pkb = new Buffer(v[0], 'hex')
+        const pkb = Buffer.from(v[0], 'hex')
         const addr = addrHelper.p2wpkhAddress(pkb)
         assert(addr == v[3])
       }
@@ -150,7 +150,7 @@ describe('AddressesHelper', function() {
           const expectedResult = stc[2]
 
           const sig = btcMessage.sign(msg, prefix, privKey, true)
-          
+
           // Check that library returns valid result
           assert((sig.compare(targetSig) == 0) == expectedResult)
 
