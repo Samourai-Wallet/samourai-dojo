@@ -20,7 +20,7 @@ COPY    . "$APP_DIR"
 
 # Install node modules required by the app
 RUN     cd "$APP_DIR" && \
-        npm install --only=prod
+        npm ci --only=production
 
 # Copy config file
 COPY    ./docker/my-dojo/node/keys.index.js "$APP_DIR/keys/index.js"

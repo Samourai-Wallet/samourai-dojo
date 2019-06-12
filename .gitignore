@@ -4,4 +4,3 @@ keys/sslcert/
 node_modules/
 private-tests/
 *.log
-package-lock.json
