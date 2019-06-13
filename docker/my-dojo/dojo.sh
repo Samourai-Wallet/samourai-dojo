@@ -18,6 +18,10 @@ start() {
 
 # Stop
 stop() {
+  if [ "$BITCOIND_EPHEMERAL_HS" = "on" ]; then
+    docker exec -it tor rm -rf /var/lib/tor/hsv2bitcoind
+  fi
+
   docker exec -it bitcoind  bitcoin-cli \
     -rpcconnect=bitcoind \
     --rpcport=28256 \
@@ -33,6 +37,10 @@ stop() {
 
 # Restart dojo
 restart() {
+  if [ "$BITCOIND_EPHEMERAL_HS" = "on" ]; then
+    docker exec -it tor rm -rf /var/lib/tor/hsv2bitcoind
+  fi
+
   docker exec -it bitcoind  bitcoin-cli \
     -rpcconnect=bitcoind \
     --rpcport=28256 \
@@ -96,7 +104,8 @@ upgrade() {
 
   if [ $launchUpgrade -eq 0 ]; then
     update_config_files
-    docker-compose build
+    cleanup
+    docker-compose build --no-cache
     docker-compose up -d --remove-orphans
     update_dojo_db
     docker-compose logs --tail=0 --follow
@@ -107,9 +116,11 @@ upgrade() {
 onion() {
   V2_ADDR=$( docker exec -it tor cat /var/lib/tor/hsv2dojo/hostname )
   V3_ADDR=$( docker exec -it tor cat /var/lib/tor/hsv3dojo/hostname )
+  V2_ADDR_BTCD=$( docker exec -it tor cat /var/lib/tor/hsv2bitcoind/hostname )
 
-  echo "API Hidden Service address (v3) = $V3_ADDR"
-  echo "API Hidden Service address (v2) = $V2_ADDR"
+  echo "API hidden service address (v3) = $V3_ADDR"
+  echo "API hidden service address (v2) = $V2_ADDR"
+  echo "bitcoind hidden service address (v2) = $V2_ADDR_BTCD"
 }
 
 # Display the version of this dojo

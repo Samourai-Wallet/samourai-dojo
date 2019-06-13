@@ -30,3 +30,8 @@ BITCOIND_MEMPOOL_EXPIRY=72
 # Min relay tx fee in BTC
 # Type: numeric
 BITCOIND_MIN_RELAY_TX_FEE=0.00001
+
+# Generate a new onion address for bitcoind when Dojo is launched
+# Activation of this option is recommended for improved privacy.
+# Values: on | off
+BITCOIND_EPHEMERAL_HS=on

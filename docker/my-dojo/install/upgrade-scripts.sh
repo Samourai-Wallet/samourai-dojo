@@ -53,3 +53,13 @@ update_config_file() {
 update_dojo_db() {
   docker exec -d db /update-db.sh
 }
+
+# Clean-up
+cleanup() {
+  #################
+  # Clean-up v1.1.0
+  #################
+
+  # Remove deprecated bitcoin.conf file
+  rm ./bitcoin/bitcoin.conf
+}
