@@ -30,11 +30,13 @@ services:
     restart: on-failure
     command: "/wait-for-it.sh tor:9050 --timeout=360 --strict -- /restart.sh"
     expose:
+      - "8333"
       - "28256"
       - "9501"
       - "9502"
     volumes:
       - data-bitcoind:/home/bitcoin/.bitcoin
+      - data-tor:/var/lib/tor
     depends_on:
       - db
       - tor
@@ -96,9 +98,7 @@ services:
     env_file:
       - ./.env
     restart: on-failure
-    command: tor
-    ports:
-      - "80:80"
+    command: /restart.sh
     volumes:
       - data-tor:/var/lib/tor
     networks:
@@ -124,7 +124,6 @@ networks:
 volumes:
   data-mysql:
   data-bitcoind:
-  data-bitcoind-tor:
   data-nodejs:
   data-nginx:
   data-tor:

@@ -27,17 +27,16 @@ RUN     set -ex && \
         tar -xzvf bitcoin.tar.gz -C /usr/local --strip-components=1 --exclude=*-qt && \
         rm -rf /tmp/*
 
-# Create group & user bitcoin
+# Create groups bitcoin & tor
+# Create user bitcoin and add it to groups
 RUN     addgroup --system -gid 1108 bitcoin && \
-        adduser --system --ingroup bitcoin -uid 1105 bitcoin
+        addgroup --system -gid 1107 tor && \
+        adduser --system --ingroup bitcoin -uid 1105 bitcoin && \
+        usermod -a -G tor bitcoin
 
 # Create data directory
 RUN     mkdir "$BITCOIN_HOME/.bitcoin" && \
         chown -h bitcoin:bitcoin "$BITCOIN_HOME/.bitcoin"
-
-# Copy bitcoin config file
-COPY    ./bitcoin.conf "$BITCOIN_HOME/.bitcoin/bitcoin.conf"
-RUN     chown bitcoin:bitcoin "$BITCOIN_HOME/.bitcoin/bitcoin.conf"
 
 # Copy restart script
 COPY    ./restart.sh /restart.sh
