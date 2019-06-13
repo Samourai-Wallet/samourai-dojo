@@ -2,18 +2,34 @@
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 
-if [ -f "$DIR/conf/docker-bitcoind.conf" ]; then
-  source "$DIR/conf/docker-bitcoind.conf"
-fi
+# Source a file
+source_file() {
+  if [ -f $1 ]; then
+    source $1
+  fi
+}
 
-if [ -f "$DIR/.env" ]; then
-  source "$DIR/.env"
-fi
+source_file "$DIR/conf/docker-bitcoind.conf"
+source_file "$DIR/.env"
 
+  
+# Docker up
+docker_up() {
+  source_file "$DIR/conf/docker-bitcoind.conf"
+
+  overrides=""
+
+  if [ "$BITCOIND_RPC_EXTERNAL" == "on" ]; then
+    overrides="-f $DIR/overrides/bitcoind.rpc.expose.yaml"
+    export BITCOIND_RPC_EXTERNAL_IP
+  fi
+
+  eval "docker-compose -f $DIR/docker-compose.yaml $overrides up $1 -d"
+}
   
 # Start
 start() {
-  docker-compose up --remove-orphans -d
+  docker_up --remove-orphans
 }
 
 # Stop
@@ -52,7 +68,7 @@ restart() {
   sleep 15s
 
   docker-compose down
-  docker-compose up -d
+  docker_up
 }
 
 # Install
@@ -70,7 +86,7 @@ install() {
 
   if [ $launchInstall -eq 0 ]; then
     init_config_files
-    docker-compose up -d --remove-orphans
+    docker_up --remove-orphans
     docker-compose logs --tail=0 --follow
   fi
 }
@@ -106,7 +122,7 @@ upgrade() {
     update_config_files
     cleanup
     docker-compose build --no-cache
-    docker-compose up -d --remove-orphans
+    docker_up --remove-orphans
     update_dojo_db
     docker-compose logs --tail=0 --follow
   fi

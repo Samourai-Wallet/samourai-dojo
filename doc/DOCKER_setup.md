@@ -79,6 +79,7 @@ This procedure allows to install a new Dojo from scratch.
       * BITCOIND_RPC_PASSWORD = password protecting the access to the RPC API of your full node.
       * If your machine has a lot of RAM, it's recommended that you increase the value of BITCOIND_DB_CACHE for a faster Initial Block Download.
       * By default, Dojo creates a new onion address for your full node at each startup. Set the value of BITCOIND_EPHEMERAL_HS to 'off' to keep a static address (not recommended).
+      * This file also provides a few expert settings for advanced setups (e.g.: expose bitcoind RPC API to external apps). See this [doc](./DOCKER_advanced_setups.md) for more details.
 
   * Edit docker-mysql.conf.tpl and provide a new value for the following parameters:
       * MYSQL_ROOT_PASSWORD = password protecting the root account of MySQL,
