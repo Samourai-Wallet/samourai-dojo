@@ -19,9 +19,13 @@ docker_up() {
 
   overrides=""
 
-  if [ "$BITCOIND_RPC_EXTERNAL" == "on" ]; then
-    overrides="-f $DIR/overrides/bitcoind.rpc.expose.yaml"
-    export BITCOIND_RPC_EXTERNAL_IP
+  if [ "$BITCOIND_INSTALL" == "on" ]; then
+    overrides="-f $DIR/overrides/bitcoind.install.yaml"
+
+    if [ "$BITCOIND_RPC_EXTERNAL" == "on" ]; then
+      overrides="$overrides -f $DIR/overrides/bitcoind.rpc.expose.yaml"
+      export BITCOIND_RPC_EXTERNAL_IP
+    fi
   fi
 
   eval "docker-compose -f $DIR/docker-compose.yaml $overrides up $1 -d"
@@ -34,40 +38,28 @@ start() {
 
 # Stop
 stop() {
-  if [ "$BITCOIND_EPHEMERAL_HS" = "on" ]; then
-    docker exec -it tor rm -rf /var/lib/tor/hsv2bitcoind
+  if [ "$BITCOIND_INSTALL" == "on" ]; then
+    if [ "$BITCOIND_EPHEMERAL_HS" = "on" ]; then
+      docker exec -it tor rm -rf /var/lib/tor/hsv2bitcoind
+    fi
+
+    docker exec -it bitcoind  bitcoin-cli \
+      -rpcconnect=bitcoind \
+      --rpcport=28256 \
+      --rpcuser="$BITCOIND_RPC_USER" \
+      --rpcpassword="$BITCOIND_RPC_PASSWORD" \
+      stop
+
+    echo "Preparing shutdown of dojo. Please wait."
+    sleep 15s
   fi
-
-  docker exec -it bitcoind  bitcoin-cli \
-    -rpcconnect=bitcoind \
-    --rpcport=28256 \
-    --rpcuser="$BITCOIND_RPC_USER" \
-    --rpcpassword="$BITCOIND_RPC_PASSWORD" \
-    stop
-
-  echo "Preparing shutdown of dojo. Please wait."
-  sleep 15s
 
   docker-compose down
 }
 
 # Restart dojo
 restart() {
-  if [ "$BITCOIND_EPHEMERAL_HS" = "on" ]; then
-    docker exec -it tor rm -rf /var/lib/tor/hsv2bitcoind
-  fi
-
-  docker exec -it bitcoind  bitcoin-cli \
-    -rpcconnect=bitcoind \
-    --rpcport=28256 \
-    --rpcuser="$BITCOIND_RPC_USER" \
-    --rpcpassword="$BITCOIND_RPC_PASSWORD" \
-    stop
-
-  echo "Preparing shutdown of dojo. Please wait."
-  sleep 15s
-
-  docker-compose down
+  stop
   docker_up
 }
 
@@ -132,11 +124,14 @@ upgrade() {
 onion() {
   V2_ADDR=$( docker exec -it tor cat /var/lib/tor/hsv2dojo/hostname )
   V3_ADDR=$( docker exec -it tor cat /var/lib/tor/hsv3dojo/hostname )
-  V2_ADDR_BTCD=$( docker exec -it tor cat /var/lib/tor/hsv2bitcoind/hostname )
-
+  
   echo "API hidden service address (v3) = $V3_ADDR"
   echo "API hidden service address (v2) = $V2_ADDR"
-  echo "bitcoind hidden service address (v2) = $V2_ADDR_BTCD"
+
+  if [ "$BITCOIND_INSTALL" == "on" ]; then
+    V2_ADDR_BTCD=$( docker exec -it tor cat /var/lib/tor/hsv2bitcoind/hostname )
+    echo "bitcoind hidden service address (v2) = $V2_ADDR_BTCD"
+  fi
 }
 
 # Display the version of this dojo
@@ -159,7 +154,11 @@ logs() {
       docker-compose logs --tail=50 --follow db
       ;;
     bitcoind )
-      docker exec -ti bitcoind tail -f /home/bitcoin/.bitcoin/debug.log
+      if [ "$BITCOIND_INSTALL" == "on" ]; then
+        docker exec -ti bitcoind tail -f /home/bitcoin/.bitcoin/debug.log
+      else
+        echo -e "Command not supported for your setup.\nCause: Your Dojo is using an external bitcoind"
+      fi
       ;;
     tor )
       docker-compose logs --tail=50 --follow tor
@@ -242,12 +241,16 @@ subcommand=$1; shift
 
 case "$subcommand" in
   bitcoin-cli )
-    docker exec -it bitcoind bitcoin-cli \
-      -rpcconnect=bitcoind \
-      --rpcport=28256 \
-      --rpcuser="$BITCOIND_RPC_USER" \
-      --rpcpassword="$BITCOIND_RPC_PASSWORD" \
-      $1 $2 $3 $4 $5
+    if [ "$BITCOIND_INSTALL" == "on" ]; then
+      docker exec -it bitcoind bitcoin-cli \
+        -rpcconnect=bitcoind \
+        --rpcport=28256 \
+        --rpcuser="$BITCOIND_RPC_USER" \
+        --rpcpassword="$BITCOIND_RPC_PASSWORD" \
+        $1 $2 $3 $4 $5
+      else
+        echo -e "Command not supported for your setup.\nCause: Your Dojo is using an external bitcoind"
+      fi
     ;;
   help )
     help

@@ -22,27 +22,6 @@ services:
   bitcoind:
     image: "samouraiwallet/dojo-bitcoind:${DOJO_BITCOIND_VERSION_TAG}"
     container_name: bitcoind
-    build:
-      context: ./bitcoin
-    env_file:
-      - ./.env
-      - ./conf/docker-bitcoind.conf
-    restart: on-failure
-    command: "/wait-for-it.sh tor:9050 --timeout=360 --strict -- /restart.sh"
-    expose:
-      - "8333"
-      - "28256"
-      - "9501"
-      - "9502"
-    volumes:
-      - data-bitcoind:/home/bitcoin/.bitcoin
-      - data-tor:/var/lib/tor
-    depends_on:
-      - db
-      - tor
-    networks:
-      dojonet:
-        ipv4_address: 172.28.1.5
 
   node:
     image: "samouraiwallet/dojo-nodejs:${DOJO_NODEJS_VERSION_TAG}"
@@ -123,7 +102,6 @@ networks:
 
 volumes:
   data-mysql:
-  data-bitcoind:
   data-nodejs:
   data-nginx:
   data-tor:
