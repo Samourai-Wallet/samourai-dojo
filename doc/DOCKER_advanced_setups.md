@@ -68,8 +68,10 @@ nano ./conf/docker-bitcoind.conf
 ```
 
 With this setting, external applications running on your local machine should be able to access the following ports:
+* 9500: bitcoind zmqpubhashtx notifications
 * 9501: bitcoind zmqpubrawtx notifications
 * 9502: bitcoind zmqpubhashblock notifications
+* 9503: bitcoind zmqpubrawblock notifications
 * 28256: bitcoind RPC API
 
 Note: this option has no effect if your setup relies on a external full node (i.e. if BITCOIND_INSTALL is set to "off").
