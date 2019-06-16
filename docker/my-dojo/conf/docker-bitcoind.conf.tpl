@@ -22,6 +22,10 @@ BITCOIND_MAX_MEMPOOL=1024
 # Type: integer
 BITCOIND_DB_CACHE=1024
 
+# Number of threads to service RPC calls
+# Type: integer
+BITCOIND_RPC_THREADS=6
+
 # Mempool expiry in hours
 # Defines how long transactions stay in your local mempool before expiring
 # Type: integer
