@@ -78,8 +78,11 @@ This procedure allows to install a new Dojo from scratch.
       * BITCOIND_RPC_USER = login protecting the access to the RPC API of your full node,
       * BITCOIND_RPC_PASSWORD = password protecting the access to the RPC API of your full node.
       * If your machine has a lot of RAM, it's recommended that you increase the value of BITCOIND_DB_CACHE for a faster Initial Block Download.
-      * By default, Dojo creates a new onion address for your full node at each startup. Set the value of BITCOIND_EPHEMERAL_HS to 'off' to keep a static address (not recommended).
-      * This file also provides a few expert settings for advanced setups (e.g.: expose bitcoind RPC API to external apps). See this [doc](./DOCKER_advanced_setups.md) for more details.
+      * This file also provides a few additional settings for advanced setups: 
+        * static onion address for your full node,
+        * bitcoind RPC API exposed to external apps,
+        * use of an external full node.
+        See this [doc](./DOCKER_advanced_setups.md) for more details.
 
   * Edit docker-mysql.conf.tpl and provide a new value for the following parameters:
       * MYSQL_ROOT_PASSWORD = password protecting the root account of MySQL,
@@ -223,6 +226,6 @@ If OXT is selected as the default source for imports, OXT clearnet API is access
 
 The maintenance tool is accessed as a Tor hidden service (static onion address).
 
-The Bitcoin node only allows incoming connections from Tor (static or dynamic onion address).
+The Bitcoin node only allows incoming connections from Tor (ephemeral onion address).
 
 The Bitcoin node attempts outgoing connections to both Tor and clearrnet nodes (through the Tor local proxy).

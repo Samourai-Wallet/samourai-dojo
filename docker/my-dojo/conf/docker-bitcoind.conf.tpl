@@ -36,10 +36,22 @@ BITCOIND_MIN_RELAY_TX_FEE=0.00001
 # EXPERT SETTINGS
 #
 
+
+#
+# EPHEMERAL ONION ADDRESS FOR BITCOIND
+# THIS PARAMETER HAS NO EFFECT IF BITCOIND_INSTALL IS SET TO OFF
+#
+
 # Generate a new onion address for bitcoind when Dojo is launched
 # Activation of this option is recommended for improved privacy.
 # Values: on | off
 BITCOIND_EPHEMERAL_HS=on
+
+
+#
+# EXPOSE BITCOIND RPC API AND ZMQ NOTIFICATIONS TO EXTERNAL APPS
+# THESE PARAMETERS HAVE NO EFFECT IF BITCOIND_INSTALL IS SET TO OFF
+#
 
 # Expose the RPC API to external apps
 # Warning: Do not expose your RPC API to internet!
@@ -55,3 +67,33 @@ BITCOIND_RPC_EXTERNAL=off
 #   macos or windows: IP address of the VM running the docker host
 # Type: string
 BITCOIND_RPC_EXTERNAL_IP=127.0.0.1
+
+
+#
+# INSTALL AND RUN BITCOIND INSIDE DOCKER
+#
+
+# Install and run bitcoind inside Docker
+# Set this option to 'off' for using a bitcoind hosted outside of Docker (not recommended)
+# Value: on | off
+BITCOIND_INSTALL=on
+
+# IP address of bitcoind used by Dojo
+# Set value to 172.28.1.5 if BITCOIND_INSTALL is set to 'on'
+# Type: string
+BITCOIND_IP=172.28.1.5
+
+# Port of the RPC API
+# Set value to 28256 if BITCOIND_INSTALL is set to 'on'
+# Type: integer
+BITCOIND_RPC_PORT=28256
+
+# Port exposing ZMQ notifications for raw transactions
+# Set value to 9501 if BITCOIND_INSTALL is set to 'on'
+# Type: integer
+BITCOIND_ZMQ_RAWTXS=9501
+
+# Port exposing ZMQ notifications for block hashes
+# Set value to 9502 if BITCOIND_INSTALL is set to 'on'
+# Type: integer
+BITCOIND_ZMQ_BLK_HASH=9502
