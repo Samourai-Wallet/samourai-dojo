@@ -163,6 +163,8 @@ Available commands:
 
   bitcoin-cli                   Launch a bitcoin-cli console for interacting with bitcoind RPC API.
 
+  clean                         Free disk space by deleting docker dangling images and images of previous versions.
+
   install                       Install your Dojo.
 
   logs [module] [options]       Display the logs of your Dojo. Use CTRL+C to stop the logs.

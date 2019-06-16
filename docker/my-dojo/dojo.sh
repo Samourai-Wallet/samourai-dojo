@@ -12,7 +12,7 @@ source_file() {
 source_file "$DIR/conf/docker-bitcoind.conf"
 source_file "$DIR/.env"
 
-  
+
 # Docker up
 docker_up() {
   source_file "$DIR/conf/docker-bitcoind.conf"
@@ -95,6 +95,26 @@ uninstall() {
   docker image rm samouraiwallet/dojo-tor:"$DOJO_TOR_VERSION_TAG"
 
   docker volume prune
+}
+
+# Clean-up (remove old docker images)
+del_images_for() {
+  # $1: image name
+  # $2: most recent version of the image (do not delete this one)
+  docker image ls | grep "$1" | sed "s/ \+/,/g" | cut -d"," -f2 | while read -r version ; do 
+    if [ "$2" != "$version" ]; then
+      docker image rm "$1:$version"
+    fi
+  done
+}
+
+clean() {
+  docker image prune
+  del_images_for samouraiwallet/dojo-db "$DOJO_DB_VERSION_TAG"
+  del_images_for samouraiwallet/dojo-bitcoind "$DOJO_BITCOIND_VERSION_TAG"
+  del_images_for samouraiwallet/dojo-nodejs "$DOJO_NODEJS_VERSION_TAG"
+  del_images_for samouraiwallet/dojo-nginx "$DOJO_NGINX_VERSION_TAG"
+  del_images_for samouraiwallet/dojo-tor "$DOJO_TOR_VERSION_TAG"
 }
 
 # Upgrade
@@ -183,6 +203,8 @@ help() {
   echo " "
   echo "  bitcoin-cli                   Launch a bitcoin-cli console allowing to interact with your full node through its RPC API."
   echo " "
+  echo "  clean                         Free disk space by deleting docker dangling images and images of previous versions."
+  echo " "
   echo "  install                       Install your dojo."
   echo " "
   echo "  logs [module] [options]       Display the logs of your dojo. Use CTRL+C to stop the logs."
@@ -254,6 +276,9 @@ case "$subcommand" in
     ;;
   help )
     help
+    ;;
+  clean )
+    clean
     ;;
   install )
     install $1
