@@ -61,5 +61,7 @@ cleanup() {
   #################
 
   # Remove deprecated bitcoin.conf file
-  rm ./bitcoin/bitcoin.conf
+  if [ -f ./bitcoin/bitcoin.conf ]; then
+    rm ./bitcoin/bitcoin.conf
+  fi
 }
