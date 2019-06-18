@@ -2,10 +2,24 @@
 
 MyDojo is a set of Docker containers providing a full Samourai backend composed of:
 * a bitcoin full node accessible as an ephemeral Tor hidden service,
-* the backend database,
-* the backend modules with an API accessible as a static Tor hidden service,
+* a backend database,
+* a backend modules with an API accessible as a static Tor hidden service,
 * a maintenance tool accessible through a Tor web browser.
 
+
+# Table of Content
+- [Architecture](#architecture)
+- [Requirements](#requirements)
+- [First-time install procedure](#install)
+- [Upgrade procedure](#upgrade)
+- [Configuration files](#config_files)
+- [Dojo shell script](#shell_script)
+- [Dojo maintenance tool](#maintenance_tool)
+- [Pairing your wallet to your Dojo](#pairing)
+- [Network connections](#network)
+
+
+<a name="architecture"/>
 
 ## Architecture ##
 
@@ -42,6 +56,7 @@ MyDojo is a set of Docker containers providing a full Samourai backend composed 
                 |______________________________________________________________|
 
 
+<a name="requirements"/>
 
 ## Requirements ##
 
@@ -53,6 +68,8 @@ MyDojo is a set of Docker containers providing a full Samourai backend composed 
 * Check that the clock of your computer is properly set (required for Tor)
 * Tor Browser installed on the host machine (or on another machine if your host is a headless server)
 
+
+<a name="install"/>
 
 ## First-time Setup ##
 
@@ -125,6 +142,8 @@ Exit the logs with CTRL+C when the syncing of the database has completed.
 * Restrict the access to your host machine as much as possible by configuring its firewall.
 
 
+<a name="upgrade"/>
+
 ## Upgrade ##
 
 This procedure allows to upgrade your Dojo with a new version.
@@ -149,6 +168,32 @@ This procedure allows to upgrade your Dojo with a new version.
 
 Docker and Docker Compose are going to build new images and containers for your Dojo. After completion, the updated version of your Dojo will be launched automatically.
 
+Note: The upgrade process will override all manual modifications of the files stored under the <dojo_dir> directory with an exception for the three configuration files stored in the "<dojo_dir>/docker/my_dojo/conf" directory.
+
+
+<a name="config_files"/>
+
+## Configuration files ##
+
+Each new release of Dojo is packaged with 3 template files stored in the "<dojo_dir>/docker/my_dojo/conf" directory:
+- docker-bitcoin.conf.tpl
+- docker-mysql.conf.tpl
+- docker-node.conf.tpl
+
+These templates files define default values for configuration options of your Dojo.
+
+During the first-time installation (dojo.sh install) these templates are used to initialize the configuration files (files with .conf extension) that will be used by your Dojo.
+
+During an upgrade (dojo.sh upgrade), the content of the templates files is merged with the content of the configuration files, preserving the values that you may have modified in the configuration files. A backup of the configuration files is saved in the same directory (files with .save extension).
+
+Most options provided in the configuration files can be later modified. New values will become active after a call to
+
+```
+./dojo.sh restart
+```
+
+
+<a name="shell_script"/>
 
 ## Dojo shell script ##
 
@@ -200,25 +245,29 @@ Available commands:
 ```
 
 
+<a name="maintenance_tool"/>
+
 ## Dojo maintenance tool ##
 
-A maintenance tool is accessible through your Tor browser at the url: <v2_onion_address>/admin
+A maintenance tool is accessible through your Tor browser at the url: <v3_onion_address>/admin
 
 The maintenance tool requires that you allow javascript for the site.
 
 Sign in with the value entered for NODE_ADMIN_KEY.
 
 
+<a name="pairing"/>
 
-## Pairing ##
+## Pairing your wallet to your Dojo ##
 
 Once the database has finished syncing, you can pair your Samourai Wallet with your Dojo in 2 steps:
 
-* Open the maintenance tool in a Tor browser and sign in with your admin key.
+* Open the maintenance tool in a Tor browser (Tor v3 onion address) and sign in with your admin key.
 
 * Get your smartphone and launch the Samourai Wallet app. Scan the QRCode displayed in the "Pairing" tab of the maintenance tool.
 
 
+<a name="network"/>
 
 ## Network connections ##
 
@@ -230,4 +279,4 @@ The maintenance tool is accessed as a Tor hidden service (static onion address).
 
 The Bitcoin node only allows incoming connections from Tor (ephemeral onion address).
 
-The Bitcoin node attempts outgoing connections to both Tor and clearrnet nodes (through the Tor local proxy).
+The Bitcoin node attempts outgoing connections to both Tor and clearnet nodes (through the Tor local proxy).
