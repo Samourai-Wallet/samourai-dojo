@@ -6,6 +6,7 @@ The 3 configuration files of Dojo provide a few advanced options allowing to tun
 A word of caution, though, the default values of these options try to maximize your privacy at a network level. All the advanced setups described in this document may damage your privacy. Use at your own risk!
 
 
+<a name="external_bitcoind"/>
 
 ## External Bitcoin full node ##
 
@@ -34,6 +35,7 @@ nano ./conf/docker-bitcoind.conf.tpl
 ```
 
 
+<a name="exposed_rpc_zmq"/>
 
 ## bitcoind RPC API ans ZMQ notifications exposed to external apps ##
 
@@ -77,6 +79,7 @@ With this setting, external applications running on your local machine should be
 Note: this option has no effect if your setup relies on a external full node (i.e. if BITCOIND_INSTALL is set to "off").
 
 
+<a name="static_onion"/>
 
 ## Static onion address for bitcoind hidden service ##
 

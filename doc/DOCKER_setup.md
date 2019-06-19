@@ -7,7 +7,7 @@ MyDojo is a set of Docker containers providing a full Samourai backend composed 
 * a maintenance tool accessible through a Tor web browser.
 
 
-# Table of Content
+## Table of Content ##
 - [Architecture](#architecture)
 - [Requirements](#requirements)
 - [First-time install procedure](#install)
