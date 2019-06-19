@@ -1,4 +1,9 @@
 db-scripts/updates/
+db-scripts/1_db.sql
+db-scripts/2_update.sql
+docker/my-dojo/conf/docker-bitcoind.conf
+docker/my-dojo/conf/docker-mysql.conf
+docker/my-dojo/conf/docker-node.conf
 keys/index.js
 keys/sslcert/
 node_modules/
