@@ -39,8 +39,8 @@ Note: _This is an important step, otherwise, it's probable that when you run the
 1. Click on the Docker icon (![whale menu](https://docs.docker.com/docker-for-mac/images/whale-x.png)) at the status bar and select __Preferences__.
 2.  Under Disk, click on __Reveal in Finder__ and double check that the disk image is saved under the external HD.
 3. __Adjust Disk__ Image size to 400GB+ and click Apply.
-4. _Optional_: Click __Advanced__ and increase the CPU count, Memory and Swap sizes. Adjusting these will speed up the blockchain validation process 
-(_On my system I've adjusted to 4 CPUs, 8GB of RAM and a 4GiB Swap_).
+4. Click __Advanced__ and increase the CPU count, Memory and Swap sizes. Adjusting these will speed up the blockchain validation process 
+(_At 4 CPUs, 8GB of RAM and a 4GiB Swap - the initial block download took 4.5 days at the time of writing_).
 
 ## Install the DOJO
 Follow the instructions [here](https://github.com/Samourai-Wallet/samourai-dojo/blob/develop/doc/DOCKER_setup.md) starting at the step:
