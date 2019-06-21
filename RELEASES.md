@@ -52,7 +52,9 @@ This command allows to free disk space on the Docker host.
 
 #### Documentation ####
 
-Added a [new doc](./doc/DOCKER_advanced_setups.md) for advanced setups.
+Added a new [doc](./doc/DOCKER_advanced_setups.md) for advanced setups.
+
+Added a new [doc](./doc/DOCKER_mac_setup.MD) for MacOS users.
 
 
 ### Change log ###
@@ -62,9 +64,10 @@ Added a [new doc](./doc/DOCKER_advanced_setups.md) for advanced setups.
 - [#1](https://github.com/Samourai-Wallet/samourai-dojo/pull/1) my-dojo upgrade mechanism
 - [#7](https://github.com/Samourai-Wallet/samourai-dojo/pull/7) support of inbound connections through Tor
 - [#8](https://github.com/Samourai-Wallet/samourai-dojo/pull/8) add config option exposing the rpc api and zmq notifications to external apps
-- [#12](https://github.com/Samourai-Wallet/samourai-dojo/pull/12) extend support of external apps
 - [#10](https://github.com/Samourai-Wallet/samourai-dojo/pull/10) add an option allowing to run dojo on top of an external bitcoind
 - [#11](https://github.com/Samourai-Wallet/samourai-dojo/pull/11) clean-up
+- [#12](https://github.com/Samourai-Wallet/samourai-dojo/pull/12) extend support of external apps
+- [#15](https://github.com/Samourai-Wallet/samourai-dojo/pull/15) fix issue introduced by #10
 
 
 #### Security ####
@@ -73,9 +76,24 @@ Added a [new doc](./doc/DOCKER_advanced_setups.md) for advanced setups.
 - [#6](https://github.com/Samourai-Wallet/samourai-dojo/pull/6) Remove deprecated "new Buffer" in favor of "Buffer.from"
 
 
+#### Documentation ####
+
+- [#13](https://github.com/Samourai-Wallet/samourai-dojo/pull/13) Included Mac instructions
+- [92097d8](https://github.com/Samourai-Wallet/samourai-dojo/commit/92097d8ec7f9488ce0318c452356994315f4be72) doc
+- [de4c9b5](https://github.com/Samourai-Wallet/samourai-dojo/commit/de4c9b5e5078b673c7b199503d48e7ceca328285) doc - minor updates 
+- [fead0bb](https://github.com/Samourai-Wallet/samourai-dojo/commit/fead0bb4b2b6174e637f5cb8c57edd9b55c3a1c7) doc - add link to MacOS install doc
+
+
+#### Misc ####
+
+- [a382e42](https://github.com/Samourai-Wallet/samourai-dojo/commit/a382e42469b884d2eda9fa6f5a3c8ce93a7cd39a) add sql scripts and config files to gitignore 
+
+
 ### Credits ###
 
 - 05nelsonm
 - clarkmoody
 - kenshin-samourai
+- LaurentMT
 - michel-foucault
+- pxsocs
