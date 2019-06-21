@@ -73,6 +73,8 @@ MyDojo is a set of Docker containers providing a full Samourai backend composed 
 
 ## First-time Setup ##
 
+For MacOS, see this detailed [installation guide](./DOCKER_mac_setup.MD).
+
 This procedure allows to install a new Dojo from scratch.
 
 * Install [Docker and Docker Compose](https://docs.docker.com/compose/install/) on the host machine and check that your installation is working.
