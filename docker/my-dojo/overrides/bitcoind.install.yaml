@@ -29,7 +29,6 @@ services:
   node:
     depends_on:
       - bitcoind
-      - db
 
 volumes:
   data-bitcoind:
