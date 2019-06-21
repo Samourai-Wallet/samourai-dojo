@@ -19,10 +19,6 @@ services:
       dojonet:
         ipv4_address: 172.28.1.1
 
-  bitcoind:
-    image: "samouraiwallet/dojo-bitcoind:${DOJO_BITCOIND_VERSION_TAG}"
-    container_name: bitcoind
-
   node:
     image: "samouraiwallet/dojo-nodejs:${DOJO_NODEJS_VERSION_TAG}"
     container_name: nodejs
@@ -42,7 +38,6 @@ services:
     volumes:
       - data-nodejs:/data
     depends_on:
-      - bitcoind
       - db
     networks:
       dojonet:

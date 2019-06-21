@@ -13,22 +13,29 @@ source_file "$DIR/conf/docker-bitcoind.conf"
 source_file "$DIR/.env"
 
 
-# Docker up
-docker_up() {
+# Select YAML files
+select_yaml_files() {
   source_file "$DIR/conf/docker-bitcoind.conf"
 
-  overrides=""
+  yamlFiles="-f $DIR/docker-compose.yaml"
 
   if [ "$BITCOIND_INSTALL" == "on" ]; then
-    overrides="-f $DIR/overrides/bitcoind.install.yaml"
+    yamlFiles="$yamlFiles -f $DIR/overrides/bitcoind.install.yaml"
 
     if [ "$BITCOIND_RPC_EXTERNAL" == "on" ]; then
-      overrides="$overrides -f $DIR/overrides/bitcoind.rpc.expose.yaml"
+      yamlFiles="$yamlFiles -f $DIR/overrides/bitcoind.rpc.expose.yaml"
       export BITCOIND_RPC_EXTERNAL_IP
     fi
   fi
 
-  eval "docker-compose -f $DIR/docker-compose.yaml $overrides up $1 -d"
+  # Return yamlFiles
+  echo "$yamlFiles"
+}
+
+# Docker up
+docker_up() {
+  yamlFiles=$(select_yaml_files)
+  eval "docker-compose $yamlFiles up $1 -d"
 }
   
 # Start
@@ -54,7 +61,8 @@ stop() {
     sleep 15s
   fi
 
-  docker-compose down
+  yamlFiles=$(select_yaml_files)
+  eval "docker-compose $yamlFiles down"
 }
 
 # Restart dojo
@@ -79,14 +87,16 @@ install() {
   if [ $launchInstall -eq 0 ]; then
     init_config_files
     docker_up --remove-orphans
-    docker-compose logs --tail=0 --follow
+    logs
   fi
 }
 
 # Delete everything
 uninstall() {
   docker-compose rm
-  docker-compose down
+
+  yamlFiles=$(select_yaml_files)
+  eval "docker-compose $yamlFiles down"
 
   docker image rm samouraiwallet/dojo-db:"$DOJO_DB_VERSION_TAG"
   docker image rm samouraiwallet/dojo-bitcoind:"$DOJO_BITCOIND_VERSION_TAG"
@@ -131,12 +141,13 @@ upgrade() {
   fi
 
   if [ $launchUpgrade -eq 0 ]; then
+    yamlFiles=$(select_yaml_files)
     update_config_files
     cleanup
-    docker-compose build --no-cache
+    eval "docker-compose $yamlFiles build --no-cache"
     docker_up --remove-orphans
     update_dojo_db
-    docker-compose logs --tail=0 --follow
+    logs
   fi
 }
 
@@ -169,6 +180,8 @@ logs_node() {
 }
 
 logs() {
+  source_file "$DIR/conf/docker-bitcoind.conf"
+
   case $1 in
     db )
       docker-compose logs --tail=50 --follow db
@@ -187,7 +200,12 @@ logs() {
       logs_node $1 $2 $3
       ;;
     * )
-      docker-compose logs --tail=0 --follow
+      yamlFiles=$(select_yaml_files)
+      services="nginx node tor db" 
+      if [ "$BITCOIND_INSTALL" == "on" ]; then
+        services="$services bitcoind"
+      fi
+      eval "docker-compose $yamlFiles logs --tail=0 --follow $services"
       ;;
   esac
 }

@@ -26,5 +26,9 @@ services:
       dojonet:
         ipv4_address: 172.28.1.5
 
+  node:
+    depends_on:
+      - bitcoind
+
 volumes:
   data-bitcoind:
