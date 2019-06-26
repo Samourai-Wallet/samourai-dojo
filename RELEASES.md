@@ -68,6 +68,7 @@ Added a new [doc](./doc/DOCKER_mac_setup.MD) for MacOS users.
 - [#11](https://github.com/Samourai-Wallet/samourai-dojo/pull/11) clean-up
 - [#12](https://github.com/Samourai-Wallet/samourai-dojo/pull/12) extend support of external apps
 - [#15](https://github.com/Samourai-Wallet/samourai-dojo/pull/15) fix issue introduced by #10
+- [#19](https://github.com/Samourai-Wallet/samourai-dojo/pull/19) fix bitcoind port in torrc
 
 
 #### Security ####
