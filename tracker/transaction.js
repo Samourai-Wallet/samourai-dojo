@@ -333,9 +333,24 @@ class Transaction {
       if (chainMaxUsedIndex < unusedIndices[chain])
         continue
 
-      // If max derived index is beyond max used index plus gap limit, move on
-      if (derivedIndices[chain] >= chainMaxUsedIndex + gapLimit[chain])
-        continue
+      // If max derived index is beyond max used index plus gap limit.
+      if (derivedIndices[chain] >= chainMaxUsedIndex + gapLimit[chain]) {
+        // Check that we don't have a hole in the next <gapLimit> indices
+        const nbDerivedIndicesForward = await db.getHDAccountNbDerivedIndices(
+          xpub,
+          chain,
+          chainMaxUsedIndex,
+          chainMaxUsedIndex + gapLimit[chain]
+        )
+
+        if (nbDerivedIndicesForward < gapLimit[chain] + 1) {
+          // Hole detected. Force derivation.
+          derivedIndices[chain] = chainMaxUsedIndex
+        } else {
+          // Move on
+          continue
+        }
+      }
 
       let done
 
