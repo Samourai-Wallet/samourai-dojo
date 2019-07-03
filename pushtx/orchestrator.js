@@ -82,16 +82,21 @@ class Orchestrator {
 
       Logger.info(`Block ${height} ${blockHash}`)
 
-      // Retrieve the transactions triggered by this block
-      let txs = await db.getActivatedScheduledTransactions(height)
-      
-      while (txs && txs.length > 0) {
-        let rpcConnOk = true
+      let nbTxsPushed
+      let rpcConnOk = true
+
+      do {
+        nbTxsPushed = 0
+
+        // Retrieve the transactions triggered by this block
+        let txs = await db.getActivatedScheduledTransactions(height)
+        if (!(txs && txs.length > 0))
+          break
 
         for (let tx of txs) {
           let hasParentTx = (tx.schParentTxid != null) && (tx.schParentTxid != '')
           let parentTx = null
-          
+
           // Check if previous transaction has been confirmed
           if (hasParentTx) {
             try {
@@ -132,20 +137,15 @@ class Orchestrator {
             // Delete the transaction
             try {
               await db.deleteScheduledTransaction(tx.schTxid)
+              // Count the transaction as successfully processed
+              nbTxsPushed++
             } catch(e) {
               const msg = 'A problem was met while trying to delete a scheduled transaction'
               Logger.error(e, `Orchestrator.onBlockHash() : ${msg}`)
             }
           }
         }
-
-        // If a connection issue was detected, then stop the loop
-        if (!rpcConnOk)
-          break
-
-        // Check if more transactions have to be pushed
-        txs = await db.getActivatedScheduledTransactions(height)
-      }      
+      } while (rpcConnOk && nbTxsPushed > 0)
 
     } catch(e) {
       Logger.error(e, 'Orchestrator.onBlockHash() : Error')
