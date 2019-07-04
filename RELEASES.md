@@ -70,6 +70,9 @@ Added a new [doc](./doc/DOCKER_mac_setup.MD) for MacOS users.
 - [#15](https://github.com/Samourai-Wallet/samourai-dojo/pull/15) fix issue introduced by #10
 - [#19](https://github.com/Samourai-Wallet/samourai-dojo/pull/19) fix bitcoind port in torrc
 - [#20](https://github.com/Samourai-Wallet/samourai-dojo/pull/20) increase nginx timeout
+- [#25](https://github.com/Samourai-Wallet/samourai-dojo/pull/25) force the tracker to derive next indices if a hole is detected
+- [#27](https://github.com/Samourai-Wallet/samourai-dojo/pull/27) rework external loop of Orchestrator
+- [#28](https://github.com/Samourai-Wallet/samourai-dojo/pull/28) rework RemoteImporter
 
 
 #### Security ####
