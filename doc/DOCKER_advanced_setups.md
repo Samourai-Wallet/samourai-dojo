@@ -14,6 +14,48 @@ By default, Dojo installs and runs a Bitcoin full node in Docker.
 
 The following procedure allows to bypass the installation of this full node by telling Dojo to rely on an external bitcoind running on your host machine.
 
+
+### Requirements ###
+
+The external full node mustn't be pruned.
+
+The external full node must be configured for the support of Dojo. Edit the bitcoin.conf file of your external full node and check that the following lines are properly initialized.
+
+```
+# Force bitcoind to accept JSON-RPC commands
+server=1
+
+# Force bitcoind to index all the transactions
+txindex=1
+
+# Check that bitcoind accepts connections from 127.0.0.1 (linux)
+# or from the IP address of the Docker Virtual Machine (MacOS, Windows)
+rpcallowip=... 
+
+# Check that a port is defined for the RPC API (or 8332 will be used as default value)
+rpcport=...
+
+# Check that the RPC API listens on an IP address accessible from the nodejs container
+rpcbind=...
+
+# Check that the RPC user is set
+rpcuser=...
+
+# Check that the RPC password is set
+rpcpassword=
+
+# Enable publish hash block on an IP address accessible from the nodejs container
+zmqpubhashblock=...
+
+# Enable publish raw transaction on an IP address accessible from the nodejs container
+zmqpubrawtx=...
+```
+
+
+### Procedure ###
+
+#### Configuration of Dojo ####
+
 ```
 # Edit the bitcoin config template file
 nano ./conf/docker-bitcoind.conf.tpl
@@ -29,8 +71,22 @@ nano ./conf/docker-bitcoind.conf.tpl
 #
 # Save and exit nano
 #
+```
 
-# Start the installation of your Dojo
+### Fast import of block headers in Dojo (optional) ###
+
+When Dojo is installed for the first time, the Tracker imports the block headers in the database.
+
+Follow these steps if you want to speed up this operation by preloading an archive of the block headers.
+
+```
+# Download the archive [https://samouraiwallet.com/static/share/2_blocks.sql.gz](https://samouraiwallet.com/static/share/2_blocks.sql.gz) to the "<dojo_dir>/db-scripts/" directory. Don't modify the name of the archive.
+```
+
+
+#### Start the installation of Dojo ####
+
+```
 ./dojo.sh install
 ```
 
