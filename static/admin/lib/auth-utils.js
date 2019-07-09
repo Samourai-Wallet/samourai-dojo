@@ -12,6 +12,9 @@ var lib_auth = {
   /* JWT Scheme */
   JWT_SCHEME: 'Bearer',
 
+  /* Admin profile */
+  TOKEN_PROFILE_ADMIN: 'admin',
+
 
   /* 
    * Retrieves access token from session storage
@@ -85,6 +88,36 @@ var lib_auth = {
     // Checks that an access token is stored in session storage
     let token = this.getAccessToken();
     return (token && (token != 'null')) ? true : false;
+  },
+
+  /*
+   * Extract the payload of an access token
+   * in json format
+   */
+  getPayloadAccessToken: function(token) {
+    if (!token)
+      token = this.getAccessToken();
+
+    if (!token)
+      return null;
+
+    try {
+      const payloadBase64 = token.split('.')[1];
+      const payloadUtf8 = atob(payloadBase64);
+      return JSON.parse(payloadUtf8);
+    } catch {
+      return null;
+    }
+  },
+
+  /*
+   * Check if user has admin profile
+   */
+  isAdmin: function(token) {
+    const payload = this.getPayloadAccessToken(token);
+    if (!payload)
+      return false;
+    return (('prf' in payload) && (payload['prf'] == this.TOKEN_PROFILE_ADMIN));
   },
 
   /*
