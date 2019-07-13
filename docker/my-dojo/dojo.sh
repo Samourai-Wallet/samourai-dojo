@@ -58,7 +58,13 @@ stop() {
       stop
 
     echo "Preparing shutdown of dojo. Please wait."
-    sleep 15s
+
+    bitcoindDown=$(timeout 3m docker wait bitcoind)
+    if [ $bitcoindDown -eq 0 ]; then
+      echo "Bitcoin server stopped."
+    else
+      echo "Force shutdown of Bitcoin server."
+    fi
   fi
 
   yamlFiles=$(select_yaml_files)
