@@ -91,7 +91,7 @@ This procedure allows to install a new Dojo from scratch.
 
 * Customize the configuration of your Dojo
 
-  * Go to the "<dojo_dir>/docker/my_dojo/conf" directory
+  * Go to the "<dojo_dir>/docker/my-dojo/conf" directory
 
   * Edit docker-bitcoin.conf.tpl and provide a new value for the following parameters:
       * BITCOIND_RPC_USER = login protecting the access to the RPC API of your full node,
@@ -114,7 +114,7 @@ This procedure allows to install a new Dojo from scratch.
       * NODE_JWT_SECRET = secret used by your Dojo for the initialization of a cryptographic key signing Json Web Tokens.
     These parameters will protect the access to your Dojo. Be sure to provide alphanumeric values with enough entropy.
 
-* Open the docker quickstart terminal or a terminal console and go to the "<dojo_dir>/docker/my_dojo" directory. This directory contains a script named dojo.sh which will be your entrypoint for all operations related to the management of your Dojo.
+* Open the docker quickstart terminal or a terminal console and go to the `<dojo_dir>/docker/my-dojo` directory. This directory contains a script named dojo.sh which will be your entrypoint for all operations related to the management of your Dojo.
 
 
 * Launch the installation of your Dojo with
@@ -170,14 +170,14 @@ This procedure allows to upgrade your Dojo with a new version.
 
 Docker and Docker Compose are going to build new images and containers for your Dojo. After completion, the updated version of your Dojo will be launched automatically.
 
-Note: The upgrade process will override all manual modifications of the files stored under the <dojo_dir> directory with an exception for the three configuration files stored in the "<dojo_dir>/docker/my_dojo/conf" directory.
+Note: The upgrade process will override all manual modifications of the files stored under the `<dojo_dir>` directory with an exception for the three configuration files stored in the `<dojo_dir>/docker/my-dojo/conf` directory.
 
 
 <a name="config_files"/>
 
 ## Configuration files ##
 
-Each new release of Dojo is packaged with 3 template files stored in the "<dojo_dir>/docker/my_dojo/conf" directory:
+Each new release of Dojo is packaged with 3 template files stored in the `<dojo_dir>/docker/my-dojo/conf` directory:
 - docker-bitcoin.conf.tpl
 - docker-mysql.conf.tpl
 - docker-node.conf.tpl
