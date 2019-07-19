@@ -83,20 +83,20 @@ This procedure allows to install a new Dojo from scratch.
 
 * Download the most recent release of Dojo from [Github](https://github.com/Samourai-Wallet/samourai-dojo/archive/master.zip)
 
-* Uncompress the archive on the host machine in a temporary directory of your choice (named <tmp_dir> in this doc)
+* Uncompress the archive on the host machine in a temporary directory of your choice (named `<tmp_dir>` in this doc)
 
-* Create a directory for Dojo (named <dojo_dir> in this doc)
+* Create a directory for Dojo (named `<dojo_dir>` in this doc)
 
-* Copy the content of the "<tmp_dir>/samourai-dojo-master" directory into the <dojo_dir> directory
+* Copy the content of the `<tmp_dir>/samourai-dojo-master` directory into the `<dojo_dir>` directory
 
 * Customize the configuration of your Dojo
 
-  * Go to the "<dojo_dir>/docker/my_dojo/conf" directory
+  * Go to the `<dojo_dir>/docker/my-dojo/conf` directory
 
   * Edit docker-bitcoin.conf.tpl and provide a new value for the following parameters:
-      * BITCOIND_RPC_USER = login protecting the access to the RPC API of your full node,
-      * BITCOIND_RPC_PASSWORD = password protecting the access to the RPC API of your full node.
-      * If your machine has a lot of RAM, it's recommended that you increase the value of BITCOIND_DB_CACHE for a faster Initial Block Download.
+      * `BITCOIND_RPC_USER` = login protecting the access to the RPC API of your full node,
+      * `BITCOIND_RPC_PASSWORD` = password protecting the access to the RPC API of your full node.
+      * If your machine has a lot of RAM, it's recommended that you increase the value of `BITCOIND_DB_CACHE` for a faster Initial Block Download.
       * This file also provides a few additional settings for advanced setups: 
         * static onion address for your full node,
         * bitcoind RPC API exposed to external apps,
@@ -104,17 +104,17 @@ This procedure allows to install a new Dojo from scratch.
         See this [doc](./DOCKER_advanced_setups.md) for more details.
 
   * Edit docker-mysql.conf.tpl and provide a new value for the following parameters:
-      * MYSQL_ROOT_PASSWORD = password protecting the root account of MySQL,
-      * MYSQL_USER = login of the account used to access the database of your Dojo,
-      * MYSQL_PASSWORD = password of the account used to access the database of your Dojo.
+      * `MYSQL_ROOT_PASSWORD` = password protecting the root account of MySQL,
+      * `MYSQL_USER` = login of the account used to access the database of your Dojo,
+      * `MYSQL_PASSWORD` = password of the account used to access the database of your Dojo.
 
   * Edit docker-node.conf.tpl and provide a new value for the following parameters:
-      * NODE_API_KEY = API key which will be required from your Samourai Wallet / Sentinel for its interactions with the API of your Dojo,
-      * NODE_ADMIN_KEY = API key which will be required from the maintenance tool for accessing a set of advanced features provided by the API of your Dojo,
-      * NODE_JWT_SECRET = secret used by your Dojo for the initialization of a cryptographic key signing Json Web Tokens.
+      * `NODE_API_KEY` = API key which will be required from your Samourai Wallet / Sentinel for its interactions with the API of your Dojo,
+      * `NODE_ADMIN_KEY` = API key which will be required from the maintenance tool for accessing a set of advanced features provided by the API of your Dojo,
+      * `NODE_JWT_SECRET` = secret used by your Dojo for the initialization of a cryptographic key signing Json Web Tokens.
     These parameters will protect the access to your Dojo. Be sure to provide alphanumeric values with enough entropy.
 
-* Open the docker quickstart terminal or a terminal console and go to the "<dojo_dir>/docker/my_dojo" directory. This directory contains a script named dojo.sh which will be your entrypoint for all operations related to the management of your Dojo.
+* Open the docker quickstart terminal or a terminal console and go to the `<dojo_dir>/docker/my-dojo` directory. This directory contains a script named dojo.sh which will be your entrypoint for all operations related to the management of your Dojo.
 
 
 * Launch the installation of your Dojo with
@@ -158,9 +158,9 @@ This procedure allows to upgrade your Dojo with a new version.
 
 * Download the most recent release of Dojo from [Github](https://github.com/Samourai-Wallet/samourai-dojo/releases)
 
-* Uncompress the archive on the host machine in a temporary directory of your choice (named <tmp_dir> in this doc)
+* Uncompress the archive on the host machine in a temporary directory of your choice (named `<tmp_dir>` in this doc)
 
-* Copy the content of the "<tmp_dir>/samourai-dojo-1.x.y" directory into the <dojo_dir> directory (overwrite).
+* Copy the content of the `<tmp_dir>/samourai-dojo-1.x.y` directory into the `<dojo_dir>` directory (overwrite).
 
 * Launch the upgrade of your Dojo with
 
@@ -170,14 +170,14 @@ This procedure allows to upgrade your Dojo with a new version.
 
 Docker and Docker Compose are going to build new images and containers for your Dojo. After completion, the updated version of your Dojo will be launched automatically.
 
-Note: The upgrade process will override all manual modifications of the files stored under the <dojo_dir> directory with an exception for the three configuration files stored in the "<dojo_dir>/docker/my_dojo/conf" directory.
+Note: The upgrade process will override all manual modifications of the files stored under the `<dojo_dir>` directory with an exception for the three configuration files stored in the `<dojo_dir>/docker/my-dojo/conf` directory.
 
 
 <a name="config_files"/>
 
 ## Configuration files ##
 
-Each new release of Dojo is packaged with 3 template files stored in the "<dojo_dir>/docker/my_dojo/conf" directory:
+Each new release of Dojo is packaged with 3 template files stored in the `<dojo_dir>/docker/my-dojo/conf` directory:
 - docker-bitcoin.conf.tpl
 - docker-mysql.conf.tpl
 - docker-node.conf.tpl
@@ -255,7 +255,7 @@ A maintenance tool is accessible through your Tor browser at the url: <v3_onion_
 
 The maintenance tool requires that you allow javascript for the site.
 
-Sign in with the value entered for NODE_ADMIN_KEY.
+Sign in with the value entered for `NODE_ADMIN_KEY`.
 
 
 <a name="pairing"/>
