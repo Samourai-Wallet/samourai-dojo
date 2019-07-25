@@ -72,7 +72,7 @@ MyDojo is a set of Docker containers providing a full Samourai backend composed 
 
   * Go to the "/dojo_dir/docker/my_dojo/conf" directory
 
-  * Edit docker-bitcoin.conf and provide a new value for the following parameters:
+  * Edit docker-bitcoind.conf and provide a new value for the following parameters:
       * BITCOIND_RPC_USER = login protecting the access to the RPC API of your full node,
       * BITCOIND_RPC_PASSWORD = password protecting the access to the RPC API of your full node.
       * If your machine has a lot of RAM, it's recommended that you increase the value of BITCOIND_DB_CACHE for a faster Initial Block Download.
