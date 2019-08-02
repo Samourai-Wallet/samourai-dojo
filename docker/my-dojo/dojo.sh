@@ -1,72 +1,179 @@
 #!/bin/bash
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
-source "$DIR/conf/docker-bitcoind.conf"
 
+# Source a file
+source_file() {
+  if [ -f $1 ]; then
+    source $1
+  fi
+}
+
+source_file "$DIR/conf/docker-bitcoind.conf"
+source_file "$DIR/.env"
+
+
+# Select YAML files
+select_yaml_files() {
+  source_file "$DIR/conf/docker-bitcoind.conf"
+
+  yamlFiles="-f $DIR/docker-compose.yaml"
+
+  if [ "$BITCOIND_INSTALL" == "on" ]; then
+    yamlFiles="$yamlFiles -f $DIR/overrides/bitcoind.install.yaml"
+
+    if [ "$BITCOIND_RPC_EXTERNAL" == "on" ]; then
+      yamlFiles="$yamlFiles -f $DIR/overrides/bitcoind.rpc.expose.yaml"
+      export BITCOIND_RPC_EXTERNAL_IP
+    fi
+  fi
+
+  # Return yamlFiles
+  echo "$yamlFiles"
+}
+
+# Docker up
+docker_up() {
+  yamlFiles=$(select_yaml_files)
+  eval "docker-compose $yamlFiles up $1 -d"
+}
   
 # Start
 start() {
-  docker-compose up --remove-orphans -d
+  docker_up --remove-orphans
 }
 
 # Stop
 stop() {
-  docker exec -it bitcoind  bitcoin-cli \
-    -rpcconnect=bitcoind \
-    --rpcport=28256 \
-    --rpcuser="$BITCOIND_RPC_USER" \
-    --rpcpassword="$BITCOIND_RPC_PASSWORD" \
-    stop
+  if [ "$BITCOIND_INSTALL" == "on" ]; then
+    if [ "$BITCOIND_EPHEMERAL_HS" = "on" ]; then
+      docker exec -it tor rm -rf /var/lib/tor/hsv2bitcoind
+    fi
 
-  echo "Preparing shutdown of dojo. Please wait."
-  sleep 15s
+    docker exec -it bitcoind  bitcoin-cli \
+      -rpcconnect=bitcoind \
+      --rpcport=28256 \
+      --rpcuser="$BITCOIND_RPC_USER" \
+      --rpcpassword="$BITCOIND_RPC_PASSWORD" \
+      stop
 
-  docker-compose down
+    echo "Preparing shutdown of dojo. Please wait."
+
+    bitcoindDown=$(timeout 3m docker wait bitcoind)
+    if [ $bitcoindDown -eq 0 ]; then
+      echo "Bitcoin server stopped."
+    else
+      echo "Force shutdown of Bitcoin server."
+    fi
+  fi
+
+  yamlFiles=$(select_yaml_files)
+  eval "docker-compose $yamlFiles down"
 }
 
 # Restart dojo
 restart() {
-  docker exec -it bitcoind  bitcoin-cli \
-    -rpcconnect=bitcoind \
-    --rpcport=28256 \
-    --rpcuser="$BITCOIND_RPC_USER" \
-    --rpcpassword="$BITCOIND_RPC_PASSWORD" \
-    stop
-
-  echo "Preparing shutdown of dojo. Please wait."
-  sleep 15s
-
-  docker-compose down
-  docker-compose up -d
+  stop
+  docker_up
 }
 
 # Install
 install() {
-  docker-compose up -d --remove-orphans
-  docker-compose logs --tail=0 --follow
+  source "$DIR/install/install-scripts.sh"
+
+  launchInstall=1
+
+  if [ -z "$1" ]; then
+    get_confirmation
+    launchInstall=$?
+  else
+    launchInstall=0
+  fi
+
+  if [ $launchInstall -eq 0 ]; then
+    init_config_files
+    docker_up --remove-orphans
+    logs
+  fi
 }
 
 # Delete everything
 uninstall() {
   docker-compose rm
-  docker-compose down
 
-  docker image rm samouraiwallet/dojo-db:1.0.0
-  docker image rm samouraiwallet/dojo-bitcoind:1.0.0
-  docker image rm samouraiwallet/dojo-nodejs:1.0.0
-  docker image rm samouraiwallet/dojo-nginx:1.0.0
-  docker image rm samouraiwallet/dojo-tor:1.0.0
+  yamlFiles=$(select_yaml_files)
+  eval "docker-compose $yamlFiles down"
+
+  docker image rm samouraiwallet/dojo-db:"$DOJO_DB_VERSION_TAG"
+  docker image rm samouraiwallet/dojo-bitcoind:"$DOJO_BITCOIND_VERSION_TAG"
+  docker image rm samouraiwallet/dojo-nodejs:"$DOJO_NODEJS_VERSION_TAG"
+  docker image rm samouraiwallet/dojo-nginx:"$DOJO_NGINX_VERSION_TAG"
+  docker image rm samouraiwallet/dojo-tor:"$DOJO_TOR_VERSION_TAG"
 
   docker volume prune
+}
+
+# Clean-up (remove old docker images)
+del_images_for() {
+  # $1: image name
+  # $2: most recent version of the image (do not delete this one)
+  docker image ls | grep "$1" | sed "s/ \+/,/g" | cut -d"," -f2 | while read -r version ; do 
+    if [ "$2" != "$version" ]; then
+      docker image rm "$1:$version"
+    fi
+  done
+}
+
+clean() {
+  docker image prune
+  del_images_for samouraiwallet/dojo-db "$DOJO_DB_VERSION_TAG"
+  del_images_for samouraiwallet/dojo-bitcoind "$DOJO_BITCOIND_VERSION_TAG"
+  del_images_for samouraiwallet/dojo-nodejs "$DOJO_NODEJS_VERSION_TAG"
+  del_images_for samouraiwallet/dojo-nginx "$DOJO_NGINX_VERSION_TAG"
+  del_images_for samouraiwallet/dojo-tor "$DOJO_TOR_VERSION_TAG"
+}
+
+# Upgrade
+upgrade() {
+  source "$DIR/install/upgrade-scripts.sh"
+
+  launchUpgrade=1
+
+  if [ -z "$1" ]; then
+    get_confirmation
+    launchUpgrade=$?
+  else
+    launchUpgrade=0
+  fi
+
+  if [ $launchUpgrade -eq 0 ]; then
+    yamlFiles=$(select_yaml_files)
+    update_config_files
+    cleanup
+    eval "docker-compose $yamlFiles build --no-cache"
+    docker_up --remove-orphans
+    update_dojo_db
+    logs
+  fi
 }
 
 # Display the onion address
 onion() {
   V2_ADDR=$( docker exec -it tor cat /var/lib/tor/hsv2dojo/hostname )
   V3_ADDR=$( docker exec -it tor cat /var/lib/tor/hsv3dojo/hostname )
+  
+  echo "API hidden service address (v3) = $V3_ADDR"
+  echo "API hidden service address (v2) = $V2_ADDR"
 
-  echo "API Hidden Service address (v3) = $V3_ADDR"
-  echo "API Hidden Service address (v2) = $V2_ADDR"
+  if [ "$BITCOIND_INSTALL" == "on" ]; then
+    V2_ADDR_BTCD=$( docker exec -it tor cat /var/lib/tor/hsv2bitcoind/hostname )
+    echo "bitcoind hidden service address (v2) = $V2_ADDR_BTCD"
+  fi
+}
+
+# Display the version of this dojo
+version() {
+  echo "Dojo v$DOJO_VERSION_TAG"
 }
 
 # Display logs
@@ -79,12 +186,18 @@ logs_node() {
 }
 
 logs() {
+  source_file "$DIR/conf/docker-bitcoind.conf"
+
   case $1 in
     db )
       docker-compose logs --tail=50 --follow db
       ;;
     bitcoind )
-      docker exec -ti bitcoind tail -f /home/bitcoin/.bitcoin/debug.log
+      if [ "$BITCOIND_INSTALL" == "on" ]; then
+        docker exec -ti bitcoind tail -f /home/bitcoin/.bitcoin/debug.log
+      else
+        echo -e "Command not supported for your setup.\nCause: Your Dojo is using an external bitcoind"
+      fi
       ;;
     tor )
       docker-compose logs --tail=50 --follow tor
@@ -93,7 +206,12 @@ logs() {
       logs_node $1 $2 $3
       ;;
     * )
-      docker-compose logs --tail=0 --follow
+      yamlFiles=$(select_yaml_files)
+      services="nginx node tor db" 
+      if [ "$BITCOIND_INSTALL" == "on" ]; then
+        services="$services bitcoind"
+      fi
+      eval "docker-compose $yamlFiles logs --tail=0 --follow $services"
       ;;
   esac
 }
@@ -108,6 +226,8 @@ help() {
   echo "  help                          Display this help message."
   echo " "
   echo "  bitcoin-cli                   Launch a bitcoin-cli console allowing to interact with your full node through its RPC API."
+  echo " "
+  echo "  clean                         Free disk space by deleting docker dangling images and images of previous versions."
   echo " "
   echo "  install                       Install your dojo."
   echo " "
@@ -137,6 +257,10 @@ help() {
   echo "  stop                          Stop your dojo."
   echo " "
   echo "  uninstall                     Delete your dojo. Be careful! This command will also remove all data."
+  echo " "
+  echo "  upgrade                       Upgrade your dojo."
+  echo " "
+  echo "  version                       Display the version of dojo"
 }
 
 
@@ -163,18 +287,25 @@ subcommand=$1; shift
 
 case "$subcommand" in
   bitcoin-cli )
-    docker exec -it bitcoind bitcoin-cli \
-      -rpcconnect=bitcoind \
-      --rpcport=28256 \
-      --rpcuser="$BITCOIND_RPC_USER" \
-      --rpcpassword="$BITCOIND_RPC_PASSWORD" \
-      $1 $2 $3 $4 $5
+    if [ "$BITCOIND_INSTALL" == "on" ]; then
+      docker exec -it bitcoind bitcoin-cli \
+        -rpcconnect=bitcoind \
+        --rpcport=28256 \
+        --rpcuser="$BITCOIND_RPC_USER" \
+        --rpcpassword="$BITCOIND_RPC_PASSWORD" \
+        $1 $2 $3 $4 $5
+      else
+        echo -e "Command not supported for your setup.\nCause: Your Dojo is using an external bitcoind"
+      fi
     ;;
   help )
     help
     ;;
+  clean )
+    clean
+    ;;
   install )
-    install
+    install $1
     ;;
   logs )
     module=$1; shift
@@ -218,5 +349,11 @@ case "$subcommand" in
     ;;
   uninstall )
     uninstall
+    ;;
+  upgrade )
+    upgrade $1
+    ;;
+  version )
+    version
     ;;
 esac

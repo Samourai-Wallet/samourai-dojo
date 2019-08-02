@@ -25,10 +25,9 @@
 -- Table structure for table `addresses`
 --
 
-DROP TABLE IF EXISTS `addresses`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `addresses` (
+CREATE TABLE IF NOT EXISTS `addresses` (
   `addrID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `addrAddress` varchar(74) DEFAULT NULL,
   PRIMARY KEY (`addrID`),
@@ -40,10 +39,9 @@ CREATE TABLE `addresses` (
 -- Table structure for table `banned_addresses`
 --
 
-DROP TABLE IF EXISTS `banned_addresses`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `banned_addresses` (
+CREATE TABLE IF NOT EXISTS `banned_addresses` (
   `bannedAddressId` int(11) NOT NULL AUTO_INCREMENT,
   `addrAddress` varchar(35) NOT NULL,
   PRIMARY KEY (`bannedAddressId`),
@@ -55,10 +53,9 @@ CREATE TABLE `banned_addresses` (
 -- Table structure for table `blocks`
 --
 
-DROP TABLE IF EXISTS `blocks`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `blocks` (
+CREATE TABLE IF NOT EXISTS `blocks` (
   `blockID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `blockHash` char(64) NOT NULL DEFAULT '',
   `blockParent` int(10) unsigned DEFAULT NULL,
@@ -76,10 +73,9 @@ CREATE TABLE `blocks` (
 -- Table structure for table `hd`
 --
 
-DROP TABLE IF EXISTS `hd`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `hd` (
+CREATE TABLE IF NOT EXISTS `hd` (
   `hdID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `hdXpub` char(112) DEFAULT NULL,
   `hdCreated` int(10) unsigned NOT NULL DEFAULT '0',
@@ -94,10 +90,9 @@ CREATE TABLE `hd` (
 -- Table structure for table `hd_addresses`
 --
 
-DROP TABLE IF EXISTS `hd_addresses`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `hd_addresses` (
+CREATE TABLE IF NOT EXISTS `hd_addresses` (
   `hdAddrID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `hdID` int(10) unsigned NOT NULL DEFAULT '0',
   `addrID` int(10) unsigned NOT NULL DEFAULT '0',
@@ -116,10 +111,9 @@ CREATE TABLE `hd_addresses` (
 -- Table structure for table `inputs`
 --
 
-DROP TABLE IF EXISTS `inputs`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `inputs` (
+CREATE TABLE IF NOT EXISTS `inputs` (
   `inID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `outID` int(10) unsigned NOT NULL DEFAULT '0',
   `txnID` int(10) unsigned NOT NULL DEFAULT '0',
@@ -138,10 +132,9 @@ CREATE TABLE `inputs` (
 -- Table structure for table `outputs`
 --
 
-DROP TABLE IF EXISTS `outputs`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `outputs` (
+CREATE TABLE IF NOT EXISTS `outputs` (
   `outID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `txnID` int(10) unsigned NOT NULL DEFAULT '0',
   `addrID` int(10) unsigned NOT NULL DEFAULT '0',
@@ -161,10 +154,9 @@ CREATE TABLE `outputs` (
 -- Table structure for table `transactions`
 --
 
-DROP TABLE IF EXISTS `transactions`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `transactions` (
+CREATE TABLE IF NOT EXISTS `transactions` (
   `txnID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `txnTxid` char(64) DEFAULT NULL,
   `txnCreated` int(10) unsigned NOT NULL DEFAULT '0',
@@ -183,10 +175,9 @@ CREATE TABLE `transactions` (
 -- Table structure for table `scheduled_transactions`
 --
 
-DROP TABLE IF EXISTS `scheduled_transactions`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `scheduled_transactions` (
+CREATE TABLE IF NOT EXISTS `scheduled_transactions` (
   `schID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `schTxid` char(64) NOT NULL DEFAULT '',
   `schCreated` int(10) unsigned NOT NULL DEFAULT '0',

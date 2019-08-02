@@ -27,14 +27,14 @@ module.exports = {
         // Password
         pass: process.env.BITCOIND_RPC_PASSWORD,
         // IP address
-        host: 'bitcoind',
+        host: process.env.BITCOIND_IP,
         // TCP port
-        port: 28256
+        port: parseInt(process.env.BITCOIND_RPC_PORT)
       },
       // ZMQ Tx notifications
-      zmqTx: 'tcp://bitcoind:9501',
+      zmqTx: `tcp://${process.env.BITCOIND_IP}:${process.env.BITCOIND_ZMQ_RAWTXS}`,
       // ZMQ Block notifications
-      zmqBlk: 'tcp://bitcoind:9502',
+      zmqBlk: `tcp://${process.env.BITCOIND_IP}:${process.env.BITCOIND_ZMQ_BLK_HASH}`,
       // Fee type (estimatesmartfee)
       feeType: process.env.NODE_FEE_TYPE
     },

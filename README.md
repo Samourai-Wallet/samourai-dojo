@@ -71,7 +71,10 @@ Authentication is enforced by an API key and Json Web Tokens.
   * Edit /keys/index.js and set "explorers.bitcoind" to "inactive".
 
 * Main drawbacks of using your local bitcoind for these imports:
-  * It doesn't return the full transactional history associated to the HD account but only transactions having an unspent output controlled by the HD account.
-  * It's slightly slower than using the option relying on the OXT API.
-  * In some specific cases, the importer might miss the most recent unspent outputs. Higher values of gap.external and gap.internal in /keys/index.js should help to mitigate this issue. Another workaround is to request the endpoint /support/xpub/.../rescan provided by the REST API with the optional gap parameter.
   * This option is considered as experimental. 
+  * It doesn't return the full transactional history associated to an HD account or to an address but only transactions having an unspent output controlled by the HD account or the address.
+  * It's slightly slower than using the option relying on the OXT API.
+  * It may fail to correctly import an existing wallet if this wallet had a large activity.
+  * If you use bitcoind and if the import seems to return an invalid balance, you can use the "XPUB rescan" function provided by the maintenance tool. This function allows you to force the minimum number of addresses to be derived and the start index for the derivation.
+  * As a rule of thumb, we recommend to use bitcoind as the source of imports and to setup your Dojo with a new clean wallet. It increases your privacy and it removes all potential issues with the import of a large wallet.
+  

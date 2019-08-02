@@ -1,10 +1,31 @@
 # Get Multiaddr
 
-Request details about a collection of HD accounts and/or loose addresses and/or public keys. If accounts do not exist, they will be created with a relayed call to the [POST /xpub](./POST_xpub.md) mechanics if new or will be imported from external data sources. Instruct the server that entities are new with `?new=xpub1|addr2|addr3` in the query parameters, and the server will skip importing for those entities. SegWit support via BIP49 is activated for new xpubs with `?bip49=xpub3|xpub4`. SegWit support via BIP84 is activated for new xpubs with `?bip84=xpub3|xpub4`. Pass xpubs to `?bip49` or `?bip84` only for newly-created accounts. Support of BIP47 (with addresses derived in 3 formats (P2PKH, P2WPKH/P2SH, P2WPKH Bech32)) is activated for new pubkeys with `?pubkey=pubkey1|pubkey2`.
+Request details about a collection of HD accounts and/or loose addresses and/or pubkeys (derived in 3 formats P2PKH, P2WPKH/P2SH, P2WPKH Bech32).
+
+
+## Behavior of the active parameter
+
+If accounts passed to `?active` do not exist, they will be created with a relayed call to the [POST /xpub](./POST_xpub.md) mechanics if new or will be imported from external data sources.
+
+If loose addresses passed to `?active` do not exist, they will be imported from external data sources.
+
+If addresses derived from pubkeys passed to `?active` do not exist, they will be imported from external data sources.
+
+
+## Declaration of new entities
+
+Instruct the server that [BIP44](https://github.com/bitcoin/bips/blob/master/bip-0044.mediawiki) entities are new with `?new=xpub1|addr2|addr3` in the query parameters, and the server will skip importing for those entities.
+
+SegWit support via [BIP49](https://github.com/bitcoin/bips/blob/master/bip-0049.mediawiki) is activated for new ypubs and new P2WPKH/P2SH loose addresses with `?bip49=xpub3|xpub4`.
+
+SegWit support via [BIP84](https://github.com/bitcoin/bips/blob/master/bip-0084.mediawiki) is activated for new zpubs and new P2WPKH Bech32 loose addresses with `?bip84=xpub3|xpub4`.
+
+Support of [BIP47](https://github.com/bitcoin/bips/blob/master/bip-0047.mediawiki) with addresses derived in 3 formats (P2PKH, P2WPKH/P2SH, P2WPKH Bech32) is activated for new pubkeys with `?pubkey=pubkey1|pubkey2`.
+
 
 Note that loose addresses that are also part of one of the HD accounts requested will be ignored. Their balances and transactions are listed as part of the HD account result.
 
-The `POST` version of multiaddr is identical, except the `active` and `new` parameters are in the POST body.
+The `POST` version of multiaddr is identical, except the parameters are in the POST body.
 
 
 ```
@@ -13,10 +34,10 @@ GET /multiaddr?active=...[&new=...][&bip49=...][&bip84=...][&pubkey=...]
 
 ## Parameters
 * **active** - `string` - A pipe-separated list of extended public keys and/or loose addresses and/or pubkeys (`xpub1|address1|address2|pubkey1|...`)
-* **new** - `string` - A pipe-separated list of extended public keys and/or loose addresses that need no import from external services
-* **bip49** - `string` - A pipe-separated list of new extended public keys to be derived via [BIP49](https://github.com/bitcoin/bips/blob/master/bip-0049.mediawiki)
-* **bip84** - `string` - A pipe-separated list of new extended public keys to be derived via [BIP84](https://github.com/bitcoin/bips/blob/master/bip-0084.mediawiki)
-* **pubkey** - `string` - A pipe-separated list of public keys to be derived as P2PKH, P2WPKH/P2SH, P2WPKH Bech32 addresses.
+* **new** - `string` - A pipe-separated list of **new** extended public keys to be derived via [BIP44](https://github.com/bitcoin/bips/blob/master/bip-0044.mediawiki) and/or new P2PKH loose addresses
+* **bip49** - `string` - A pipe-separated list of **new** extended public keys to be derived via [BIP49](https://github.com/bitcoin/bips/blob/master/bip-0049.mediawiki) and/or new P2WPKH/P2SH loose addresses
+* **bip84** - `string` - A pipe-separated list of **new** extended public keys to be derived via [BIP84](https://github.com/bitcoin/bips/blob/master/bip-0084.mediawiki) and/or new P2WPKH Bech32 loose addresses
+* **pubkey** - `string` - A pipe-separated list of **new** public keys to be derived as P2PKH, P2WPKH/P2SH, P2WPKH Bech32 addresses
 * **at** - `string` (optional) - Access Token (json web token). Required if authentication is activated.
 
 ### Examples

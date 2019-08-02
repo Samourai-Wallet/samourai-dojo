@@ -23,11 +23,6 @@ RUN     set -ex && \
 RUN     addgroup --system -gid 1107 tor && \
         adduser --system --ingroup tor -uid 1104 tor
 
-# Create group & user bitcoin and add user to tor group
-RUN     addgroup --system -gid 1108 bitcoin && \
-        adduser --system --ingroup bitcoin -uid 1105 bitcoin && \
-        usermod -a -G tor bitcoin
-
 # Create /etc/tor directory
 RUN     mkdir -p /etc/tor/ && \
         chown -Rv tor:tor /etc/tor
@@ -35,11 +30,18 @@ RUN     mkdir -p /etc/tor/ && \
 # Create .tor subdirectory of TOR_HOME
 RUN     mkdir -p "$TOR_HOME/.tor" && \
         chown -Rv tor:tor "$TOR_HOME" && \
-        chmod -R 700 "$TOR_HOME"
+        chmod -R 750 "$TOR_HOME"
 
 # Copy Tor configuration file
 COPY    ./torrc /etc/tor/torrc
 RUN     chown tor:tor /etc/tor/torrc
+
+# Copy restart script
+COPY    ./restart.sh /restart.sh
+
+RUN     chown tor:tor /restart.sh && \
+        chmod u+x /restart.sh && \
+        chmod g+x /restart.sh
 
 # Copy wait-for-it script
 COPY    ./wait-for-it.sh /wait-for-it.sh
