@@ -73,20 +73,27 @@ Added a new [doc](./doc/DOCKER_mac_setup.MD) for MacOS users.
 - [#25](https://github.com/Samourai-Wallet/samourai-dojo/pull/25) force the tracker to derive next indices if a hole is detected
 - [#27](https://github.com/Samourai-Wallet/samourai-dojo/pull/27) rework external loop of Orchestrator
 - [#28](https://github.com/Samourai-Wallet/samourai-dojo/pull/28) rework RemoteImporter
+- [#32](https://github.com/Samourai-Wallet/samourai-dojo/pull/32) change the conditions switching the startup mode of the tracker
+- [#33](https://github.com/Samourai-Wallet/samourai-dojo/pull/33) check authentication with admin key 
+- [#37](https://github.com/Samourai-Wallet/samourai-dojo/pull/37) automatic redirect of onion address to maintenance tool
+- [#38](https://github.com/Samourai-Wallet/samourai-dojo/pull/38) dojo shutdown - replace sleep with static delay by docker wait
 
 
 #### Security ####
 
 - [#5](https://github.com/Samourai-Wallet/samourai-dojo/pull/5) mydojo - install nodejs
-- [#6](https://github.com/Samourai-Wallet/samourai-dojo/pull/6) Remove deprecated "new Buffer" in favor of "Buffer.from"
+- [#6](https://github.com/Samourai-Wallet/samourai-dojo/pull/6) remove deprecated "new Buffer" in favor of "Buffer.from"
+- [#41](https://github.com/Samourai-Wallet/samourai-dojo/pull/41) update nodejs packages
 
 
 #### Documentation ####
 
-- [#13](https://github.com/Samourai-Wallet/samourai-dojo/pull/13) Included Mac instructions
+- [#13](https://github.com/Samourai-Wallet/samourai-dojo/pull/13) included Mac instructions
 - [92097d8](https://github.com/Samourai-Wallet/samourai-dojo/commit/92097d8ec7f9488ce0318c452356994315f4be72) doc
 - [de4c9b5](https://github.com/Samourai-Wallet/samourai-dojo/commit/de4c9b5e5078b673c7b199503d48e7ceca328285) doc - minor updates 
 - [fead0bb](https://github.com/Samourai-Wallet/samourai-dojo/commit/fead0bb4b2b6174e637f5cb8c57edd9b55c3a1c7) doc - add link to MacOS install doc
+- [#42](https://github.com/Samourai-Wallet/samourai-dojo/pull/42) fix few typos, add backticks for config values
+- [#43](https://github.com/Samourai-Wallet/samourai-dojo/pull/43) add missing `d` in `docker-bitcoind.conf`
 
 
 #### Misc ####
@@ -98,7 +105,10 @@ Added a new [doc](./doc/DOCKER_mac_setup.MD) for MacOS users.
 
 - 05nelsonm
 - clarkmoody
+- dergigi
+- hkjn
 - kenshin-samourai
 - LaurentMT
 - michel-foucault
 - pxsocs
+- Technifocal
