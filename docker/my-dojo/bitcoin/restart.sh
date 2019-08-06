@@ -35,4 +35,8 @@ if [ "$BITCOIND_RPC_EXTERNAL" == "on" ]; then
   bitcoind_options+=(-zmqpubrawblock=tcp://0.0.0.0:9503)
 fi
 
+if [ "$COMMON_BTC_NETWORK" == "testnet" ]; then
+  bitcoind_options+=(-testnet)
+fi
+
 bitcoind "${bitcoind_options[@]}"

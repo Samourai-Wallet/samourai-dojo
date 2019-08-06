@@ -27,6 +27,7 @@ services:
       dockerfile: ./docker/my-dojo/node/Dockerfile
     env_file:
       - ./.env
+      - ./conf/docker-common.conf
       - ./conf/docker-mysql.conf
       - ./conf/docker-bitcoind.conf
       - ./conf/docker-node.conf
@@ -50,6 +51,7 @@ services:
       context: ./nginx
     env_file:
       - ./.env
+      - ./conf/docker-common.conf
     restart: on-failure
     command: "/wait-for node:8080 --timeout=360 -- nginx"
     expose:

@@ -10,6 +10,7 @@ source_file() {
 }
 
 source_file "$DIR/conf/docker-bitcoind.conf"
+source_file "$DIR/conf/docker-common.conf"
 source_file "$DIR/.env"
 
 
@@ -187,6 +188,7 @@ logs_node() {
 
 logs() {
   source_file "$DIR/conf/docker-bitcoind.conf"
+  source_file "$DIR/conf/docker-common.conf"
 
   case $1 in
     db )
@@ -194,7 +196,12 @@ logs() {
       ;;
     bitcoind )
       if [ "$BITCOIND_INSTALL" == "on" ]; then
-        docker exec -ti bitcoind tail -f /home/bitcoin/.bitcoin/debug.log
+        if [ "$COMMON_BTC_NETWORK" == "testnet" ]; then
+          bitcoindDataDir="/home/bitcoin/.bitcoin/testnet3"
+        else
+          bitcoindDataDir="/home/bitcoin/.bitcoin"
+        fi
+        docker exec -ti bitcoind tail -f "$bitcoindDataDir/debug.log"
       else
         echo -e "Command not supported for your setup.\nCause: Your Dojo is using an external bitcoind"
       fi

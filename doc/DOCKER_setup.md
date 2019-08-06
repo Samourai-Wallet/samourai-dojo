@@ -177,16 +177,17 @@ Note: The upgrade process will override all manual modifications of the files st
 
 ## Configuration files ##
 
-Each new release of Dojo is packaged with 3 template files stored in the `<dojo_dir>/docker/my-dojo/conf` directory:
+Each new release of Dojo is packaged with 4 template files stored in the `<dojo_dir>/docker/my-dojo/conf` directory:
+- docker-common.conf.tpl
 - docker-bitcoin.conf.tpl
 - docker-mysql.conf.tpl
 - docker-node.conf.tpl
 
-These templates files define default values for configuration options of your Dojo.
+These template files define default values for configuration options of your Dojo.
 
 During the first-time installation (dojo.sh install) these templates are used to initialize the configuration files (files with .conf extension) that will be used by your Dojo.
 
-During an upgrade (dojo.sh upgrade), the content of the templates files is merged with the content of the configuration files, preserving the values that you may have modified in the configuration files. A backup of the configuration files is saved in the same directory (files with .save extension).
+During an upgrade (dojo.sh upgrade), the content of the template files is merged with the content of the configuration files, preserving the values that you may have modified in the configuration files. A backup of the configuration files is saved in the same directory (files with .save extension).
 
 Most options provided in the configuration files can be later modified. New values will become active after a call to
 
