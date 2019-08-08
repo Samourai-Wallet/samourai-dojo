@@ -12,7 +12,7 @@ GET /txs?active=...
 * **active** - `string` - A pipe-separated list of extended public keys and/or loose addresses and/or pubkeys (`xpub1|address1|address2|pubkey1|...`)
 * **page** - `integer` - Index of the requested page (first page is index 0)
 * **count** - `integer` - Number of transactions returned per page
-* **at** - `string` (optional) - Access Token (json web token). Required if authentication is activated.
+* **at** - `string` (optional) - Access Token (json web token). Required if authentication is activated. Alternatively, the access token can be passed through the `Authorization` HTTP header (with the `Bearer` scheme).
 
 ### Examples
 

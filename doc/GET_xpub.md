@@ -10,7 +10,7 @@ GET /xpub/:xpub
 
 ## Parameters
 * **:xpub** - `string` - The extended public key for the HD Account
-* **at** - `string` (optional) - Access Token (json web token). Required if authentication is activated.
+* **at** - `string` (optional) - Access Token (json web token). Required if authentication is activated. Alternatively, the access token can be passed through the `Authorization` HTTP header (with the `Bearer` scheme).
 
 ### Example
 

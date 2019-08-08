@@ -13,7 +13,7 @@ POST /xpub
 * **type** - `string` - Whether this is a newly-created account or one being restored. Recognized values are `'new'` and `'restore'`.
 * **segwit** - `string` (optional) - What type of SegWit support for this xpub, if any. Valid values: `'bip49'` and `'bip84'`
 * **force** - `boolean` (optional) - Force an override of derivation scheme even if xpub is locked. Used for `'restore'` operation.
-* **at** - `string` (optional) - Access Token (json web token). Required if authentication is activated.
+* **at** - `string` (optional) - Access Token (json web token). Required if authentication is activated. Alternatively, the access token can be passed through the `Authorization` HTTP header (with the `Bearer` scheme).
 
 ### Example
 

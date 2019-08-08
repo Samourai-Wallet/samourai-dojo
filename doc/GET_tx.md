@@ -11,7 +11,7 @@ GET /tx/:txid?fees=1
 ## Parameters
 * **txid** - `string` - The transaction ID
 * **fees** - `string` - (optional) Scan previous outputs to compute fees
-* **at** - `string` (optional) - Access Token (json web token). Required if authentication is activated.
+* **at** - `string` (optional) - Access Token (json web token). Required if authentication is activated. Alternatively, the access token can be passed through the `Authorization` HTTP header (with the `Bearer` scheme).
 
 ### Examples
 
