@@ -1,9 +1,9 @@
 # MyDojo - Advanced Setups
 
 
-The 3 configuration files of Dojo provide a few advanced options allowing to tune your setup.
+The configuration files of Dojo provide a few advanced options allowing to tune your setup.
 
-A word of caution, though, the default values of these options try to maximize your privacy at a network level. All the advanced setups described in this document may damage your privacy. Use at your own risk!
+A word of caution, though, the default values of these options try to maximize your privacy at a network level. Most of the advanced setups described in this document may damage your privacy. Use at your own risk!
 
 
 <a name="external_bitcoind"/>
@@ -159,3 +159,27 @@ nano ./conf/docker-bitcoind.conf
 ```
 
 Note: this option has no effect if your setup relies on a external full node (i.e. if BITCOIND_INSTALL is set to "off").
+
+
+<a name="testnet"/>
+
+## Support of testnet ##
+
+By default, Dojo is installed for running on Bitcoin mainnet.
+
+The following steps allow to install an instance of Dojo running on Bitcoin testnet.
+
+```
+# Edit the common config template file
+nano ./conf/docker-common.conf.tpl
+
+#
+# Set the value of COMMON_BTC_NETWORK to "testnet"
+#
+# Save and exit nano
+#
+```
+
+Note: This option must be set before the first installation of Dojo and mustn't be changed after this first installation.
+
+Known limitation: A single instance of Dojo can be run per machine (a same machine can't host both a mainnet and a testnet instance of Dojo).
