@@ -36,7 +36,7 @@ GET /unspent?active=...&new=...&bip49=...&bip84=...&pubkey=...
 * **bip49** - `string` - A pipe-separated list of **new** extended public keys to be derived via [BIP49](https://github.com/bitcoin/bips/blob/master/bip-0049.mediawiki) and/or new P2WPKH/P2SH loose addresses
 * **bip84** - `string` - A pipe-separated list of **new** extended public keys to be derived via [BIP84](https://github.com/bitcoin/bips/blob/master/bip-0084.mediawiki) and/or new P2WPKH Bech32 loose addresses
 * **pubkey** - `string` - A pipe-separated list of **new** public keys to be derived as P2PKH, P2WPKH/P2SH, P2WPKH Bech32 addresses
-* **at** - `string` (optional) - Access Token (json web token). Required if authentication is activated.
+* **at** - `string` (optional) - Access Token (json web token). Required if authentication is activated. Alternatively, the access token can be passed through the `Authorization` HTTP header (with the `Bearer` scheme).
 
 ### Examples
 
