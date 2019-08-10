@@ -264,9 +264,11 @@ Sign in with the value entered for `NODE_ADMIN_KEY`.
 
 Once the database has finished syncing, you can pair your Samourai Wallet with your Dojo in 2 steps:
 
-* Open the maintenance tool in a Tor browser (Tor v3 onion address) and sign in with your admin key.
+1. Open the maintenance tool in a Tor browser (Tor v3 onion address) and sign in with your admin key.
 
-* Get your smartphone and launch the Samourai Wallet app. Scan the QRCode displayed in the "Pairing" tab of the maintenance tool.
+2. Get your smartphone and launch the Samourai Wallet app. Scan the QRCode displayed in the "Pairing" tab of the maintenance tool. 
+
+If you experience any problems when pairing, try re-installing the app and select "Connect to existing Dojo" from the [⋮] menu.
 
 
 <a name="network"/>
