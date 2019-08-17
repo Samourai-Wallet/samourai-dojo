@@ -10,7 +10,7 @@ POST /xpub/:xpub/lock
 * **address** - `string` - The first address of the internal chain for this `xpub`, derivation path `M/1/0`. Use compressed P2PHK address regardless of HD derivation scheme.
 * **message** - `string` - Either `"lock"` or `"unlock"`
 * **signature** - `string` - The base64-encoded signature of the double SHA256 hash of `[varuint length of message string, message string]`. Signature scheme follows [bitcoinjs-message](https://github.com/bitcoinjs/bitcoinjs-message/blob/master/index.js) with a message prefix matching the [coin type](https://github.com/bitcoinjs/bitcoinjs-lib/blob/v3.1.1/src/networks.js). Use the ECPair associated with the `M/1/0` address to sign.
-* **at** - `string` (optional) - Access Token (json web token). Required if authentication is activated.
+* **at** - `string` (optional) - Access Token (json web token). Required if authentication is activated. Alternatively, the access token can be passed through the `Authorization` HTTP header (with the `Bearer` scheme).
 
 ### Example
 

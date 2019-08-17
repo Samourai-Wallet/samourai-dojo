@@ -8,6 +8,7 @@ services:
       context: ./bitcoin
     env_file:
       - ./.env
+      - ./conf/docker-common.conf
       - ./conf/docker-bitcoind.conf
     restart: on-failure
     command: "/wait-for-it.sh tor:9050 --timeout=360 --strict -- /restart.sh"

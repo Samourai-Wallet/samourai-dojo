@@ -1,6 +1,67 @@
 # Release Notes
 
 
+## Releases ##
+- [v1.2.0](#1_2_0)
+- [v1.1.0](#1_1_0)
+
+
+<a name="1_2_0"/>
+
+## Samourai Dojo v1.2.0 ##
+
+
+### Notable changes ###
+
+
+#### Support of testnet ####
+
+Support of testnet has been added to MyDojo.
+
+See this [doc](./doc/https://github.com/Samourai-Wallet/samourai-dojo/blob/develop/doc/DOCKER_advanced_setups.md#support-of-testnet) for more details.
+
+
+#### Upgrade of bitcoind to v0.18.1 ####
+
+Upgrade to Bitcoin Core v0.18.1.
+
+
+#### Fix for issue #59 ####
+
+Fix a bug introduced by Dojo v1.1 when bitcoind is exposed to external apps.
+
+See [issue #59](https://github.com/Samourai-Wallet/samourai-dojo/issues/59).
+
+
+### Change log ###
+
+#### MyDojo ####
+
+- [#46](https://github.com/Samourai-Wallet/samourai-dojo/pull/46) add testnet support to my-dojo
+- [#49](https://github.com/Samourai-Wallet/samourai-dojo/pull/49) add support of auth token passed through the authorization http header
+- [#54](https://github.com/Samourai-Wallet/samourai-dojo/pull/54) remove /dump/heap endpoint and dependency on heapdump package
+- [#55](https://github.com/Samourai-Wallet/samourai-dojo/pull/55) upgrade bitcoind to bitcoin core 0.18.1 
+- [#60](https://github.com/Samourai-Wallet/samourai-dojo/pull/55) fix for #59 (dojo with exposed bitcoind ports doesn't start)
+
+
+#### Documentation ####
+
+- [#50](https://github.com/Samourai-Wallet/samourai-dojo/pull/50) consolidated Mac Instructions
+- [#58](https://github.com/Samourai-Wallet/samourai-dojo/pull/58) add instructions to resolve pairing failure
+
+
+### Credits ###
+
+- dergigi
+- kenshin-samourai
+- LaurentMT
+- Mark Engelberg
+- PuraVida
+- pxsocs
+
+
+<a name="1_1_0"/>
+
 ## Samourai Dojo v1.1.0 ##
 
 

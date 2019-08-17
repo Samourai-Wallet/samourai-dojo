@@ -3,6 +3,9 @@
  * Copyright (c) 2016-2018, Samourai Wallet (CC BY-NC-ND 4.0 License).
  */
 
+const bitcoinNetwork = (process.env.COMMON_BTC_NETWORK == 'testnet')
+  ? 'testnet'
+  : 'bitcoin'
 
 /**
  * Desired structure of /keys/index.js, which is ignored in the repository.
@@ -11,7 +14,7 @@ module.exports = {
   /*
    * Mainnet parameters
    */
-  bitcoin: {
+  [bitcoinNetwork]: {
     /*
      * Dojo version
      */
@@ -196,8 +199,10 @@ module.exports = {
       // Use a SOCKS5 proxy for all communications with external services
       // Values: null if no socks5 proxy used, otherwise the url of the socks5 proxy
       socks5Proxy: 'socks5h://172.28.1.4:9050',
-      // OXT
-      oxt: process.env.NODE_URL_OXT_API
+      // OXT (mainnet)
+      oxt: process.env.NODE_URL_OXT_API,
+      // BTC.COM (testnet)
+      btccom: process.env.NODE_URL_BTCCOM_API
     },
     /*
      * Max number of transactions per address

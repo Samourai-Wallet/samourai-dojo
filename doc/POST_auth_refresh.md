@@ -1,6 +1,6 @@
 # Refresh the access token
 
-Request a new access token from the backend. A valid refresh token must be passed as an argument.
+Request a new access token from the backend. A valid refresh token must be passed as an argument or through the `Authorization` HTTP header (with the `Bearer` scheme).
 
 
 ```

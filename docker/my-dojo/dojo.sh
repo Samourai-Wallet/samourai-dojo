@@ -6,17 +6,23 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 source_file() {
   if [ -f $1 ]; then
     source $1
+  elif [ -f "$1.tpl" ]; then
+    source "$1.tpl"
+  else
+    echo "Unable to find file $1"
   fi
 }
 
+# Source config files
 source_file "$DIR/conf/docker-bitcoind.conf"
+source_file "$DIR/conf/docker-common.conf"
 source_file "$DIR/.env"
 
+# Export some variables for compose
+export BITCOIND_RPC_EXTERNAL_IP
 
 # Select YAML files
 select_yaml_files() {
-  source_file "$DIR/conf/docker-bitcoind.conf"
-
   yamlFiles="-f $DIR/docker-compose.yaml"
 
   if [ "$BITCOIND_INSTALL" == "on" ]; then
@@ -24,7 +30,6 @@ select_yaml_files() {
 
     if [ "$BITCOIND_RPC_EXTERNAL" == "on" ]; then
       yamlFiles="$yamlFiles -f $DIR/overrides/bitcoind.rpc.expose.yaml"
-      export BITCOIND_RPC_EXTERNAL_IP
     fi
   fi
 
@@ -150,6 +155,8 @@ upgrade() {
     yamlFiles=$(select_yaml_files)
     update_config_files
     cleanup
+    source_file "$DIR/conf/docker-bitcoind.conf"
+    export BITCOIND_RPC_EXTERNAL_IP
     eval "docker-compose $yamlFiles build --no-cache"
     docker_up --remove-orphans
     update_dojo_db
@@ -187,6 +194,7 @@ logs_node() {
 
 logs() {
   source_file "$DIR/conf/docker-bitcoind.conf"
+  source_file "$DIR/conf/docker-common.conf"
 
   case $1 in
     db )
@@ -194,7 +202,12 @@ logs() {
       ;;
     bitcoind )
       if [ "$BITCOIND_INSTALL" == "on" ]; then
-        docker exec -ti bitcoind tail -f /home/bitcoin/.bitcoin/debug.log
+        if [ "$COMMON_BTC_NETWORK" == "testnet" ]; then
+          bitcoindDataDir="/home/bitcoin/.bitcoin/testnet3"
+        else
+          bitcoindDataDir="/home/bitcoin/.bitcoin"
+        fi
+        docker exec -ti bitcoind tail -f "$bitcoindDataDir/debug.log"
       else
         echo -e "Command not supported for your setup.\nCause: Your Dojo is using an external bitcoind"
       fi

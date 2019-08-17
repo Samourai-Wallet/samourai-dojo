@@ -4,7 +4,6 @@
  */
 'use strict'
 
-const heapdump = require('heapdump')
 const validator = require('validator')
 const bodyParser = require('body-parser')
 const errors = require('../lib/errors')
@@ -66,13 +65,6 @@ class SupportRestApi {
       authMgr.checkHasAdminProfile.bind(authMgr),
       this.validateArgsGetXpubRescan.bind(this),
       this.getXpubRescan.bind(this),
-      HttpServer.sendAuthError
-    )
-
-    this.httpServer.app.get(
-      `/${keys.prefixes.support}/dump/heap`,
-      authMgr.checkHasAdminProfile.bind(authMgr),
-      this.getHeapDump.bind(this),
       HttpServer.sendAuthError
     )
 
@@ -280,27 +272,6 @@ class SupportRestApi {
 
     } finally {
       debugApi && Logger.info(`Completed GET /support/xpub/${req.params.xpub}/rescan`)
-    }
-  }
-
-  /**
-   * Get a dump of the heap
-   * and store it on the filesystem
-   */
-  async getHeapDump(req, res) {
-    try {
-      heapdump.writeSnapshot(function(err, filename) {
-        Logger.info(`Dump written to ${filename}`)
-      })
-      HttpServer.sendOk(res)
-    } catch(e) {
-      const ret = {
-        status: 'error'
-      }
-      Logger.error(e, 'SupportRestApi.getHeapDump() : Support head dump error')
-      HttpServer.sendError(res, JSON.stringify(ret, null, 2))
-    } finally {
-      debugApi && Logger.info(`Completed GET /dump/heap`)
     }
   }
 

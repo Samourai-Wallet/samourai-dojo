@@ -5,10 +5,10 @@ FROM    debian:stretch
 # INSTALL BITCOIN
 #################################################################
 ENV     BITCOIN_HOME        /home/bitcoin
-ENV     BITCOIN_VERSION     0.18.0
-ENV     BITCOIN_URL         https://bitcoincore.org/bin/bitcoin-core-0.18.0/bitcoin-0.18.0-x86_64-linux-gnu.tar.gz
-ENV     BITCOIN_SHA256      5146ac5310133fbb01439666131588006543ab5364435b748ddfc95a8cb8d63f
-ENV     BITCOIN_ASC_URL     https://bitcoincore.org/bin/bitcoin-core-0.18.0/SHA256SUMS.asc
+ENV     BITCOIN_VERSION     0.18.1
+ENV     BITCOIN_URL         https://bitcoincore.org/bin/bitcoin-core-0.18.1/bitcoin-0.18.1-x86_64-linux-gnu.tar.gz
+ENV     BITCOIN_SHA256      600d1db5e751fa85903e935a01a74f5cc57e1e7473c15fd3e17ed21e202cfe5a
+ENV     BITCOIN_ASC_URL     https://bitcoincore.org/bin/bitcoin-core-0.18.1/SHA256SUMS.asc
 ENV     BITCOIN_PGP_KEY     01EA5486DE18A882D4C2684590C8019E36C2E964
 
 RUN     set -ex && \

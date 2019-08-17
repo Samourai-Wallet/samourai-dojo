@@ -1,6 +1,6 @@
 # Authentication
 
-Authenticate to the backend by providing the API key expected by the server. If authentication succeeds, the endpoint returns a json embedding an access token and a refresh token (JSON Web Tokens). The access token must be passed as an argument for all later calls to the backend (account & pushtx REST API + websockets). The refresh token must be passed as an argument for later calls to /auth/refresh allowing to generate a new access token.
+Authenticate to the backend by providing the API key expected by the server. If authentication succeeds, the endpoint returns a json embedding an access token and a refresh token (JSON Web Tokens). The access token must be passed as an argument or in the `Authorization` HTTP header for all later calls to the backend (account & pushtx REST API + websockets). The refresh token must be passed as an argument or in the `Authorization` HTTP header for later calls to /auth/refresh allowing to generate a new access token.
 
 Authentication is activated in /keys/inndex.js configuration file
 
