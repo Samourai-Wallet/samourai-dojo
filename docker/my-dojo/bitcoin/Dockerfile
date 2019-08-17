@@ -21,7 +21,7 @@ RUN     set -ex && \
         cd /tmp && \
         wget -qO bitcoin.tar.gz "$BITCOIN_URL" && \
         echo "$BITCOIN_SHA256 bitcoin.tar.gz" | sha256sum -c - && \
-        gpg --batch --keyserver keyserver.ubuntu.com --recv-keys "$BITCOIN_PGP_KEY" && \
+        gpg --batch --keyserver htp://keyserver.ubuntu.com:80 --recv-keys "$BITCOIN_PGP_KEY" && \
         wget -qO bitcoin.asc "$BITCOIN_ASC_URL" && \
         gpg --batch --verify bitcoin.asc && \
         tar -xzvf bitcoin.tar.gz -C /usr/local --strip-components=1 --exclude=*-qt && \
