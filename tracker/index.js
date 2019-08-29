@@ -37,4 +37,7 @@
   const tracker = new Tracker()
   tracker.start()
 
-})()
+})().catch(err => {
+  console.error(err)
+  process.exit(1)
+})
