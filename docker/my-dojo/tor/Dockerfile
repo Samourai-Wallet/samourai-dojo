@@ -5,7 +5,7 @@ ENV     TOR_HOME    /var/lib/tor
 # Install Tor
 RUN     set -ex && \
         apt-get update && \
-        apt-get install -y git libevent-dev zlib1g-dev libssl-dev gcc make automake ca-certificates autoconf musl-dev coreutils && \
+        apt-get install -y git libevent-dev zlib1g-dev libssl-dev gcc make automake ca-certificates autoconf musl-dev coreutils wget && \
         mkdir -p /usr/local/src/ && \
         git clone  https://git.torproject.org/tor.git /usr/local/src/tor && \
         cd /usr/local/src/tor && \
