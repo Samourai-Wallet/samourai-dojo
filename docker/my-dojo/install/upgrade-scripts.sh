@@ -49,6 +49,11 @@ update_config_files() {
   update_config_file ./conf/docker-node.conf ./conf/docker-node.conf.tpl
   echo "Initialized docker-node.conf"
 
+  rm ./tor/torrc
+  cp ./tor/torrc.tpl ./tor/torrc
+  cat ./conf/docker-tor.conf.tpl >> ./tor/torrc
+  echo "Initialized torrc config file"
+
   # Initialize config files for nginx and the maintenance tool 
   if [ "$COMMON_BTC_NETWORK" == "testnet" ]; then
     cp ./nginx/testnet.conf ./nginx/dojo.conf

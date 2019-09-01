@@ -17,7 +17,21 @@ RUN     set -ex && \
             --disable-unittests && \
         make && make install && \
         cd .. && \
-        rm -rf tor
+        rm -rf tor && \
+        echo "50fe8e13592f8cf22304b9c4adfc11849a2c3d281b1d7e09c924ae24874c6daa *go1.11.13.linux-amd64.tar.gz" > GO_CHECKSUMS && \
+        wget https://dl.google.com/go/go1.11.13.linux-amd64.tar.gz && \
+        sha256sum -c GO_CHECKSUMS 2>&1 | grep OK && \
+        tar -C /usr/local/lib -xzf go1.11.13.linux-amd64.tar.gz && \
+        ln -s /usr/local/lib/go/bin/go /usr/local/bin/ && \
+        cd /usr/local/src && \
+        git clone https://github.com/Yawning/obfs4.git obfs4proxy && \
+        cd obfs4proxy && \
+        git checkout tags/obfs4proxy-0.0.11 && \
+        go build -o obfs4proxy/obfs4proxy ./obfs4proxy && \
+        cp ./obfs4proxy/obfs4proxy /usr/local/bin && \
+        cd .. && \
+        rm go1.11.13.linux-amd64.tar.gz && \
+        rm -rf obfs4proxy
 
 # Create group & user tor
 RUN     addgroup --system -gid 1107 tor && \
