@@ -54,4 +54,7 @@
   // Start the http server
   httpServer.start()
 
-})()
+})().catch(err => {
+  console.error(err)
+  process.exit(1)
+})
