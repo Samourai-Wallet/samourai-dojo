@@ -9,8 +9,8 @@
 # solve the captcah, you will get the bridge addresses (usually 3)
 # Add these bridges with the help of the below template
 # you need to prefix those with the word "Bridge" and have each of them in a new line.
-# The UseBridges setting can be used to set Bridge usage in the Tor container.
+# At last, set UseBridges to 1 so the Tor container uses the bridges you add in previous steps.
 
-UseBridges 1
+UseBridges 0
 #Bridge obfs4 IP:PORT 1111222233334444 cert=XXXXYYYYZZZZ iat-mode=0
 
