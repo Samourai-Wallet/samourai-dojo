@@ -97,11 +97,6 @@ This procedure allows to install a new Dojo from scratch.
       * `BITCOIND_RPC_USER` = login protecting the access to the RPC API of your full node,
       * `BITCOIND_RPC_PASSWORD` = password protecting the access to the RPC API of your full node.
       * If your machine has a lot of RAM, it's recommended that you increase the value of `BITCOIND_DB_CACHE` for a faster Initial Block Download.
-      * This file also provides a few additional settings for advanced setups: 
-        * static onion address for your full node,
-        * bitcoind RPC API exposed to external apps,
-        * use of an external full node.
-        See this [doc](./DOCKER_advanced_setups.md) for more details.
 
   * Edit docker-mysql.conf.tpl and provide a new value for the following parameters:
       * `MYSQL_ROOT_PASSWORD` = password protecting the root account of MySQL,
@@ -113,6 +108,14 @@ This procedure allows to install a new Dojo from scratch.
       * `NODE_ADMIN_KEY` = API key which will be required from the maintenance tool for accessing a set of advanced features provided by the API of your Dojo,
       * `NODE_JWT_SECRET` = secret used by your Dojo for the initialization of a cryptographic key signing Json Web Tokens.
     These parameters will protect the access to your Dojo. Be sure to provide alphanumeric values with enough entropy.
+
+* Dojo provides a few additional settings for advanced setups: 
+  * static onion address for your full node,
+  * bitcoind RPC API exposed to external apps,
+  * use of an external full node,
+  * use of Tor Bridges,
+  * support of testnet.
+  See this [doc](./DOCKER_advanced_setups.md) for more details.
 
 * Open the docker quickstart terminal or a terminal console and go to the `<dojo_dir>/docker/my-dojo` directory. This directory contains a script named dojo.sh which will be your entrypoint for all operations related to the management of your Dojo.
 
