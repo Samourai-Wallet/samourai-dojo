@@ -2,7 +2,7 @@
 
 Authenticate to the backend by providing the API key expected by the server. If authentication succeeds, the endpoint returns a json embedding an access token and a refresh token (JSON Web Tokens). The access token must be passed as an argument or in the `Authorization` HTTP header for all later calls to the backend (account & pushtx REST API + websockets). The refresh token must be passed as an argument or in the `Authorization` HTTP header for later calls to /auth/refresh allowing to generate a new access token.
 
-Authentication is activated in /keys/inndex.js configuration file
+Authentication is activated in /keys/index.js configuration file
 
 ```
 auth: {
@@ -44,6 +44,9 @@ auth: {
 POST /auth/login
 ```
 
+The API Key must be passed in the body of the request as an url encoded argument.
+
+
 ## Parameters
 * **apikey** - `string` - The API key securing access to the backend
 
@@ -51,7 +54,9 @@ POST /auth/login
 ### Example
 
 ```
-POST /auth/login?apikey=myAPIKey
+POST /auth/login
+
+apikey=myAPIKey
 ```
 
 #### Success

@@ -1,11 +1,14 @@
 # Refresh the access token
 
-Request a new access token from the backend. A valid refresh token must be passed as an argument or through the `Authorization` HTTP header (with the `Bearer` scheme).
+Request a new access token from the backend. 
 
 
 ```
 POST /auth/refresh
 ```
+
+The Refresh Token must be passed in the body of the request as an url encoded argument or through the `Authorization` HTTP header (with the `Bearer` scheme).
+
 
 ## Parameters
 * **rt** - `string` - A valid refresh token
@@ -14,7 +17,9 @@ POST /auth/refresh
 ### Example
 
 ```
-POST /auth/refresh?rt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJTYW1vdXJhaSBXYWxsZXQgYmFja2VuZCIsInR5cGUiOiJyZWZyZXNoLXRva2VuIiwiaWF0IjoxNTQ0MTAzOTI5LCJleHAiOjE1NDQxMTExMjl9.6gykKq31WL4Jq7hfmoTwi1fpmBTtAeFb4KjfmSO6l00
+POST /auth/refresh
+
+rt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJTYW1vdXJhaSBXYWxsZXQgYmFja2VuZCIsInR5cGUiOiJyZWZyZXNoLXRva2VuIiwiaWF0IjoxNTQ0MTAzOTI5LCJleHAiOjE1NDQxMTExMjl9.6gykKq31WL4Jq7hfmoTwi1fpmBTtAeFb4KjfmSO6l00
 ```
 
 #### Success

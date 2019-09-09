@@ -4,9 +4,13 @@ Notify the server of the new HD account for tracking. When new accounts are sent
 
 Response time for restored accounts might be long if there is much previous activity.
 
+
 ```
 POST /xpub
 ```
+
+Parameters must be passed in the body of the request as url encoded arguments.
+
 
 ## Parameters
 * **xpub** - `string` - The extended public key for the HD Account
@@ -15,12 +19,13 @@ POST /xpub
 * **force** - `boolean` (optional) - Force an override of derivation scheme even if xpub is locked. Used for `'restore'` operation.
 * **at** - `string` (optional) - Access Token (json web token). Required if authentication is activated. Alternatively, the access token can be passed through the `Authorization` HTTP header (with the `Bearer` scheme).
 
+
 ### Example
 
 ```
-POST /xpub?xpub=xpub0123456789&type=restore
-POST /xpub?xpub=xpub0123456789&type=new&segwit=bip49
-POST /xpub?xpub=xpub0123456789&type=restore&segwit=bip84
+POST /xpub
+
+xpub=xpub0123456789&type=restore&segwit=bip84
 ```
 
 #### Success

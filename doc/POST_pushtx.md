@@ -10,6 +10,7 @@ POST /pushtx/
 * **tx** - `hex string` - The raw transaction hex
 * **at** - `string` (optional) - Access Token (json web token). Required if authentication is activated. Alternatively, the access token can be passed through the `Authorization` HTTP header (with the `Bearer` scheme).
 
+
 ### Example
 
 ```

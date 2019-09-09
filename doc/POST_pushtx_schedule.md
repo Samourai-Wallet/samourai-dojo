@@ -7,6 +7,9 @@ Schedule the delayed push of an ordered list of transactions (used for programma
 POST /pushtx/schedule
 ```
 
+Parameters must be passed in the body of the request as json encoded arguments.
+
+
 ## Parameters
 
 * **script** - `ScriptStep[]` - An array of ScriptStep objects defining the script.
