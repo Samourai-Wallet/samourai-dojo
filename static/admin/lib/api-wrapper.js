@@ -133,7 +133,23 @@ var lib_api = {
     return this.sendGetUriEncoded(uri, {});
   },
 
+  /**
+   * Rescans a range of blocks
+   */
+  getBlocksRescan: function(fromHeight, toHeight) {
+    let prefix = conf['prefixes']['support'];
+    let uri = this.baseUri + '/tracker/' + prefix + '/rescan';
+    //let uri = 'http://127.0.0.1:8082/' + prefix + '/rescan';
+    return this.sendGetUriEncoded(
+      uri,
+      {
+        'fromHeight': fromHeight,
+        'toHeight': toHeight
+      }
+    );
+  },
 
+  
   /**
    * HTTP requests methods
    */
