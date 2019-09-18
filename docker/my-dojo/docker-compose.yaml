@@ -73,6 +73,7 @@ services:
       context: ./tor
     env_file:
       - ./.env
+      - ./conf/docker-tor.conf
     restart: on-failure
     command: /restart.sh
     volumes:
