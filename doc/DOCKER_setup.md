@@ -10,9 +10,9 @@ MyDojo is a set of Docker containers providing a full Samourai backend composed 
 ## Table of Content ##
 - [Architecture](#architecture)
 - [Requirements](#requirements)
+- [Configuration files](#config_files)
 - [First-time install procedure](#install)
 - [Upgrade procedure](#upgrade)
-- [Configuration files](#config_files)
 - [Dojo shell script](#shell_script)
 - [Dojo maintenance tool](#maintenance_tool)
 - [Pairing your wallet to your Dojo](#pairing)
@@ -67,6 +67,29 @@ MyDojo is a set of Docker containers providing a full Samourai backend composed 
 * Docker and Docker Compose installed on the host machine (be sure to run a recent version supporting v3.2 of docker-compose files, i.e. Docker Engine v17.04.0+)
 * Check that the clock of your computer is properly set (required for Tor)
 * Tor Browser installed on the host machine (or on another machine if your host is a headless server)
+
+
+<a name="config_files"/>
+
+## Configuration files ##
+
+Each new release of Dojo is packaged with 4 template files stored in the `<dojo_dir>/docker/my-dojo/conf` directory:
+- docker-common.conf.tpl
+- docker-bitcoin.conf.tpl
+- docker-mysql.conf.tpl
+- docker-node.conf.tpl
+
+These template files define default values for configuration options of your Dojo.
+
+During the first-time installation (dojo.sh install) these templates are used to initialize the configuration files (files with .conf extension) that will be used by your Dojo.
+
+During an upgrade (dojo.sh upgrade), the content of the template files is merged with the content of the configuration files, preserving the values that you may have modified in the configuration files. A backup of the configuration files is saved in the same directory (files with .save extension).
+
+Most options provided in the configuration files can be later modified. New values will become active after a call to
+
+```
+./dojo.sh restart
+```
 
 
 <a name="install"/>
@@ -174,29 +197,6 @@ This procedure allows to upgrade your Dojo with a new version.
 Docker and Docker Compose are going to build new images and containers for your Dojo. After completion, the updated version of your Dojo will be launched automatically.
 
 Note: The upgrade process will override all manual modifications of the files stored under the `<dojo_dir>` directory with an exception for the three configuration files stored in the `<dojo_dir>/docker/my-dojo/conf` directory.
-
-
-<a name="config_files"/>
-
-## Configuration files ##
-
-Each new release of Dojo is packaged with 4 template files stored in the `<dojo_dir>/docker/my-dojo/conf` directory:
-- docker-common.conf.tpl
-- docker-bitcoin.conf.tpl
-- docker-mysql.conf.tpl
-- docker-node.conf.tpl
-
-These template files define default values for configuration options of your Dojo.
-
-During the first-time installation (dojo.sh install) these templates are used to initialize the configuration files (files with .conf extension) that will be used by your Dojo.
-
-During an upgrade (dojo.sh upgrade), the content of the template files is merged with the content of the configuration files, preserving the values that you may have modified in the configuration files. A backup of the configuration files is saved in the same directory (files with .save extension).
-
-Most options provided in the configuration files can be later modified. New values will become active after a call to
-
-```
-./dojo.sh restart
-```
 
 
 <a name="shell_script"/>
