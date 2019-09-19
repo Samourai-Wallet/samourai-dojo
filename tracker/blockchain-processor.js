@@ -321,6 +321,39 @@ class BlockchainProcessor extends AbstractProcessor {
   }
 
   /**
+   * Rescan a range of blocks
+   * @param {integer} fromHeight - height of first block
+   * @param {integer} toHeight - height of last block
+   * @returns {Promise}
+   */
+  async rescanBlocks(fromHeight, toHeight) {
+    // Get highest block processed by the tracker
+    const highest = await db.getHighestBlock()
+    const dbMaxHeight = highest.blockHeight
+
+    if (toHeight == null)
+      toHeight = fromHeight
+
+    toHeight = Math.min(toHeight, dbMaxHeight)
+    const blockRange = _.range(fromHeight, toHeight + 1)
+
+    Logger.info(`Blocks Rescan : starting a rescan for ${blockRange.length} blocks`)
+
+    // Process the blocks
+    return util.seriesCall(blockRange, async height => {
+      try {
+        Logger.info(`Rescanning block ${height}`)
+        const hash = await this.client.getblockhash(height)
+        const header = await this.client.getblockheader(hash)
+        return this.processBlock(header) 
+      } catch(e) {
+        Logger.error(e, 'BlockchainProcessor.rescan()')
+        throw e
+      }
+    }, 'Tracker rescan', true)
+  }
+
+  /**
    * Process a block
    * @param {object} header - block header
    * @returns {Promise}

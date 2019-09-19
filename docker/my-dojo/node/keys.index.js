@@ -70,8 +70,10 @@ module.exports = {
     ports: {
       // Port used by the API
       account: 8080,
-      // Port used by pushtx
+      // Port used by the pushtx API
       pushtx: 8081,
+      // Port used by the tracker API
+      trackerApi: 8082,
       // Port used by the tracker for its notifications
       tracker: 5555,
       // Port used by pushtx for its notifications

@@ -36,6 +36,7 @@ services:
     expose:
       - "8080"
       - "8081"
+      - "8082"
     volumes:
       - data-nodejs:/data
     depends_on:
