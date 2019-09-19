@@ -33,11 +33,7 @@ update_config_files() {
   echo "Initialized 2_update.sql"
 
   # Initialize config files for MyDojo
-  if [ -f ./conf/docker-common.conf ]; then
-    update_config_file ./conf/docker-common.conf ./conf/docker-common.conf.tpl
-  else
-    cp ./conf/docker-common.conf.tpl ./conf/docker-common.conf
-  fi
+  update_config_file ./conf/docker-common.conf ./conf/docker-common.conf.tpl
   echo "Initialized docker-common.conf"
 
   update_config_file ./conf/docker-bitcoind.conf ./conf/docker-bitcoind.conf.tpl
@@ -48,6 +44,9 @@ update_config_files() {
 
   update_config_file ./conf/docker-node.conf ./conf/docker-node.conf.tpl
   echo "Initialized docker-node.conf"
+
+  update_config_file ./conf/docker-tor.conf ./conf/docker-tor.conf.tpl
+  echo "Initialized docker-tor.conf"
 
   # Initialize config files for nginx and the maintenance tool 
   if [ "$COMMON_BTC_NETWORK" == "testnet" ]; then
@@ -65,18 +64,22 @@ update_config_files() {
 
 # Update a configuration file from template
 update_config_file() {
-  sed "s/^#.*//g;s/=.*//g;/^$/d" $1 > ./original.keys.raw
-  grep -f ./original.keys.raw $1 > ./original.lines.raw
+  if [ -f $1 ]; then
+    sed "s/^#.*//g;s/=.*//g;/^$/d" $1 > ./original.keys.raw
+    grep -f ./original.keys.raw $1 > ./original.lines.raw
 
-  cp -p $1 "$1.save"
-  cp -p $2 $1
+    cp -p $1 "$1.save"
+    cp -p $2 $1
 
-  while IFS='=' read -r key val ; do 
-    sed -i "s/$key=.*/$key=$val/g" "$1"
-  done < ./original.lines.raw
+    while IFS='=' read -r key val ; do 
+      sed -i "s~$key=.*~$key=$val~g" "$1"
+    done < ./original.lines.raw
 
-  rm ./original.keys.raw
-  rm ./original.lines.raw
+    rm ./original.keys.raw
+    rm ./original.lines.raw
+  else
+    cp $2 $1
+  fi
 }
 
 # Update dojo database
@@ -87,6 +90,15 @@ update_dojo_db() {
 # Clean-up
 cleanup() {
   #################
+  # Clean-up v1.3.0
+  #################
+
+  # Remove deprecated torrc file
+  if [ -f ./tor/torrc ]; then
+    rm ./tor/torrc
+  fi
+
+  #################
   # Clean-up v1.1.0
   #################
 
@@ -94,4 +106,5 @@ cleanup() {
   if [ -f ./bitcoin/bitcoin.conf ]; then
     rm ./bitcoin/bitcoin.conf
   fi
+  
 }
