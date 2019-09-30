@@ -53,8 +53,7 @@
 
   // Initialize the http server
   const port = keys.ports.account
-  const httpsOptions = keys.https.account
-  const httpServer = new HttpServer(port, httpsOptions)
+  const httpServer = new HttpServer(port)
 
   // Initialize the rest api endpoints
   const authRestApi = new AuthRestApi(httpServer)
