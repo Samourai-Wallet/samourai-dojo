@@ -79,45 +79,6 @@ module.exports = {
       orchestrator: 5557
     },
     /*
-     * HTTPS
-     * Activate only if node js is used as frontend web server
-     * (no nginx proxy server)
-     */
-    https: {
-      // HTTPS for the API
-      account: {
-        // Activate https
-        active: false,
-        // Filepath of server private key 
-        // (shoud be stored in keys/sslcert)
-        keypath: '',
-        // Passphrase of the private key
-        passphrase: '',
-        // Filepath of server certificate
-        // (shoud be stored in keys/sslcert)
-        certpath: '',
-        // Filepath of CA certificate
-        // (shoud be stored in keys/sslcert)
-        capath: ''
-      },
-      // HTTPS for pushtx
-      pushtx: {
-        // Activate https
-        active: false,
-        // Filepath of server private key
-        // (shoud be stored in keys/sslcert)
-        keypath: '',
-        // Passphrase of the private key
-        passphrase: '',
-        // Filepath of server certificate
-        // (shoud be stored in keys/sslcert)
-        certpath: '',
-        // Filepath of CA certificate
-        // (shoud be stored in keys/sslcert)
-        capath: ''
-      }
-    },
-    /*
      * Authenticated access to the APIs (account & pushtx)
      */
     auth: {
@@ -276,22 +237,6 @@ module.exports = {
       tracker: 15555,
       notifpushtx: 15556,
       orchestrator: 15557
-    },
-    https: {
-      account: {
-        active: false,
-        keypath: '',
-        passphrase: '',
-        certpath: '',
-        capath: ''
-      },
-      pushtx: {
-        active: false,
-        keypath: '',
-        passphrase: '',
-        certpath: '',
-        capath: ''
-      }
     },
     auth: {
       activeStrategy: null,
