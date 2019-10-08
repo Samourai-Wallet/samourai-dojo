@@ -165,7 +165,9 @@ module.exports = {
       // OXT (mainnet)
       oxt: process.env.NODE_URL_OXT_API,
       // BTC.COM (testnet)
-      btccom: process.env.NODE_URL_BTCCOM_API
+      btccom: process.env.NODE_URL_BTCCOM_API,
+      // Esplora (testnet)
+      esplora: process.env.NODE_URL_ESPLORA_API,
     },
     /*
      * Max number of transactions per address
