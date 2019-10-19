@@ -272,9 +272,6 @@ module.exports = {
     indexer: {
       active: 'third_party_explorer',
       socks5Proxy: null,
-      insight: [
-        'https://testnet-api.example.com'
-      ],
       esplora: 'https://blockstream.info/testnet'
     },
     addrFilterThreshold: 1000,
