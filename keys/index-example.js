@@ -151,10 +151,9 @@ module.exports = {
      * used for fast scan of addresses
      */
     indexer: {
-      // Use local bitcoind for imports and rescans
-      // or use OXT as a fallback
-      // Values: active | inactive
-      bitcoind: 'active',
+      // Active indexer
+      // Values: local_bitcoind | local_indexer | third_party_explorer
+      active: 'local_bitcoind',
       // Use a SOCKS5 proxy for all communications with external services
       // Values: null if no socks5 proxy used, otherwise the url of the socks5 proxy
       socks5Proxy: null,
@@ -271,7 +270,7 @@ module.exports = {
       transactions: 50
     },
     indexer: {
-      bitcoind: 'inactive',
+      active: 'third_party_explorer',
       socks5Proxy: null,
       insight: [
         'https://testnet-api.example.com'

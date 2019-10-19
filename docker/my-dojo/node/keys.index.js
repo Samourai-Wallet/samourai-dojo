@@ -155,10 +155,9 @@ module.exports = {
      * used for fast scan of addresses
      */
     indexer: {
-      // Use local bitcoind for imports and rescans
-      // or use OXT as a fallback
-      // Values: active | inactive
-      bitcoind: process.env.NODE_IMPORT_FROM_BITCOIND,
+      // Active indexer
+      // Values: local_bitcoind | third_party_explorer
+      active: process.env.NODE_ACTIVE_INDEXER,
       // Use a SOCKS5 proxy for all communications with external services
       // Values: null if no socks5 proxy used, otherwise the url of the socks5 proxy
       socks5Proxy: 'socks5h://172.28.1.4:9050',
