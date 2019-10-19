@@ -151,10 +151,10 @@ module.exports = {
       transactions: 50
     },
     /*
-     * Third party explorers
+     * Indexer or third party service
      * used for fast scan of addresses
      */
-    explorers: {
+    indexer: {
       // Use local bitcoind for imports and rescans
       // or use OXT as a fallback
       // Values: active | inactive
