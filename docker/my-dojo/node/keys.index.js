@@ -163,8 +163,6 @@ module.exports = {
       socks5Proxy: 'socks5h://172.28.1.4:9050',
       // OXT (mainnet)
       oxt: process.env.NODE_URL_OXT_API,
-      // BTC.COM (testnet)
-      btccom: process.env.NODE_URL_BTCCOM_API,
       // Esplora (testnet)
       esplora: process.env.NODE_URL_ESPLORA_API,
     },

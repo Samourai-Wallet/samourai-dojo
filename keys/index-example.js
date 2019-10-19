@@ -275,7 +275,6 @@ module.exports = {
       insight: [
         'https://testnet-api.example.com'
       ],
-      btccom: 'https://tchain.api.btc.com/v3',
       esplora: 'https://blockstream.info/testnet'
     },
     addrFilterThreshold: 1000,
