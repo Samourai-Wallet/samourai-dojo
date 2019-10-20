@@ -154,6 +154,16 @@ module.exports = {
       // Active indexer
       // Values: local_bitcoind | local_indexer | third_party_explorer
       active: 'local_bitcoind',
+      // Local indexer
+      localIndexer: {
+        // IP address or hostname
+        host: '127.0.0.1',
+        // Port
+        port: 50001,
+        // Support of batch requests
+        // Values: active | inactive
+        batchRequests: 'inactive'
+      },
       // Use a SOCKS5 proxy for all communications with external services
       // Values: null if no socks5 proxy used, otherwise the url of the socks5 proxy
       socks5Proxy: null,
@@ -271,6 +281,11 @@ module.exports = {
     },
     indexer: {
       active: 'third_party_explorer',
+      localIndexer: {
+        host: '127.0.0.1',
+        port: 50001,
+        batchRequests: 'inactive'
+      },
       socks5Proxy: null,
       esplora: 'https://blockstream.info/testnet'
     },
