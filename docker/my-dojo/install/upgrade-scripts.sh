@@ -57,6 +57,9 @@ update_config_files() {
   update_config_file ./conf/docker-tor.conf ./conf/docker-tor.conf.tpl
   echo "Initialized docker-tor.conf"
 
+  update_config_file ./conf/docker-indexer.conf ./conf/docker-indexer.conf.tpl
+  echo "Initialized docker-indexer.conf"
+
   # Initialize config files for nginx and the maintenance tool 
   if [ "$EXPLORER_INSTALL" == "on" ]; then
     cp ./nginx/explorer.conf ./nginx/dojo-explorer.conf
