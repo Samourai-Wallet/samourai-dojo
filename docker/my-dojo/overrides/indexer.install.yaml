@@ -16,7 +16,7 @@ services:
     expose:
       - "50001"
     volumes:
-      - data-indexer:/home/indexer/addrindexrs
+      - data-indexer:/home/indexer
     depends_on:
       - tor
     networks:
