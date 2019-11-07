@@ -48,6 +48,9 @@ update_config_files() {
   update_config_file ./conf/docker-tor.conf ./conf/docker-tor.conf.tpl
   echo "Initialized docker-tor.conf"
 
+  update_config_file ./conf/docker-indexer.conf ./conf/docker-indexer.conf.tpl
+  echo "Initialized docker-indexer.conf"
+
   # Initialize config files for nginx and the maintenance tool 
   if [ "$COMMON_BTC_NETWORK" == "testnet" ]; then
     cp ./nginx/testnet.conf ./nginx/dojo.conf
