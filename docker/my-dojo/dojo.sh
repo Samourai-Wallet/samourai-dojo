@@ -14,6 +14,7 @@ source_file() {
 }
 
 # Source config files
+source_file "$DIR/conf/docker-indexer.conf"
 source_file "$DIR/conf/docker-bitcoind.conf"
 source_file "$DIR/conf/docker-common.conf"
 source_file "$DIR/.env"
@@ -31,6 +32,10 @@ select_yaml_files() {
     if [ "$BITCOIND_RPC_EXTERNAL" == "on" ]; then
       yamlFiles="$yamlFiles -f $DIR/overrides/bitcoind.rpc.expose.yaml"
     fi
+  fi
+
+  if [ "$INDEXER_INSTALL" == "on" ]; then
+    yamlFiles="$yamlFiles -f $DIR/overrides/indexer.install.yaml"
   fi
 
   # Return yamlFiles
@@ -114,6 +119,7 @@ uninstall() {
   docker image rm samouraiwallet/dojo-nodejs:"$DOJO_NODEJS_VERSION_TAG"
   docker image rm samouraiwallet/dojo-nginx:"$DOJO_NGINX_VERSION_TAG"
   docker image rm samouraiwallet/dojo-tor:"$DOJO_TOR_VERSION_TAG"
+  docker image rm samouraiwallet/dojo-indexer:"$DOJO_INDEXER_VERSION_TAG"
 
   docker volume prune
 }
@@ -136,6 +142,7 @@ clean() {
   del_images_for samouraiwallet/dojo-nodejs "$DOJO_NODEJS_VERSION_TAG"
   del_images_for samouraiwallet/dojo-nginx "$DOJO_NGINX_VERSION_TAG"
   del_images_for samouraiwallet/dojo-tor "$DOJO_TOR_VERSION_TAG"
+  del_images_for samouraiwallet/dojo-indexer "$DOJO_INDEXER_VERSION_TAG"
 }
 
 # Upgrade
@@ -194,6 +201,7 @@ logs_node() {
 
 logs() {
   source_file "$DIR/conf/docker-bitcoind.conf"
+  source_file "$DIR/conf/docker-indexer.conf"
   source_file "$DIR/conf/docker-common.conf"
 
   case $1 in
@@ -212,6 +220,14 @@ logs() {
         echo -e "Command not supported for your setup.\nCause: Your Dojo is using an external bitcoind"
       fi
       ;;
+    indexer )
+      if [ "$INDEXER_INSTALL" == "on" ]; then
+        yamlFiles=$(select_yaml_files)
+        eval "docker-compose $yamlFiles logs --tail=50 --follow indexer"
+      else
+        echo -e "Command not supported for your setup.\nCause: Your Dojo is not using an internal indexer"
+      fi
+      ;;
     tor )
       docker-compose logs --tail=50 --follow tor
       ;;
@@ -223,6 +239,9 @@ logs() {
       services="nginx node tor db" 
       if [ "$BITCOIND_INSTALL" == "on" ]; then
         services="$services bitcoind"
+      fi
+      if [ "$INDEXER_INSTALL" == "on" ]; then
+        services="$services indexer"
       fi
       eval "docker-compose $yamlFiles logs --tail=0 --follow $services"
       ;;
@@ -251,6 +270,7 @@ help() {
   echo "                                  dojo.sh logs bitcoind       : display the logs of bitcoind"
   echo "                                  dojo.sh logs db             : display the logs of the MySQL database"
   echo "                                  dojo.sh logs tor            : display the logs of tor"
+  echo "                                  dojo.sh logs indexer        : display the logs of the internal indexer"
   echo "                                  dojo.sh logs api            : display the logs of the REST API (nodejs)"
   echo "                                  dojo.sh logs tracker        : display the logs of the Tracker (nodejs)"
   echo "                                  dojo.sh logs pushtx         : display the logs of the pushTx API (nodejs)"

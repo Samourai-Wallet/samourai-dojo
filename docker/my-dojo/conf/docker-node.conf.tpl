@@ -21,7 +21,7 @@ NODE_ADMIN_KEY=myAdminKey
 NODE_JWT_SECRET=myJwtSecret
 
 # Indexer or third-party service used for imports and rescans of addresses
-# Values: local_bitcoind | third_party_explorer
+# Values: local_bitcoind | local_indexer | third_party_explorer
 NODE_ACTIVE_INDEXER=local_bitcoind
 
 # FEE TYPE USED FOR FEES ESTIMATIONS BY BITCOIND
