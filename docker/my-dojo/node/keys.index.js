@@ -156,8 +156,18 @@ module.exports = {
      */
     indexer: {
       // Active indexer
-      // Values: local_bitcoind | third_party_explorer
+      // Values: local_bitcoind | local_indexer | third_party_explorer
       active: process.env.NODE_ACTIVE_INDEXER,
+      // Local indexer
+      localIndexer: {
+        // IP address or hostname of the local indexer
+        host: process.env.INDEXER_IP,
+        // Port
+        port: parseInt(process.env.INDEXER_RPC_PORT),
+        // Support of batch requests by the local indexer
+        // Values: active | inactive
+        batchRequests: process.env.INDEXER_BATCH_SUPPORT
+      },
       // Use a SOCKS5 proxy for all communications with external services
       // Values: null if no socks5 proxy used, otherwise the url of the socks5 proxy
       socks5Proxy: 'socks5h://172.28.1.4:9050',
