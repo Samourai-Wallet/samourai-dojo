@@ -64,7 +64,6 @@ init_config_files() {
   cp ./conf/docker-indexer.conf.tpl ./conf/docker-indexer.conf
   echo "Initialized docker-indexer.conf"
 
-  # Initialize config files for nginx and the maintenance tool
   if [ "$EXPLORER_INSTALL" == "on" ]; then
     cp ./nginx/explorer.conf ./nginx/dojo-explorer.conf
   else
