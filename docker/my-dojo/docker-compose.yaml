@@ -30,6 +30,7 @@ services:
       - ./conf/docker-common.conf
       - ./conf/docker-mysql.conf
       - ./conf/docker-bitcoind.conf
+      - ./conf/docker-indexer.conf
       - ./conf/docker-node.conf
     restart: on-failure
     command: "/home/node/app/wait-for-it.sh db:3306 --timeout=720 --strict -- /home/node/app/restart.sh"
