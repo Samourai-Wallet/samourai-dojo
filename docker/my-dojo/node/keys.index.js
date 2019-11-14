@@ -151,21 +151,18 @@ module.exports = {
       transactions: 50
     },
     /*
-     * Third party explorers
+     * Indexer or third party service
      * used for fast scan of addresses
      */
-    explorers: {
-      // Use local bitcoind for imports and rescans
-      // or use OXT as a fallback
-      // Values: active | inactive
-      bitcoind: process.env.NODE_IMPORT_FROM_BITCOIND,
+    indexer: {
+      // Active indexer
+      // Values: local_bitcoind | third_party_explorer
+      active: process.env.NODE_ACTIVE_INDEXER,
       // Use a SOCKS5 proxy for all communications with external services
       // Values: null if no socks5 proxy used, otherwise the url of the socks5 proxy
       socks5Proxy: 'socks5h://172.28.1.4:9050',
       // OXT (mainnet)
       oxt: process.env.NODE_URL_OXT_API,
-      // BTC.COM (testnet)
-      btccom: process.env.NODE_URL_BTCCOM_API,
       // Esplora (testnet)
       esplora: process.env.NODE_URL_ESPLORA_API,
     },
