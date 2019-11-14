@@ -65,10 +65,10 @@ Authentication is enforced by an API key and Json Web Tokens.
 * Default option relies on the local bitcoind and makes you 100% independent of Samourai Wallet's infrastructure. This option is recommended for better privacy.
 
 * Activation of bitcoind as the data source:
-  * Edit /keys/index.js and set "indexer.bitcoind" to "active". OXT API will be ignored.
+  * Edit /keys/index.js and set "indexer.active" to "local_bitcoind". OXT API will be ignored.
 
 * Activation of OXT as the data source (through socks5):
-  * Edit /keys/index.js and set "indexer.bitcoind" to "inactive".
+  * Edit /keys/index.js and set "indexer.active" to "third_party_explorer".
 
 * Main drawbacks of using your local bitcoind for these imports:
   * This option is considered as experimental. 
