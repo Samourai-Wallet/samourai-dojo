@@ -78,6 +78,7 @@ The bitcoinjs library has been updated to v5.1.4.
 - [#85](https://github.com/Samourai-Wallet/samourai-dojo/pull/85) add esplora as a data source for testnet imports and rescans
 - [#90](https://github.com/Samourai-Wallet/samourai-dojo/pull/90) update the remote importer
 - [#91](https://github.com/Samourai-Wallet/samourai-dojo/pull/91) improve the tracking of loose addresses
+- [#93](https://github.com/Samourai-Wallet/samourai-dojo/pull/93) increase timeouts defined in docker-compose files (for raspi hardwares)
 
 
 #### Bug fixes ####
