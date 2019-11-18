@@ -32,7 +32,7 @@ services:
       - ./conf/docker-bitcoind.conf
       - ./conf/docker-node.conf
     restart: on-failure
-    command: "/home/node/app/wait-for-it.sh db:3306 --timeout=360 --strict -- /home/node/app/restart.sh"
+    command: "/home/node/app/wait-for-it.sh db:3306 --timeout=720 --strict -- /home/node/app/restart.sh"
     expose:
       - "8080"
       - "8081"
@@ -54,7 +54,7 @@ services:
       - ./.env
       - ./conf/docker-common.conf
     restart: on-failure
-    command: "/wait-for node:8080 --timeout=360 -- nginx"
+    command: "/wait-for node:8080 --timeout=720 -- nginx"
     expose:
       - "80"
     volumes:
