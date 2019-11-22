@@ -85,6 +85,7 @@ The bitcoinjs library has been updated to v5.1.4.
 
 - [#73](https://github.com/Samourai-Wallet/samourai-dojo/pull/73) remove unhandled promise error
 - [#79](https://github.com/Samourai-Wallet/samourai-dojo/pull/79) retry to send sql requests on detection of a lock
+- [#94](https://github.com/Samourai-Wallet/samourai-dojo/pull/94) improve the transaction cache implemented for bitcoind rpc client
 
 
 #### Documentation ####
