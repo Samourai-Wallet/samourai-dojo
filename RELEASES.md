@@ -61,6 +61,11 @@ Default URL used for the Esplora API is https://blockstream.info/testnet. A loca
 Support of HTTPS by the NodeJS server has been removed.
 
 
+#### Upgrade of bitcoind to v0.19.0.1 ####
+
+Upgrade to Bitcoin Core v0.19.0.1.
+
+
 #### Update bitcoinjs to v5.1.4 ####
 
 The bitcoinjs library has been updated to v5.1.4.
@@ -79,6 +84,7 @@ The bitcoinjs library has been updated to v5.1.4.
 - [#90](https://github.com/Samourai-Wallet/samourai-dojo/pull/90) update the remote importer
 - [#91](https://github.com/Samourai-Wallet/samourai-dojo/pull/91) improve the tracking of loose addresses
 - [#93](https://github.com/Samourai-Wallet/samourai-dojo/pull/93) increase timeouts defined in docker-compose files (for raspi hardwares)
+- [#93](https://github.com/Samourai-Wallet/samourai-dojo/pull/93) upgrade bitcoind to bitcoin core 0.19.0.1
 
 
 #### Bug fixes ####
