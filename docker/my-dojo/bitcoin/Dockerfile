@@ -6,8 +6,8 @@ FROM    debian:stretch
 #################################################################
 ENV     BITCOIN_HOME        /home/bitcoin
 ENV     BITCOIN_VERSION     0.18.1
-ENV     BITCOIN_URL         https://bitcoincore.org/bin/bitcoin-core-0.18.1/bitcoin-0.18.1-x86_64-linux-gnu.tar.gz
-ENV     BITCOIN_SHA256      600d1db5e751fa85903e935a01a74f5cc57e1e7473c15fd3e17ed21e202cfe5a
+ENV     BITCOIN_URL         https://bitcoincore.org/bin/bitcoin-core-0.18.1/bitcoin-0.18.1-arm-linux-gnueabihf.tar.gz
+ENV     BITCOIN_SHA256      cc7d483e4b20c5dabd4dcaf304965214cf4934bcc029ca99cbc9af00d3771a1f
 ENV     BITCOIN_ASC_URL     https://bitcoincore.org/bin/bitcoin-core-0.18.1/SHA256SUMS.asc
 ENV     BITCOIN_PGP_KEY     01EA5486DE18A882D4C2684590C8019E36C2E964
 
