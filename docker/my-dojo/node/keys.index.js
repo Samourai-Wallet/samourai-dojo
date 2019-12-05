@@ -70,53 +70,16 @@ module.exports = {
     ports: {
       // Port used by the API
       account: 8080,
-      // Port used by pushtx
+      // Port used by the pushtx API
       pushtx: 8081,
+      // Port used by the tracker API
+      trackerApi: 8082,
       // Port used by the tracker for its notifications
       tracker: 5555,
       // Port used by pushtx for its notifications
       notifpushtx: 5556,
       // Port used by the pushtx orchestrator for its notifications
       orchestrator: 5557
-    },
-    /*
-     * HTTPS
-     * Activate only if node js is used as frontend web server
-     * (no nginx proxy server)
-     */
-    https: {
-      // HTTPS for the API
-      account: {
-        // Activate https
-        active: false,
-        // Filepath of server private key 
-        // (shoud be stored in keys/sslcert)
-        keypath: '',
-        // Passphrase of the private key
-        passphrase: '',
-        // Filepath of server certificate
-        // (shoud be stored in keys/sslcert)
-        certpath: '',
-        // Filepath of CA certificate
-        // (shoud be stored in keys/sslcert)
-        capath: ''
-      },
-      // HTTPS for pushtx
-      pushtx: {
-        // Activate https
-        active: false,
-        // Filepath of server private key
-        // (shoud be stored in keys/sslcert)
-        keypath: '',
-        // Passphrase of the private key
-        passphrase: '',
-        // Filepath of server certificate
-        // (shoud be stored in keys/sslcert)
-        certpath: '',
-        // Filepath of CA certificate
-        // (shoud be stored in keys/sslcert)
-        capath: ''
-      }
     },
     /*
      * Authenticated access to the APIs (account & pushtx)
@@ -188,21 +151,20 @@ module.exports = {
       transactions: 50
     },
     /*
-     * Third party explorers
+     * Indexer or third party service
      * used for fast scan of addresses
      */
-    explorers: {
-      // Use local bitcoind for imports and rescans
-      // or use OXT as a fallback
-      // Values: active | inactive
-      bitcoind: process.env.NODE_IMPORT_FROM_BITCOIND,
+    indexer: {
+      // Active indexer
+      // Values: local_bitcoind | third_party_explorer
+      active: process.env.NODE_ACTIVE_INDEXER,
       // Use a SOCKS5 proxy for all communications with external services
       // Values: null if no socks5 proxy used, otherwise the url of the socks5 proxy
       socks5Proxy: 'socks5h://172.28.1.4:9050',
       // OXT (mainnet)
       oxt: process.env.NODE_URL_OXT_API,
-      // BTC.COM (testnet)
-      btccom: process.env.NODE_URL_BTCCOM_API
+      // Esplora (testnet)
+      esplora: process.env.NODE_URL_ESPLORA_API,
     },
     /*
      * Max number of transactions per address

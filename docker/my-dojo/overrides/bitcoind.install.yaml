@@ -11,7 +11,7 @@ services:
       - ./conf/docker-common.conf
       - ./conf/docker-bitcoind.conf
     restart: on-failure
-    command: "/wait-for-it.sh tor:9050 --timeout=360 --strict -- /restart.sh"
+    command: "/wait-for-it.sh tor:9050 --timeout=720 --strict -- /restart.sh"
     expose:
       - "8333"
       - "28256"

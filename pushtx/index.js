@@ -45,8 +45,7 @@
 
   // Initialize the http server
   const port = keys.ports.pushtx
-  const httpsOptions = keys.https.pushtx
-  const httpServer = new HttpServer(port, httpsOptions)
+  const httpServer = new HttpServer(port)
 
   // Initialize the PushTx rest api
   const pushtxRestApi = new PushTxRestApi(httpServer)
@@ -54,4 +53,7 @@
   // Start the http server
   httpServer.start()
 
-})()
+})().catch(err => {
+  console.error(err)
+  process.exit(1)
+})

@@ -10,9 +10,9 @@ MyDojo is a set of Docker containers providing a full Samourai backend composed 
 ## Table of Content ##
 - [Architecture](#architecture)
 - [Requirements](#requirements)
+- [Configuration files](#config_files)
 - [First-time install procedure](#install)
 - [Upgrade procedure](#upgrade)
-- [Configuration files](#config_files)
 - [Dojo shell script](#shell_script)
 - [Dojo maintenance tool](#maintenance_tool)
 - [Pairing your wallet to your Dojo](#pairing)
@@ -69,6 +69,29 @@ MyDojo is a set of Docker containers providing a full Samourai backend composed 
 * Tor Browser installed on the host machine (or on another machine if your host is a headless server)
 
 
+<a name="config_files"/>
+
+## Configuration files ##
+
+Each new release of Dojo is packaged with 4 template files stored in the `<dojo_dir>/docker/my-dojo/conf` directory:
+- docker-common.conf.tpl
+- docker-bitcoin.conf.tpl
+- docker-mysql.conf.tpl
+- docker-node.conf.tpl
+
+These template files define default values for configuration options of your Dojo.
+
+During the first-time installation (dojo.sh install) these templates are used to initialize the configuration files (files with .conf extension) that will be used by your Dojo.
+
+During an upgrade (dojo.sh upgrade), the content of the template files is merged with the content of the configuration files, preserving the values that you may have modified in the configuration files. A backup of the configuration files is saved in the same directory (files with .save extension).
+
+Most options provided in the configuration files can be later modified. New values will become active after a call to
+
+```
+./dojo.sh restart
+```
+
+
 <a name="install"/>
 
 ## First-time Setup ##
@@ -97,11 +120,6 @@ This procedure allows to install a new Dojo from scratch.
       * `BITCOIND_RPC_USER` = login protecting the access to the RPC API of your full node,
       * `BITCOIND_RPC_PASSWORD` = password protecting the access to the RPC API of your full node.
       * If your machine has a lot of RAM, it's recommended that you increase the value of `BITCOIND_DB_CACHE` for a faster Initial Block Download.
-      * This file also provides a few additional settings for advanced setups: 
-        * static onion address for your full node,
-        * bitcoind RPC API exposed to external apps,
-        * use of an external full node.
-        See this [doc](./DOCKER_advanced_setups.md) for more details.
 
   * Edit docker-mysql.conf.tpl and provide a new value for the following parameters:
       * `MYSQL_ROOT_PASSWORD` = password protecting the root account of MySQL,
@@ -113,6 +131,14 @@ This procedure allows to install a new Dojo from scratch.
       * `NODE_ADMIN_KEY` = API key which will be required from the maintenance tool for accessing a set of advanced features provided by the API of your Dojo,
       * `NODE_JWT_SECRET` = secret used by your Dojo for the initialization of a cryptographic key signing Json Web Tokens.
     These parameters will protect the access to your Dojo. Be sure to provide alphanumeric values with enough entropy.
+
+* Dojo provides a few additional settings for advanced setups: 
+  * static onion address for your full node,
+  * bitcoind RPC API exposed to external apps,
+  * use of an external full node,
+  * use of Tor Bridges,
+  * support of testnet.
+  See this [doc](./DOCKER_advanced_setups.md) for more details.
 
 * Open the docker quickstart terminal or a terminal console and go to the `<dojo_dir>/docker/my-dojo` directory. This directory contains a script named dojo.sh which will be your entrypoint for all operations related to the management of your Dojo.
 
@@ -171,29 +197,6 @@ This procedure allows to upgrade your Dojo with a new version.
 Docker and Docker Compose are going to build new images and containers for your Dojo. After completion, the updated version of your Dojo will be launched automatically.
 
 Note: The upgrade process will override all manual modifications of the files stored under the `<dojo_dir>` directory with an exception for the three configuration files stored in the `<dojo_dir>/docker/my-dojo/conf` directory.
-
-
-<a name="config_files"/>
-
-## Configuration files ##
-
-Each new release of Dojo is packaged with 4 template files stored in the `<dojo_dir>/docker/my-dojo/conf` directory:
-- docker-common.conf.tpl
-- docker-bitcoin.conf.tpl
-- docker-mysql.conf.tpl
-- docker-node.conf.tpl
-
-These template files define default values for configuration options of your Dojo.
-
-During the first-time installation (dojo.sh install) these templates are used to initialize the configuration files (files with .conf extension) that will be used by your Dojo.
-
-During an upgrade (dojo.sh upgrade), the content of the template files is merged with the content of the configuration files, preserving the values that you may have modified in the configuration files. A backup of the configuration files is saved in the same directory (files with .save extension).
-
-Most options provided in the configuration files can be later modified. New values will become active after a call to
-
-```
-./dojo.sh restart
-```
 
 
 <a name="shell_script"/>

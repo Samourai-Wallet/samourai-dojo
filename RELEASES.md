@@ -2,8 +2,115 @@
 
 
 ## Releases ##
+- [v1.3.0](#1_3_0)
 - [v1.2.0](#1_2_0)
 - [v1.1.0](#1_1_0)
+
+
+<a name="1_3_0"/>
+
+## Samourai Dojo v1.3.0 ##
+
+
+### Notable changes ###
+
+
+#### Update of configuration parameters ####
+
+Configuration parameter ```NODE_IMPORT_FROM_BITCOIND``` is replaced by ```NODE_ACTIVE_INDEXER```.
+
+The supported values for the new parameter are:
+- ```local_bitcoind``` (equivalent to former ```NODE_IMPORT_FROM_BITCOIND=active```)
+- ```third_party_explorer``` (equivalent to former ```NODE_IMPORT_FROM_BITCOIND=inactive```)
+
+**Upgrade of Dojo to v1.3.0 automatically sets the parameter to the default value** ```local_bitcoind```.
+
+
+#### Installation of Tor from source code archives ####
+
+Previous versions of Dojo used the git repository operated by the Tor Project during the build of the Tor container. Starting with this version, Dojo will download an archive of the source code.
+
+Users living in countries blocking the access to resources provided by the Tor Project can easily switch to a mirror site by editing this [line](https://github.com/Samourai-Wallet/samourai-dojo/blob/develop/docker/my-dojo/tor/Dockerfile#L4) before installing or upgrading their Dojo.
+
+The default source used by Dojo is the archive provided by the [Tor Project](https://archive.torproject.org/tor-package-archive).
+
+
+#### Add support of Tor bridges ####
+
+The Tor container now supports the configuration of Tor bridges. For some users, it may be appropriate to configure Tor bridges in order to circumvent a local censorship of the Tor network. See [this section](https://github.com/Samourai-Wallet/samourai-dojo/blob/develop/doc/DOCKER_advanced_setups.md#tor_bridges) of the documentation for the activation of Tor bridges on your Dojo.
+
+
+#### Add Blocks rescan feature to the maintenance tool ####
+
+This version introduces a new "Blocks Rescan" feature accessible from the Maintenance Tool.
+
+"Blocks Rescan" allows to rescan a range of blocks for all the addresses currently tracked by your Dojo (loose addresses or addresses derived for your xpubs). This feature comes in handy when the block confirming a missing transaction is known by the user.
+
+
+#### Add Esplora as the new external data source for testnet ####
+
+The testnet version of Dojo now relies on the Esplora API as its external data source for imports and rescans. 
+
+Previously used API (BTC.COM and Insight) have been removed.
+
+Default URL used for the Esplora API is https://blockstream.info/testnet. A local Esplora instance can be used by editing this [line](https://github.com/Samourai-Wallet/samourai-dojo/blob/develop/docker/my-dojo/.env#L44).
+
+
+#### Remove support of HTTPS by NodeJS ####
+
+Support of HTTPS by the NodeJS server has been removed.
+
+
+#### Upgrade of bitcoind to v0.19.0.1 ####
+
+Upgrade to Bitcoin Core v0.19.0.1.
+
+
+#### Update bitcoinjs to v5.1.4 ####
+
+The bitcoinjs library has been updated to v5.1.4.
+
+
+### Change log ###
+
+#### MyDojo ####
+
+- [#71](https://github.com/Samourai-Wallet/samourai-dojo/pull/71) update to use latest bitcoinjs
+- [#74](https://github.com/Samourai-Wallet/samourai-dojo/pull/74) adding bridge support to tor-container
+- [#80](https://github.com/Samourai-Wallet/samourai-dojo/pull/80) add support of blocks rescans in the maintenance tool
+- [#83](https://github.com/Samourai-Wallet/samourai-dojo/pull/83) removed unused support of https by nodejs apps
+- [#84](https://github.com/Samourai-Wallet/samourai-dojo/pull/84) install tor from source code archive
+- [#85](https://github.com/Samourai-Wallet/samourai-dojo/pull/85) add esplora as a data source for testnet imports and rescans
+- [#90](https://github.com/Samourai-Wallet/samourai-dojo/pull/90) update the remote importer
+- [#91](https://github.com/Samourai-Wallet/samourai-dojo/pull/91) improve the tracking of loose addresses
+- [#93](https://github.com/Samourai-Wallet/samourai-dojo/pull/93) increase timeouts defined in docker-compose files (for raspi hardwares)
+- [#93](https://github.com/Samourai-Wallet/samourai-dojo/pull/93) upgrade bitcoind to bitcoin core 0.19.0.1
+
+
+#### Bug fixes ####
+
+- [#73](https://github.com/Samourai-Wallet/samourai-dojo/pull/73) remove unhandled promise error
+- [#79](https://github.com/Samourai-Wallet/samourai-dojo/pull/79) retry to send sql requests on detection of a lock
+- [#94](https://github.com/Samourai-Wallet/samourai-dojo/pull/94) improve the transaction cache implemented for bitcoind rpc client
+
+
+#### Documentation ####
+
+- [b5dd967](https://github.com/Samourai-Wallet/samourai-dojo/commit/b5dd9673c159b469fb19f43c33a0c0dd21b2fe5a) update api doc (see #75)
+- [16926a8](https://github.com/Samourai-Wallet/samourai-dojo/commit/16926a86fb637fb06510d1418474f62d3570cfd3) update docker doc
+
+
+#### Misc ####
+
+- [#76](https://github.com/Samourai-Wallet/samourai-dojo/pull/76) pin versions in package-lock.json
+
+
+### Credits ###
+
+- junderw
+- kenshin-samourai
+- LaurentMT
+- nickodev
 
 
 <a name="1_2_0"/>

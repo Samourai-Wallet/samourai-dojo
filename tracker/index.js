@@ -11,7 +11,9 @@
   const keys = require('../keys')[network.key]
   const db = require('../lib/db/mysql-db-wrapper')
   const Logger = require('../lib/logger')
+  const HttpServer = require('../lib/http-server/http-server')
   const Tracker = require('./tracker')
+  const TrackerRestApi = require('./tracker-rest-api')
 
 
   Logger.info('Process ID: ' + process.pid)
@@ -33,8 +35,23 @@
 
   db.connect(dbConfig)
 
-  // Start the tracker
+  // Initialize the tracker
   const tracker = new Tracker()
+
+  // Initialize the http server
+  const port = keys.ports.trackerApi
+  const httpServer = new HttpServer(port)
+
+  // Initialize the rest api endpoints
+  const trackerRestApi = new TrackerRestApi(httpServer, tracker)
+
+  // Start the http server
+  httpServer.start()
+
+  // Start the tracker
   tracker.start()
 
-})()
+})().catch(err => {
+  console.error(err)
+  process.exit(1)
+})

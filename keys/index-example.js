@@ -15,7 +15,7 @@ module.exports = {
     /*
      * Dojo version
      */
-    dojoVersion: '1.2.0',
+    dojoVersion: '1.3.0',
     /*
      * Bitcoind
      */
@@ -67,53 +67,16 @@ module.exports = {
     ports: {
       // Port used by the API
       account: 8080,
-      // Port used by pushtx
+      // Port used by pushtx API
       pushtx: 8081,
+      // Port used by the tracker API
+      trackerApi: 8082,
       // Port used by the tracker for its notifications
       tracker: 5555,
       // Port used by pushtx for its notifications
       notifpushtx: 5556,
       // Port used by the pushtx orchestrator for its notifications
       orchestrator: 5557
-    },
-    /*
-     * HTTPS
-     * Activate only if node js is used as frontend web server
-     * (no nginx proxy server)
-     */
-    https: {
-      // HTTPS for the API
-      account: {
-        // Activate https
-        active: false,
-        // Filepath of server private key 
-        // (shoud be stored in keys/sslcert)
-        keypath: '',
-        // Passphrase of the private key
-        passphrase: '',
-        // Filepath of server certificate
-        // (shoud be stored in keys/sslcert)
-        certpath: '',
-        // Filepath of CA certificate
-        // (shoud be stored in keys/sslcert)
-        capath: ''
-      },
-      // HTTPS for pushtx
-      pushtx: {
-        // Activate https
-        active: false,
-        // Filepath of server private key
-        // (shoud be stored in keys/sslcert)
-        keypath: '',
-        // Passphrase of the private key
-        passphrase: '',
-        // Filepath of server certificate
-        // (shoud be stored in keys/sslcert)
-        certpath: '',
-        // Filepath of CA certificate
-        // (shoud be stored in keys/sslcert)
-        capath: ''
-      }
     },
     /*
      * Authenticated access to the APIs (account & pushtx)
@@ -184,14 +147,23 @@ module.exports = {
       transactions: 50
     },
     /*
-     * Third party explorers
+     * Indexer or third party service
      * used for fast scan of addresses
      */
-    explorers: {
-      // Use local bitcoind for imports and rescans
-      // or use OXT as a fallback
-      // Values: active | inactive
-      bitcoind: 'active',
+    indexer: {
+      // Active indexer
+      // Values: local_bitcoind | local_indexer | third_party_explorer
+      active: 'local_bitcoind',
+      // Local indexer
+      localIndexer: {
+        // IP address or hostname
+        host: '127.0.0.1',
+        // Port
+        port: 50001,
+        // Support of batch requests
+        // Values: active | inactive
+        batchRequests: 'inactive'
+      },
       // Use a SOCKS5 proxy for all communications with external services
       // Values: null if no socks5 proxy used, otherwise the url of the socks5 proxy
       socks5Proxy: null,
@@ -270,25 +242,10 @@ module.exports = {
     ports: {
       account: 18080,
       pushtx: 18081,
+      trackerApi: 18082,
       tracker: 15555,
       notifpushtx: 15556,
       orchestrator: 15557
-    },
-    https: {
-      account: {
-        active: false,
-        keypath: '',
-        passphrase: '',
-        certpath: '',
-        capath: ''
-      },
-      pushtx: {
-        active: false,
-        keypath: '',
-        passphrase: '',
-        certpath: '',
-        capath: ''
-      }
     },
     auth: {
       activeStrategy: null,
@@ -322,13 +279,15 @@ module.exports = {
     multiaddr: {
       transactions: 50
     },
-    explorers: {
-      bitcoind: 'inactive',
+    indexer: {
+      active: 'third_party_explorer',
+      localIndexer: {
+        host: '127.0.0.1',
+        port: 50001,
+        batchRequests: 'inactive'
+      },
       socks5Proxy: null,
-      insight: [
-        'https://testnet-api.example.com'
-      ],
-      btccom: 'https://tchain.api.btc.com/v3'
+      esplora: 'https://blockstream.info/testnet'
     },
     addrFilterThreshold: 1000,
     addrDerivationPool: {

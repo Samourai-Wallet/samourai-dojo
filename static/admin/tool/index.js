@@ -48,6 +48,7 @@ function initTabs() {
     '#link-xpub',
     '#link-info-address',
     '#link-rescan-address',
+    '#link-rescan-blocks',
     '#link-multiaddr',
     '#link-unspent',
     '#link-tx'
@@ -110,6 +111,12 @@ function preparePage() {
       placeholder = 'ENTER A BITCOIN ADDRESS';
     } else if (activeTab == '#link-rescan-address') {
       placeholder = 'ENTER A BITCOIN ADDRESS';
+    } else if (activeTab == '#link-rescan-blocks') {
+      $("#cell-args").removeClass('fullwidth');
+      $("#cell-args").addClass('halfwidth');
+      $("#cell-args2").show();
+      placeholder = 'RESCAN BLOCKS FROM HEIGHT...';
+      placeholder2 = '...TO HEIGHT (OPTIONAL)';
     } else if (activeTab == '#link-multiaddr') {
       placeholder = 'ENTER /MULTIADDR URL ARGUMENTS (e.g.: active=xpub0123456789&new=address2|address3&pubkey=pubkey4)';
     } else if (activeTab == '#link-unspent') {
@@ -164,6 +171,10 @@ function processAction(activeTab, args, args2, args3) {
     return lib_api.getAddressInfo(args);
   } else if (activeTab == '#link-rescan-address') {
     return lib_api.getAddressRescan(args);
+  } else if (activeTab == '#link-rescan-blocks') {
+    const fromHeight = parseInt(args);
+    const toHeight = (args2) ? parseInt(args2) : fromHeight;
+    return lib_api.getBlocksRescan(fromHeight, toHeight);
   } else if (activeTab == '#link-tx') {
     return lib_api.getTransaction(args);
   }

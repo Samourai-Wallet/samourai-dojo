@@ -20,10 +20,9 @@ NODE_ADMIN_KEY=myAdminKey
 # Type: alphanumeric
 NODE_JWT_SECRET=myJwtSecret
 
-# Data source used for imports and rescans (bitcoind or OXT)
-# Note: support of local bitcoind is an experimental feature
-# Values: active | inactive
-NODE_IMPORT_FROM_BITCOIND=active
+# Indexer or third-party service used for imports and rescans of addresses
+# Values: local_bitcoind | third_party_explorer
+NODE_ACTIVE_INDEXER=local_bitcoind
 
 # FEE TYPE USED FOR FEES ESTIMATIONS BY BITCOIND
 # Allowed values are ECONOMICAL or CONSERVATIVE

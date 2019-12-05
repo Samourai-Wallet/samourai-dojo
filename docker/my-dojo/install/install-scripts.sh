@@ -49,6 +49,9 @@ init_config_files() {
   cp ./conf/docker-node.conf.tpl ./conf/docker-node.conf
   echo "Initialized docker-node.conf"
 
+  cp ./conf/docker-tor.conf.tpl ./conf/docker-tor.conf
+  echo "Initialized docker-tor.conf"
+
   # Initialize config files for nginx and the maintenance tool 
   if [ "$COMMON_BTC_NETWORK" == "testnet" ]; then
     cp ./nginx/testnet.conf ./nginx/dojo.conf
