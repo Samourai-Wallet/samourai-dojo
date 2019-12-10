@@ -98,6 +98,8 @@ Most options provided in the configuration files can be later modified. New valu
 
 For MacOS, see this detailed [installation guide](./DOCKER_mac_setup.MD).
 
+For Synology, see this detailed [installation guide](./DOCKER_synology_setup.md).
+
 This procedure allows to install a new Dojo from scratch.
 
 * Install [Docker and Docker Compose](https://docs.docker.com/compose/install/) on the host machine and check that your installation is working.
