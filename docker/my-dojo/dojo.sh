@@ -88,17 +88,19 @@ install() {
 
   launchInstall=1
 
-  if [ -z "$1" ]; then
+  if [ "$1" = "--auto" ]; then
+    launchInstall=0
+  else
     get_confirmation
     launchInstall=$?
-  else
-    launchInstall=0
   fi
 
   if [ $launchInstall -eq 0 ]; then
     init_config_files
     docker_up --remove-orphans
-    logs
+    if [ "$1" != "--nolog" ]; then
+      logs
+    fi
   fi
 }
 
@@ -144,11 +146,11 @@ upgrade() {
 
   launchUpgrade=1
 
-  if [ -z "$1" ]; then
+  if [ "$1" = "--auto" ]; then
+    launchUpgrade=0
+  else
     get_confirmation
     launchUpgrade=$?
-  else
-    launchUpgrade=0
   fi
 
   if [ $launchUpgrade -eq 0 ]; then
@@ -160,7 +162,9 @@ upgrade() {
     eval "docker-compose $yamlFiles build --no-cache"
     docker_up --remove-orphans
     update_dojo_db
-    logs
+    if [ "$1" != "--nolog" ]; then
+      logs
+    fi
   fi
 }
 
