@@ -132,7 +132,7 @@ This procedure allows to install a new Dojo from scratch.
       * `NODE_API_KEY` = API key which will be required from your Samourai Wallet / Sentinel for its interactions with the API of your Dojo,
       * `NODE_ADMIN_KEY` = API key which will be required from the maintenance tool for accessing a set of advanced features provided by the API of your Dojo,
       * `NODE_JWT_SECRET` = secret used by your Dojo for the initialization of a cryptographic key signing Json Web Tokens.
-    These parameters will protect the access to your Dojo. Be sure to provide alphanumeric values with enough entropy.i
+    These parameters will protect the access to your Dojo. Be sure to provide alphanumeric values with enough entropy.
 
   * (Optional) Edit docker-tor.conf.tpl and provide values for the following parameters:
       * `TOR_USE_BRIDGES` = activates or diactivates the use of Tor bridges,
