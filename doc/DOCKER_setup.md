@@ -132,7 +132,12 @@ This procedure allows to install a new Dojo from scratch.
       * `NODE_API_KEY` = API key which will be required from your Samourai Wallet / Sentinel for its interactions with the API of your Dojo,
       * `NODE_ADMIN_KEY` = API key which will be required from the maintenance tool for accessing a set of advanced features provided by the API of your Dojo,
       * `NODE_JWT_SECRET` = secret used by your Dojo for the initialization of a cryptographic key signing Json Web Tokens.
-    These parameters will protect the access to your Dojo. Be sure to provide alphanumeric values with enough entropy.
+    These parameters will protect the access to your Dojo. Be sure to provide alphanumeric values with enough entropy.i
+
+  * (Optional) Edit docker-tor.conf.tpl and provide values for the following parameters:
+      * `TOR_USE_BRIDGES` = activates or diactivates the use of Tor bridges,
+      * `TOR_BRIDGE_1 .. 3` = these bridge addresses will be used by the tor container.  
+    Learn how to obtain Tor bridges by reading the help section at the beginning of the docker-tor.conf.tpl.
 
 * Dojo provides a few additional settings for advanced setups: 
   * static onion address for your full node,
@@ -198,7 +203,7 @@ This procedure allows to upgrade your Dojo with a new version.
 
 Docker and Docker Compose are going to build new images and containers for your Dojo. After completion, the updated version of your Dojo will be launched automatically.
 
-Note: The upgrade process will override all manual modifications of the files stored under the `<dojo_dir>` directory with an exception for the three configuration files stored in the `<dojo_dir>/docker/my-dojo/conf` directory.
+Note: The upgrade process will override all manual modifications of the files stored under the `<dojo_dir>` directory with an exception for the four configuration files stored in the `<dojo_dir>/docker/my-dojo/conf` directory.
 
 
 <a name="shell_script"/>
