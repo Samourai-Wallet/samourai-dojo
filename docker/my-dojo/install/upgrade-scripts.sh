@@ -72,7 +72,11 @@ update_config_file() {
     cp -p $2 $1
 
     while IFS='=' read -r key val ; do 
-      sed -i "s~$key=.*~$key=$val~g" "$1"
+      if [[ $OSTYPE == darwin* ]]; then
+        sed -i "" "s~$key=.*~$key=$val~g" "$1"
+      else
+        sed -i "s~$key=.*~$key=$val~g" "$1"
+      fi
     done < ./original.lines.raw
 
     rm ./original.keys.raw
