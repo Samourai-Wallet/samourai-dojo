@@ -57,6 +57,7 @@ services:
     command: "/wait-for node:8080 --timeout=720 -- nginx"
     expose:
       - "80"
+      - "9080"
     volumes:
       - data-nginx:/data
     depends_on:
@@ -74,6 +75,7 @@ services:
       context: ./tor
     env_file:
       - ./.env
+      - ./conf/docker-explorer.conf
       - ./conf/docker-tor.conf
     restart: on-failure
     command: /restart.sh
