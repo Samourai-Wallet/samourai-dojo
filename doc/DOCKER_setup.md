@@ -5,7 +5,7 @@ MyDojo is a set of Docker containers providing a full Samourai backend composed 
 * a backend database,
 * backend modules with an API accessible as a static Tor hidden service,
 * a maintenance tool accessible through a Tor web browser,
-* an optional block explorer ([BTC RPC Explorer](https://github.com/janoside/btc-rpc-explorer)) accessible as a static Tor hidden service.
+* a block explorer ([BTC RPC Explorer](https://github.com/janoside/btc-rpc-explorer)) accessible as a static Tor hidden service.
 
 
 ## Table of Content ##
@@ -141,10 +141,10 @@ This procedure allows to install a new Dojo from scratch.
       * `NODE_JWT_SECRET` = secret used by your Dojo for the initialization of a cryptographic key signing Json Web Tokens.
     These parameters will protect the access to your Dojo. Be sure to provide alphanumeric values with enough entropy.
 
-  * If you want to activate the local block explorer, edit docker-explorer.conf.tpl:
-      * set the value of `EXPLORER_INSTALL` to `on`,
-      * set the value of `EXPLORER_KEY` with a password that will be required to access the block explorer.
-    See this [section](#explorer) for more details.
+  * Edit docker-explorer.conf.tpl and provide a new value for the following parameter:
+      * `EXPLORER_KEY` = password that will be required to access the block explorer,
+      * If you want to deactivate the block explorer, set the value of `EXPLORER_INSTALL` to `off`.
+    See this [section](#explorer) for more details about the block explorer.
 
 * Dojo provides a few additional settings for advanced setups: 
   * static onion address for your full node,
@@ -281,7 +281,7 @@ Sign in with the value entered for `NODE_ADMIN_KEY`.
 
 ## Block explorer ##
 
-An optional block explorer ([BTC RPC Explorer](https://github.com/janoside/btc-rpc-explorer)) is accessible through your Tor browser.
+A block explorer ([BTC RPC Explorer](https://github.com/janoside/btc-rpc-explorer)) is accessible through your Tor browser.
 
 You can retrieve the onion address of the block explorer with the command
 
@@ -295,7 +295,7 @@ Notes:
 
 * Current version doesn't support the display of detailed information for a Bitcoin address,
 
-* Calls to the RPC API of your bitcoind through the interface of the block explorer are deactivated.
+* Calls to the RPC API of your bitcoind are deactivated.
 
 
 <a name="pairing"/>
