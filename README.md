@@ -16,7 +16,8 @@ It provides in a single command the setup of a full Samourai backend composed of
 * a bitcoin full node only accessible as an ephemeral Tor hidden service,
 * the backend database,
 * the backend modules with an API accessible as a static Tor hidden service,
-* a maintenance tool accessible through a Tor web browser.
+* a maintenance tool accessible through a Tor web browser,
+* a block explorer ([BTC RPC Explorer](https://github.com/janoside/btc-rpc-explorer)) accessible through a Tor web browser.
 
 See [the documentation](./doc/DOCKER_setup.md) for detailed setup instructions.
 
