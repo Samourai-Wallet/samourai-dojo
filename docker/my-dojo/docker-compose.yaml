@@ -10,7 +10,7 @@ services:
     env_file:
       - ./.env
       - ./conf/docker-mysql.conf
-    restart: on-failure
+    restart: always
     expose:
       - "3306"
     volumes:
@@ -32,7 +32,7 @@ services:
       - ./conf/docker-bitcoind.conf
       - ./conf/docker-explorer.conf
       - ./conf/docker-node.conf
-    restart: on-failure
+    restart: always
     command: "/home/node/app/wait-for-it.sh db:3306 --timeout=720 --strict -- /home/node/app/restart.sh"
     expose:
       - "8080"
@@ -55,7 +55,7 @@ services:
     env_file:
       - ./.env
       - ./conf/docker-common.conf
-    restart: on-failure
+    restart: always
     command: "/wait-for node:8080 --timeout=720 -- nginx"
     expose:
       - "80"
@@ -79,7 +79,7 @@ services:
       - ./.env
       - ./conf/docker-explorer.conf
       - ./conf/docker-tor.conf
-    restart: on-failure
+    restart: always
     command: /restart.sh
     volumes:
       - data-tor:/var/lib/tor
