@@ -6,6 +6,12 @@ else
   source ./conf/docker-bitcoind.conf.tpl
 fi
 
+if [ -f ./conf/docker-explorer.conf ]; then
+  source ./conf/docker-explorer.conf
+else
+  source ./conf/docker-explorer.conf.tpl
+fi
+
 if [ -f ./conf/docker-common.conf ]; then
   source ./conf/docker-common.conf
 else
@@ -49,10 +55,20 @@ init_config_files() {
   cp ./conf/docker-node.conf.tpl ./conf/docker-node.conf
   echo "Initialized docker-node.conf"
 
+  cp ./conf/docker-explorer.conf.tpl ./conf/docker-explorer.conf
+  echo "Initialized docker-explorer.conf"
+
   cp ./conf/docker-tor.conf.tpl ./conf/docker-tor.conf
   echo "Initialized docker-tor.conf"
 
-  # Initialize config files for nginx and the maintenance tool 
+  # Initialize config files for nginx and the maintenance tool
+  if [ "$EXPLORER_INSTALL" == "on" ]; then
+    cp ./nginx/explorer.conf ./nginx/dojo-explorer.conf
+  else
+    cp /dev/null ./nginx/dojo-explorer.conf
+  fi
+  echo "Initialized dojo-explorer.conf (nginx)"
+
   if [ "$COMMON_BTC_NETWORK" == "testnet" ]; then
     cp ./nginx/testnet.conf ./nginx/dojo.conf
     echo "Initialized dojo.conf (nginx)"

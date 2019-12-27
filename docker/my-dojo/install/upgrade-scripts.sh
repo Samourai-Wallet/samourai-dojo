@@ -6,6 +6,12 @@ else
   source ./conf/docker-common.conf.tpl
 fi
 
+if [ -f ./conf/docker-explorer.conf ]; then
+  source ./conf/docker-explorer.conf
+else
+  source ./conf/docker-explorer.conf.tpl
+fi
+
 source ./conf/docker-bitcoind.conf
 
 # Confirm upgrade operation
@@ -45,10 +51,20 @@ update_config_files() {
   update_config_file ./conf/docker-node.conf ./conf/docker-node.conf.tpl
   echo "Initialized docker-node.conf"
 
+  update_config_file ./conf/docker-explorer.conf ./conf/docker-explorer.conf.tpl
+  echo "Initialized docker-explorer.conf"
+
   update_config_file ./conf/docker-tor.conf ./conf/docker-tor.conf.tpl
   echo "Initialized docker-tor.conf"
 
   # Initialize config files for nginx and the maintenance tool 
+  if [ "$EXPLORER_INSTALL" == "on" ]; then
+    cp ./nginx/explorer.conf ./nginx/dojo-explorer.conf
+  else
+    cp /dev/null ./nginx/dojo-explorer.conf
+  fi
+  echo "Initialized dojo-explorer.conf (nginx)"
+
   if [ "$COMMON_BTC_NETWORK" == "testnet" ]; then
     cp ./nginx/testnet.conf ./nginx/dojo.conf
     echo "Initialized dojo.conf (nginx)"

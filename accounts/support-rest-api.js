@@ -4,6 +4,7 @@
  */
 'use strict'
 
+const fs = require('fs')
 const validator = require('validator')
 const bodyParser = require('body-parser')
 const errors = require('../lib/errors')
@@ -65,6 +66,13 @@ class SupportRestApi {
       authMgr.checkHasAdminProfile.bind(authMgr),
       this.validateArgsGetXpubRescan.bind(this),
       this.getXpubRescan.bind(this),
+      HttpServer.sendAuthError
+    )
+
+    this.httpServer.app.get(
+      `/${keys.prefixes.support}/pairing/explorer`,
+      authMgr.checkHasAdminProfile.bind(authMgr),
+      this.getPairingExplorer.bind(this),
       HttpServer.sendAuthError
     )
 
@@ -296,6 +304,39 @@ class SupportRestApi {
       HttpServer.sendError(res, JSON.stringify(ret, null, 2))
     } finally {
       debugApi && Logger.info(`Completed GET /pairing`)
+    }
+  }
+
+  /**
+   * Get pairing info for the local block explorer
+   */
+  async getPairingExplorer(req, res) {
+    try {
+      let url = ''
+      if (process.env.EXPLORER_INSTALL == 'on') {
+        try {
+          url = fs.readFileSync('/var/lib/tor/hsv3explorer/hostname', 'utf8')
+          url = url.replace('\n', '')
+        } catch(e) {
+          Logger.error(e, 'SupportRestApi.getPairing() : Cannot read explorer onion address')
+        }
+      }
+      const ret = {
+        'pairing': {
+          'type': 'explorer.btcRpcExplorer',
+          'url': url,
+          'key': process.env.EXPLORER_KEY
+        }
+      }
+      HttpServer.sendRawData(res, JSON.stringify(ret, null, 2))
+    } catch(e) {
+      const ret = {
+        status: 'error'
+      }
+      Logger.error(e, 'SupportRestApi.getPairingExplorer() : Support pairing error')
+      HttpServer.sendError(res, JSON.stringify(ret, null, 2))
+    } finally {
+      debugApi && Logger.info(`Completed GET /pairing/explorer`)
     }
   }
 

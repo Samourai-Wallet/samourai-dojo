@@ -15,6 +15,7 @@ source_file() {
 
 # Source config files
 source_file "$DIR/conf/docker-bitcoind.conf"
+source_file "$DIR/conf/docker-explorer.conf"
 source_file "$DIR/conf/docker-common.conf"
 source_file "$DIR/.env"
 
@@ -31,6 +32,10 @@ select_yaml_files() {
     if [ "$BITCOIND_RPC_EXTERNAL" == "on" ]; then
       yamlFiles="$yamlFiles -f $DIR/overrides/bitcoind.rpc.expose.yaml"
     fi
+  fi
+
+  if [ "$EXPLORER_INSTALL" == "on" ]; then
+    yamlFiles="$yamlFiles -f $DIR/overrides/explorer.install.yaml"
   fi
 
   # Return yamlFiles
@@ -113,6 +118,7 @@ uninstall() {
 
   docker image rm samouraiwallet/dojo-db:"$DOJO_DB_VERSION_TAG"
   docker image rm samouraiwallet/dojo-bitcoind:"$DOJO_BITCOIND_VERSION_TAG"
+  docker image rm samouraiwallet/dojo-explorer:"$DOJO_EXPLORER_VERSION_TAG"
   docker image rm samouraiwallet/dojo-nodejs:"$DOJO_NODEJS_VERSION_TAG"
   docker image rm samouraiwallet/dojo-nginx:"$DOJO_NGINX_VERSION_TAG"
   docker image rm samouraiwallet/dojo-tor:"$DOJO_TOR_VERSION_TAG"
@@ -135,6 +141,7 @@ clean() {
   docker image prune
   del_images_for samouraiwallet/dojo-db "$DOJO_DB_VERSION_TAG"
   del_images_for samouraiwallet/dojo-bitcoind "$DOJO_BITCOIND_VERSION_TAG"
+  del_images_for samouraiwallet/dojo-explorer "$DOJO_EXPLORER_VERSION_TAG"
   del_images_for samouraiwallet/dojo-nodejs "$DOJO_NODEJS_VERSION_TAG"
   del_images_for samouraiwallet/dojo-nginx "$DOJO_NGINX_VERSION_TAG"
   del_images_for samouraiwallet/dojo-tor "$DOJO_TOR_VERSION_TAG"
@@ -170,9 +177,13 @@ upgrade() {
 
 # Display the onion address
 onion() {
+  if [ "$EXPLORER_INSTALL" == "on" ]; then
+    V3_ADDR_EXPLORER=$( docker exec -it tor cat /var/lib/tor/hsv3explorer/hostname )
+    echo "Explorer hidden service address (v3) = $V3_ADDR_EXPLORER"
+  fi
+
   V2_ADDR=$( docker exec -it tor cat /var/lib/tor/hsv2dojo/hostname )
   V3_ADDR=$( docker exec -it tor cat /var/lib/tor/hsv3dojo/hostname )
-  
   echo "API hidden service address (v3) = $V3_ADDR"
   echo "API hidden service address (v2) = $V2_ADDR"
 
@@ -193,6 +204,14 @@ logs_node() {
     docker exec -ti nodejs tail -f /data/logs/$1-$2.log
   else
     docker exec -ti nodejs tail -n $3 /data/logs/$1-$2.log
+  fi 
+}
+
+logs_explorer() {
+  if [ $3 -eq 0 ]; then
+    docker exec -ti explorer tail -f /data/logs/$1-$2.log
+  else
+    docker exec -ti explorer tail -n $3 /data/logs/$1-$2.log
   fi 
 }
 
@@ -222,11 +241,17 @@ logs() {
     api | pushtx | pushtx-orchest | tracker )
       logs_node $1 $2 $3
       ;;
+    explorer )
+      logs_explorer $1 $2 $3
+      ;;
     * )
       yamlFiles=$(select_yaml_files)
       services="nginx node tor db" 
       if [ "$BITCOIND_INSTALL" == "on" ]; then
         services="$services bitcoind"
+      fi
+      if [ "$EXPLORER_INSTALL" == "on" ]; then
+        services="$services explorer"
       fi
       eval "docker-compose $yamlFiles logs --tail=0 --follow $services"
       ;;
@@ -259,8 +284,9 @@ help() {
   echo "                                  dojo.sh logs tracker        : display the logs of the Tracker (nodejs)"
   echo "                                  dojo.sh logs pushtx         : display the logs of the pushTx API (nodejs)"
   echo "                                  dojo.sh logs pushtx-orchest : display the logs of the pushTx Orchestrator (nodejs)"
+  echo "                                  dojo.sh logs explorer       : display the logs of the Explorer"
   echo " "
-  echo "                                Available options (only available for api, tracker, pushtx and pushtx-orchest modules):"
+  echo "                                Available options (only available for api, tracker, pushtx, pushtx-orchest and explorer modules):"
   echo "                                  -d [VALUE]                  : select the type of log to be displayed."
   echo "                                                                VALUE can be output (default) or error."
   echo "                                  -n [VALUE]                  : display the last VALUE lines"
