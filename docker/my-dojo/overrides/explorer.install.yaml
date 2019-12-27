@@ -10,7 +10,7 @@ services:
       - ./.env
       - ./conf/docker-bitcoind.conf
       - ./conf/docker-explorer.conf
-    restart: on-failure
+    restart: always
     command: "/home/node/app/restart.sh"
     expose:
       - "3002"
