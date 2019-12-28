@@ -78,7 +78,7 @@ stop() {
   fi
 
   yamlFiles=$(select_yaml_files)
-  eval "docker-compose $yamlFiles down"
+  eval "docker-compose $yamlFiles stop"
 }
 
 # Restart dojo
