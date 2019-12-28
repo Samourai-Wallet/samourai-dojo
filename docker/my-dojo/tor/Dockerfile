@@ -3,7 +3,7 @@ FROM    debian:stretch
 ENV     TOR_HOME            /var/lib/tor
 ENV     TOR_URL             https://archive.torproject.org/tor-package-archive
 ENV     TOR_VERSION         0.3.5.8
-ENV     TOR_GPG_KS_URI      hkp://ipv4.pool.sks-keyservers.net:80
+ENV     TOR_GPG_KS_URI      hkp://keyserver.ubuntu.com:80
 ENV     TOR_GPG_KEY1        0xEB5A896A28988BF5
 ENV     TOR_GPG_KEY2        0xC218525819F78451
 ENV     TOR_GPG_KEY3        0x21194EBB165733EA
