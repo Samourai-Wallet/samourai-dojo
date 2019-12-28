@@ -55,28 +55,48 @@ start() {
 
 # Stop
 stop() {
+  # Shutdown the bitcoin daemon
   if [ "$BITCOIND_INSTALL" == "on" ]; then
+    # Renewal of bitcoind onion address
     if [ "$BITCOIND_EPHEMERAL_HS" = "on" ]; then
       docker exec -it tor rm -rf /var/lib/tor/hsv2bitcoind
     fi
-
+    # Stop the bitcoin daemon
+    echo "Preparing shutdown of dojo. Please wait."
     docker exec -it bitcoind  bitcoin-cli \
       -rpcconnect=bitcoind \
       --rpcport=28256 \
       --rpcuser="$BITCOIND_RPC_USER" \
       --rpcpassword="$BITCOIND_RPC_PASSWORD" \
       stop
-
-    echo "Preparing shutdown of dojo. Please wait."
-
-    bitcoindDown=$(timeout 3m docker wait bitcoind)
-    if [ $bitcoindDown -eq 0 ]; then
-      echo "Bitcoin server stopped."
-    else
+    # Check if the bitcoin daemon is still up
+    # wait 3mn max
+    i="0"
+    while [ $i -lt 18 ]
+    do
+      # Check if bitcoind rpc api is responding
+      timeout 5 docker exec -it bitcoind  bitcoin-cli \
+        -rpcconnect=bitcoind \
+        --rpcport=28256 \
+        --rpcuser="$BITCOIND_RPC_USER" \
+        --rpcpassword="$BITCOIND_RPC_PASSWORD" \
+        getblockchaininfo > /dev/null
+      # rpc api is down
+      if [[ $? > 0 ]]; then
+        echo "Bitcoin server stopped."
+        break
+      fi
+      # Pause before next try
+      sleep 5
+      i=$[$i+1]
+    done
+    # Bitcoin daemon is still up
+    # => force close
+    if [ $i -eq 18 ]; then
       echo "Force shutdown of Bitcoin server."
     fi
   fi
-
+  # Stop docker containers
   yamlFiles=$(select_yaml_files)
   eval "docker-compose $yamlFiles stop"
 }
