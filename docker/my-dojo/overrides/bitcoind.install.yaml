@@ -10,7 +10,7 @@ services:
       - ./.env
       - ./conf/docker-common.conf
       - ./conf/docker-bitcoind.conf
-    restart: on-failure
+    restart: always
     command: "/wait-for-it.sh tor:9050 --timeout=720 --strict -- /restart.sh"
     expose:
       - "8333"
