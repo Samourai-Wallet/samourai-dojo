@@ -30,8 +30,6 @@ if [ "$EXPLORER_INSTALL" == "on" ]; then
   tor_options+=(--HiddenServiceVersion 3)
   tor_options+=(--HiddenServicePort "80 172.29.1.3:9080")
   tor_options+=(--HiddenServiceDirGroupReadable 1)
-  echo "## Set permissions on /var/lib/tor/hsv3explorer dir ###"
-  chmod 750 /var/lib/tor/hsv3explorer
 fi
 
 if [ "$TOR_USE_BRIDGES" == "on" ]; then
