@@ -50,11 +50,24 @@ docker_up() {
   
 # Start
 start() {
-  docker_up --remove-orphans
+  # Check if dojo is running (check the db container)
+  isRunning=$(docker inspect --format="{{.State.Running}}" db 2> /dev/null)
+
+  if [ $? -eq 1 ] || [ "$isRunning" == "false" ]; then
+    docker_up --remove-orphans
+  else
+    echo "Dojo is already running."
+  fi
 }
 
 # Stop
 stop() {
+  # Check if dojo is running (check the db container)
+  isRunning=$(docker inspect --format="{{.State.Running}}" db 2> /dev/null)
+  if [ $? -eq 1 ] || [ "$isRunning" == "false" ]; then
+    echo "Dojo is already stopped."
+    exit
+  fi
   # Shutdown the bitcoin daemon
   if [ "$BITCOIND_INSTALL" == "on" ]; then
     # Renewal of bitcoind onion address
