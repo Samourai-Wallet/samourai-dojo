@@ -7,6 +7,11 @@ ENV     EXPLORER_URL         https://github.com/janoside/btc-rpc-explorer/archiv
 ENV     EXPLORER_VERSION     1.1.5
 
 
+# Install netcat
+RUN     set -ex && \
+        apt-get update && \
+        apt-get install -y netcat
+
 # Create logs  and apps directory
 RUN     mkdir -p "$LOGS_DIR" && \
         chown -R node:node "$LOGS_DIR" && \
