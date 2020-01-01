@@ -38,7 +38,6 @@ RUN     cd "$INDEXER_HOME" && \
 #        git checkout "tags/v$INDEXER_VERSION"
 
 RUN     cd "$INDEXER_HOME/addrindexrs" && \
-        cargo build --release && \
         cargo install --path .
 
 EXPOSE  50001
