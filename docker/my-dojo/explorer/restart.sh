@@ -22,6 +22,23 @@ explorer_options+=(--rpc-blacklist "addnode,analyzepsbt,clearbanned,combinepsbt,
 if [ "$NODE_ACTIVE_INDEXER" == "local_indexer" ]; then
   explorer_options+=(--address-api electrumx)
   explorer_options+=(--electrumx-servers "tcp://$INDEXER_IP:$INDEXER_RPC_PORT")
+
+  # Wait for the local indexer
+  timeout="720"
+  i="0"
+  while [ $i -lt $timeout ]
+  do
+    nc -z "$INDEXER_IP" "$INDEXER_RPC_PORT" > /dev/null
+    if [ $? -eq 0 ] ; then
+      break
+    fi
+    sleep 1
+    i=$[$i+1]
+  done
+  if [ $i -eq $timeout ]; then
+    echo "Operation timed out"
+    exit 1
+  fi
 fi
 
 node ./bin/cli.js "${explorer_options[@]}" > /data/logs/explorer-error.log  2> /data/logs/explorer-output.log
