@@ -2,9 +2,83 @@
 
 
 ## Releases ##
+- [v1.4.0](#1_4_0)
 - [v1.3.0](#1_3_0)
 - [v1.2.0](#1_2_0)
 - [v1.1.0](#1_1_0)
+
+
+<a name="1_4_0"/>
+
+## Samourai Dojo v1.4.0 ##
+
+
+### Notable changes ###
+
+
+#### Local block explorer ####
+
+This release adds a new docker container hosting a local block explorer ([BTC RPC Explorer](https://github.com/janoside/btc-rpc-explorer)).
+
+Access to the block explorer is secured by a password defined in /docker/my-dojo/conf/docker-explorer.conf (see `EXPLORER_KEY` configuration parameter).
+
+*Upgrade procedure*
+
+```
+# Stop your Dojo
+
+# Download the Dojo archive for this release
+
+# Override the content of your <dojo_dir> with the content of the Dojo archive
+
+# Edit <dojo_dir>/docker/my-dojo/conf/docker-explorer.conf.tpl and set the value of `EXPLORER_KEY` with a custom password.
+
+# Launch the upgrade of your Dojo with: dojo.sh upgrade
+```
+
+This local block explorer is available as a Tor hidden service. Its static onion address can be retrieved with the command
+
+```
+dojo.sh onion
+```
+
+
+#### Autostart of Dojo ####
+
+Starting with this release, Dojo is automatically launched when the docker daemon starts.
+
+
+### Change log ###
+
+#### MyDojo ####
+
+- [#101](https://github.com/Samourai-Wallet/samourai-dojo/pull/101) add --auto and --nolog options to install and upgrade commands
+- [#102](https://github.com/Samourai-Wallet/samourai-dojo/pull/102) improve performances of transactions imports
+- [#107](https://github.com/Samourai-Wallet/samourai-dojo/pull/107) add optional block explorer
+- [#108](https://github.com/Samourai-Wallet/samourai-dojo/pull/108) switch restart policies of containers to always
+- [#109](https://github.com/Samourai-Wallet/samourai-dojo/pull/109) use port 80 of keyservers
+- [#110](https://github.com/Samourai-Wallet/samourai-dojo/pull/110) replace keyserver
+- [#111](https://github.com/Samourai-Wallet/samourai-dojo/pull/111) enable autostart of dojo
+- [#113](https://github.com/Samourai-Wallet/samourai-dojo/pull/113) check if dojo is running (start and stop commands)
+
+
+#### Bug fixes ####
+
+- [#100](https://github.com/Samourai-Wallet/samourai-dojo/pull/100) fix issue caused by sed -i on osx
+
+
+#### Documentation ####
+
+- [#99](https://github.com/Samourai-Wallet/samourai-dojo/pull/99) doc: installation of dojo on synology
+- [b12d24d](https://github.com/Samourai-Wallet/samourai-dojo/commit/b12d24d088a95023a8e1c9e8a1b1c4b40491d4a7) update readme
+
+
+### Credits ###
+
+- anwfr
+- jochemin
+- kenshin-samourai
+- LaurentMT
 
 
 <a name="1_3_0"/>

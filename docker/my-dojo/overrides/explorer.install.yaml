@@ -1,0 +1,28 @@
+version: "3.2"
+
+services:
+  explorer:
+    image: "samouraiwallet/dojo-explorer:${DOJO_EXPLORER_VERSION_TAG}"
+    container_name: explorer
+    build:
+      context: ./explorer
+    env_file:
+      - ./.env
+      - ./conf/docker-bitcoind.conf
+      - ./conf/docker-explorer.conf
+    restart: always
+    command: "/home/node/app/restart.sh"
+    expose:
+      - "3002"
+    volumes:
+      - data-explorer:/data/logs
+    networks:
+      dojonet:
+        ipv4_address: 172.28.1.7
+
+  node:
+    depends_on:
+      - explorer
+
+volumes:
+  data-explorer:

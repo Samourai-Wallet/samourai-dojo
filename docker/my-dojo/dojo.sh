@@ -15,6 +15,7 @@ source_file() {
 
 # Source config files
 source_file "$DIR/conf/docker-bitcoind.conf"
+source_file "$DIR/conf/docker-explorer.conf"
 source_file "$DIR/conf/docker-common.conf"
 source_file "$DIR/.env"
 
@@ -33,6 +34,10 @@ select_yaml_files() {
     fi
   fi
 
+  if [ "$EXPLORER_INSTALL" == "on" ]; then
+    yamlFiles="$yamlFiles -f $DIR/overrides/explorer.install.yaml"
+  fi
+
   # Return yamlFiles
   echo "$yamlFiles"
 }
@@ -45,35 +50,68 @@ docker_up() {
   
 # Start
 start() {
-  docker_up --remove-orphans
+  # Check if dojo is running (check the db container)
+  isRunning=$(docker inspect --format="{{.State.Running}}" db 2> /dev/null)
+
+  if [ $? -eq 1 ] || [ "$isRunning" == "false" ]; then
+    docker_up --remove-orphans
+  else
+    echo "Dojo is already running."
+  fi
 }
 
 # Stop
 stop() {
+  # Check if dojo is running (check the db container)
+  isRunning=$(docker inspect --format="{{.State.Running}}" db 2> /dev/null)
+  if [ $? -eq 1 ] || [ "$isRunning" == "false" ]; then
+    echo "Dojo is already stopped."
+    exit
+  fi
+  # Shutdown the bitcoin daemon
   if [ "$BITCOIND_INSTALL" == "on" ]; then
+    # Renewal of bitcoind onion address
     if [ "$BITCOIND_EPHEMERAL_HS" = "on" ]; then
       docker exec -it tor rm -rf /var/lib/tor/hsv2bitcoind
     fi
-
+    # Stop the bitcoin daemon
+    echo "Preparing shutdown of dojo. Please wait."
     docker exec -it bitcoind  bitcoin-cli \
       -rpcconnect=bitcoind \
       --rpcport=28256 \
       --rpcuser="$BITCOIND_RPC_USER" \
       --rpcpassword="$BITCOIND_RPC_PASSWORD" \
       stop
-
-    echo "Preparing shutdown of dojo. Please wait."
-
-    bitcoindDown=$(timeout 3m docker wait bitcoind)
-    if [ $bitcoindDown -eq 0 ]; then
-      echo "Bitcoin server stopped."
-    else
+    # Check if the bitcoin daemon is still up
+    # wait 3mn max
+    i="0"
+    while [ $i -lt 18 ]
+    do
+      # Check if bitcoind rpc api is responding
+      timeout 5 docker exec -it bitcoind  bitcoin-cli \
+        -rpcconnect=bitcoind \
+        --rpcport=28256 \
+        --rpcuser="$BITCOIND_RPC_USER" \
+        --rpcpassword="$BITCOIND_RPC_PASSWORD" \
+        getblockchaininfo > /dev/null
+      # rpc api is down
+      if [[ $? > 0 ]]; then
+        echo "Bitcoin server stopped."
+        break
+      fi
+      # Pause before next try
+      sleep 5
+      i=$[$i+1]
+    done
+    # Bitcoin daemon is still up
+    # => force close
+    if [ $i -eq 18 ]; then
       echo "Force shutdown of Bitcoin server."
     fi
   fi
-
+  # Stop docker containers
   yamlFiles=$(select_yaml_files)
-  eval "docker-compose $yamlFiles down"
+  eval "docker-compose $yamlFiles stop"
 }
 
 # Restart dojo
@@ -88,17 +126,19 @@ install() {
 
   launchInstall=1
 
-  if [ -z "$1" ]; then
+  if [ "$1" = "--auto" ]; then
+    launchInstall=0
+  else
     get_confirmation
     launchInstall=$?
-  else
-    launchInstall=0
   fi
 
   if [ $launchInstall -eq 0 ]; then
     init_config_files
     docker_up --remove-orphans
-    logs
+    if [ "$1" != "--nolog" ]; then
+      logs
+    fi
   fi
 }
 
@@ -111,6 +151,7 @@ uninstall() {
 
   docker image rm samouraiwallet/dojo-db:"$DOJO_DB_VERSION_TAG"
   docker image rm samouraiwallet/dojo-bitcoind:"$DOJO_BITCOIND_VERSION_TAG"
+  docker image rm samouraiwallet/dojo-explorer:"$DOJO_EXPLORER_VERSION_TAG"
   docker image rm samouraiwallet/dojo-nodejs:"$DOJO_NODEJS_VERSION_TAG"
   docker image rm samouraiwallet/dojo-nginx:"$DOJO_NGINX_VERSION_TAG"
   docker image rm samouraiwallet/dojo-tor:"$DOJO_TOR_VERSION_TAG"
@@ -133,6 +174,7 @@ clean() {
   docker image prune
   del_images_for samouraiwallet/dojo-db "$DOJO_DB_VERSION_TAG"
   del_images_for samouraiwallet/dojo-bitcoind "$DOJO_BITCOIND_VERSION_TAG"
+  del_images_for samouraiwallet/dojo-explorer "$DOJO_EXPLORER_VERSION_TAG"
   del_images_for samouraiwallet/dojo-nodejs "$DOJO_NODEJS_VERSION_TAG"
   del_images_for samouraiwallet/dojo-nginx "$DOJO_NGINX_VERSION_TAG"
   del_images_for samouraiwallet/dojo-tor "$DOJO_TOR_VERSION_TAG"
@@ -144,11 +186,11 @@ upgrade() {
 
   launchUpgrade=1
 
-  if [ -z "$1" ]; then
+  if [ "$1" = "--auto" ]; then
+    launchUpgrade=0
+  else
     get_confirmation
     launchUpgrade=$?
-  else
-    launchUpgrade=0
   fi
 
   if [ $launchUpgrade -eq 0 ]; then
@@ -160,15 +202,21 @@ upgrade() {
     eval "docker-compose $yamlFiles build --no-cache"
     docker_up --remove-orphans
     update_dojo_db
-    logs
+    if [ "$1" != "--nolog" ]; then
+      logs
+    fi
   fi
 }
 
 # Display the onion address
 onion() {
+  if [ "$EXPLORER_INSTALL" == "on" ]; then
+    V3_ADDR_EXPLORER=$( docker exec -it tor cat /var/lib/tor/hsv3explorer/hostname )
+    echo "Explorer hidden service address (v3) = $V3_ADDR_EXPLORER"
+  fi
+
   V2_ADDR=$( docker exec -it tor cat /var/lib/tor/hsv2dojo/hostname )
   V3_ADDR=$( docker exec -it tor cat /var/lib/tor/hsv3dojo/hostname )
-  
   echo "API hidden service address (v3) = $V3_ADDR"
   echo "API hidden service address (v2) = $V2_ADDR"
 
@@ -189,6 +237,14 @@ logs_node() {
     docker exec -ti nodejs tail -f /data/logs/$1-$2.log
   else
     docker exec -ti nodejs tail -n $3 /data/logs/$1-$2.log
+  fi 
+}
+
+logs_explorer() {
+  if [ $3 -eq 0 ]; then
+    docker exec -ti explorer tail -f /data/logs/$1-$2.log
+  else
+    docker exec -ti explorer tail -n $3 /data/logs/$1-$2.log
   fi 
 }
 
@@ -218,11 +274,17 @@ logs() {
     api | pushtx | pushtx-orchest | tracker )
       logs_node $1 $2 $3
       ;;
+    explorer )
+      logs_explorer $1 $2 $3
+      ;;
     * )
       yamlFiles=$(select_yaml_files)
       services="nginx node tor db" 
       if [ "$BITCOIND_INSTALL" == "on" ]; then
         services="$services bitcoind"
+      fi
+      if [ "$EXPLORER_INSTALL" == "on" ]; then
+        services="$services explorer"
       fi
       eval "docker-compose $yamlFiles logs --tail=0 --follow $services"
       ;;
@@ -255,8 +317,9 @@ help() {
   echo "                                  dojo.sh logs tracker        : display the logs of the Tracker (nodejs)"
   echo "                                  dojo.sh logs pushtx         : display the logs of the pushTx API (nodejs)"
   echo "                                  dojo.sh logs pushtx-orchest : display the logs of the pushTx Orchestrator (nodejs)"
+  echo "                                  dojo.sh logs explorer       : display the logs of the Explorer"
   echo " "
-  echo "                                Available options (only available for api, tracker, pushtx and pushtx-orchest modules):"
+  echo "                                Available options (only available for api, tracker, pushtx, pushtx-orchest and explorer modules):"
   echo "                                  -d [VALUE]                  : select the type of log to be displayed."
   echo "                                                                VALUE can be output (default) or error."
   echo "                                  -n [VALUE]                  : display the last VALUE lines"

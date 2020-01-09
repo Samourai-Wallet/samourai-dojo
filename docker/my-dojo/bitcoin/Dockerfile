@@ -9,6 +9,7 @@ ENV     BITCOIN_VERSION     0.19.0.1
 ENV     BITCOIN_URL         https://bitcoincore.org/bin/bitcoin-core-0.19.0.1/bitcoin-0.19.0.1-x86_64-linux-gnu.tar.gz
 ENV     BITCOIN_SHA256      732cc96ae2e5e25603edf76b8c8af976fe518dd925f7e674710c6c8ee5189204
 ENV     BITCOIN_ASC_URL     https://bitcoincore.org/bin/bitcoin-core-0.19.0.1/SHA256SUMS.asc
+ENV     BITCOIN_PGP_KS_URI  hkp://keyserver.ubuntu.com:80
 ENV     BITCOIN_PGP_KEY     01EA5486DE18A882D4C2684590C8019E36C2E964
 
 RUN     set -ex && \
@@ -21,7 +22,7 @@ RUN     set -ex && \
         cd /tmp && \
         wget -qO bitcoin.tar.gz "$BITCOIN_URL" && \
         echo "$BITCOIN_SHA256 bitcoin.tar.gz" | sha256sum -c - && \
-        gpg --batch --keyserver keyserver.ubuntu.com --recv-keys "$BITCOIN_PGP_KEY" && \
+        gpg --batch --keyserver "$BITCOIN_PGP_KS_URI" --recv-keys "$BITCOIN_PGP_KEY" && \
         wget -qO bitcoin.asc "$BITCOIN_ASC_URL" && \
         gpg --batch --verify bitcoin.asc && \
         tar -xzvf bitcoin.tar.gz -C /usr/local --strip-components=1 --exclude=*-qt && \

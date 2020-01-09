@@ -370,11 +370,20 @@ table.spaced tr td {
 }
 
 /* PAIRING */
-#qr-label {
+#qr-label,
+#qr-explorer-label {
   margin: 0 0 20px 0;
+  text-align: center;
+  display: inline-block;
 }
 
-#qr-pairing {
+#qr-container,
+#qr-explorer-container {
+  display: inline-block;
+}
+
+#qr-pairing,
+#qr-explorer-pairing {
   width: 276px;
   height: 276px;
   padding: 10px;
@@ -390,8 +399,8 @@ table.spaced tr td {
 }
 
 .halfwidth {
-  width: 50%;
-  min-width: 50%;
+  width: 49%;
+  min-width: 49%;
 }
 
 .fullwidth {
