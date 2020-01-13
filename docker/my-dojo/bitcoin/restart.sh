@@ -40,13 +40,10 @@ if [ "$COMMON_BTC_NETWORK" == "testnet" ]; then
 fi
 
 bitcoind "${bitcoind_options[@]}"
-exitCode=$?
 
-if [ $exitCode -eq 0 ]; then
-  # Loop keeping the container up
-  # after bitcoind has been stopped
-  while true
-  do
-    tail -f /dev/null > /dev/null
-  done
-fi
+# Loop keeping the container up
+# after bitcoind has been stopped
+while true
+do
+  tail -f /dev/null > /dev/null
+done
