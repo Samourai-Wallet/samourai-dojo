@@ -89,7 +89,7 @@ stop() {
     do
       echo "Waiting for shutdown of Bitcoin server."
       # Check if bitcoind rpc api is responding
-      timeout 5 docker exec -it bitcoind  bitcoin-cli \
+      timeout -k 12 10 docker exec -it bitcoind  bitcoin-cli \
         -rpcconnect=bitcoind \
         --rpcport=28256 \
         --rpcuser="$BITCOIND_RPC_USER" \
@@ -100,8 +100,6 @@ stop() {
         echo "Bitcoin server stopped."
         break
       fi
-      # Pause before next try
-      sleep 5
       i=$[$i+1]
     done
     # Bitcoin daemon is still up
