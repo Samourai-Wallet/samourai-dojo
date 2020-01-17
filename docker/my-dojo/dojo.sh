@@ -87,6 +87,7 @@ stop() {
     i="0"
     while [ $i -lt 18 ]
     do
+      echo "Waiting for shutdown of Bitcoin server."
       # Check if bitcoind rpc api is responding
       timeout 5 docker exec -it bitcoind  bitcoin-cli \
         -rpcconnect=bitcoind \
