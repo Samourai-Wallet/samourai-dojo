@@ -2,10 +2,54 @@
 
 
 ## Releases ##
+- [v1.4.1](#1_4_1)
 - [v1.4.0](#1_4_0)
 - [v1.3.0](#1_3_0)
 - [v1.2.0](#1_2_0)
 - [v1.1.0](#1_1_0)
+
+
+<a name="1_4_1"/>
+
+## Samourai Dojo v1.4.1 ##
+
+
+### Notable changes ###
+
+
+#### Prevents a hang of Dojo on shutdown ####
+
+Since v1.4.0, some users that Dojo is hanging during its shutdown. This release provides a fix for the users affected by this problem.
+
+
+#### Prevents automatic restarts of bitcoind container ####
+
+This release removes automatic restarts of the bitcoind container when bitcoind has exited with an error.
+
+
+### Change log ###
+
+#### Bug fixes ####
+
+- [0ff045d](https://github.com/Samourai-Wallet/samourai-dojo/commit/0ff045d1495807902e9fd7dcfbd2fdb4dc21c608) keep bitcoind container up if bitcoind exits with an error
+- [bd43526](https://github.com/Samourai-Wallet/samourai-dojo/commit/bd43526bca1f36a1ada07ad799c87b11a897e873) fix for dojo hanging on shutdown 
+- [3ee85db](https://github.com/Samourai-Wallet/samourai-dojo/commit/3ee85db3bf69f4312204e502c98d414a4180dc53) force kill of docker exec used for testing bitcoind shutdown if command hangs more than 12s
+
+
+#### Misc. ####
+
+- [21925f7](https://github.com/Samourai-Wallet/samourai-dojo/commit/21925f7c321974ef7eb55c1ad897a5e02ef52bee) bump versions of dojo and bitcoind container 
+- [08342e3](https://github.com/Samourai-Wallet/samourai-dojo/commit/08342e3995c473b589bb2a517e5bc30cf5f7dc9a) add trace in stop() function of dojo.sh
+
+
+### Credits ###
+
+- BTCxZelko
+- Crazyk031
+- GuerraMoneta
+- kenshin-samourai
+- LaurentMT
+- mj
 
 
 <a name="1_4_0"/>
