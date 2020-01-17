@@ -41,9 +41,8 @@ fi
 
 bitcoind "${bitcoind_options[@]}"
 
-# Loop keeping the container up
-# after bitcoind has been stopped
+# Keep the container up
 while true
 do
-  tail -f /dev/null > /dev/null
+  sleep 1
 done
