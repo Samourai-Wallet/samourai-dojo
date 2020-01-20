@@ -1,7 +1,7 @@
 FROM    rust:1.37.0-slim
 
 ENV     INDEXER_HOME        /home/indexer
-ENV     INDEXER_VERSION     0..1.0
+ENV     INDEXER_VERSION     0.1.0
 ENV     INDEXER_URL         https://github.com/Samourai-Wallet/addrindexrs.git
 
 RUN     apt-get update && \
@@ -33,9 +33,7 @@ USER    indexer
 RUN     cd "$INDEXER_HOME" && \
         git clone "$INDEXER_URL" "$INDEXER_HOME/addrindexrs" && \
         cd addrindexrs && \
-        git checkout "master"
-# TODO uncomment
-#        git checkout "tags/v$INDEXER_VERSION"
+        git checkout "tags/v$INDEXER_VERSION"
 
 RUN     cd "$INDEXER_HOME/addrindexrs" && \
         cargo install --path .
