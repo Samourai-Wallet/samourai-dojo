@@ -3,15 +3,112 @@
 
 The configuration files of Dojo provide a few advanced options allowing to tune your setup.
 
-A word of caution, though, the default values of these options try to maximize your privacy at a network level. Most of the advanced setups described in this document may damage your privacy. Use at your own risk!
+A word of caution, though, the default values of these options try to maximize your privacy at a network level. Some of the advanced setups described in this document may damage your privacy. Use at your own risk!
 
 
 ## Table of Content ##
+- [Local indexer of Bitcoin addresses](#local_indexer)
+- [Local Electrum server used as data source for imports/rescans](#local_electrum)
 - [External Bitcoin full node](#external_bitcoind)
 - [bitcoind RPC API ans ZMQ notifications exposed to external apps](#exposed_rpc_zmq)
 - [Static onion address for bitcoind hidden service](#static_onion)
 - [Configure Tor Bridges](#tor_bridges)
 - [Support of testnet](#testnet)
+
+
+<a name="local_indexer"/>
+
+## Local indexer of Bitcoin addresses ##
+
+By default, Dojo uses the local full node as its data source for imports and rescans of HD accounts and addresses. While private, this default option has many limitations. MyDojo allows to install a local indexer ([addrindexrs](https://github.com/Samourai-Wallet/addrindexrs)) providing the best of both worlds (no request sent to a third party, fast and real time rescans, complete transactional history is retrieved).
+
+
+### Requirements ###
+
+To date, the initial installation of the indexer requires 120GB of additionnal disk space.
+
+
+### Main benefits ###
+
+- Fast, private and exhaustive real time rescans,
+- Allows the block explorer to display the detailed activity of Bitcoin addresses
+
+
+### Known drawbacks ###
+
+* Additionnal disk space consumed by the index,
+* Increased duration of upgrades (from 5 to 20 minutes depending on the machine hosting your Dojo),
+* Slight increase of startup duration,
+* First indexation will require a few hours.
+
+
+### Procedure ###
+
+```
+# Edit the indexer config template file
+nano ./conf/docker-indexer.conf.tpl
+
+#
+# Set the value of INDEXER_INSTALL to "on"
+# Save and exit nano
+#
+
+# Edit the nodejs config file (or the corresponding template file if it's your first installation of Dojo)
+nano ./conf/docker-node.conf
+
+#
+# Set the value of NODE_ACTIVE_INDEXER to "local_indexer"
+# Save and exit nano
+#
+
+#
+# Launch the installation or the upgrade of your Dojo
+# with the commands `dojo.sh install` or `dojo.sh upgrade`
+#
+
+#
+# Be patient!
+# First indexation of all Bitcoin addresses will require a few hours.
+# Let the indexer complete all these operations before trying to use it for an import or a rescan.
+# You can follow the progress made by the indexer with the commands:
+#   `dojo.sh logs`
+# or
+#   `dojo.sh logs indexer`
+#
+```
+
+
+<a name="local_electrum"/>
+
+## Local Electrum server used as data source for imports/rescans ##
+
+If you're running an instance of ElectrumX or Electrs on your local network, Dojo allows you to define this instance as the data source used for imports and rescans. This setup is an alternative to the local indexer provided by MyDojo.
+
+Important: Do not use an Electrum server operated by a third party or hosted on a different local network.
+
+
+### Procedure ###
+
+```
+# Edit the indexer config template file
+nano ./conf/docker-indexer.conf.tpl
+
+#
+# Set the value of INDEXER_INSTALL to "off"
+# Set the value of INDEXER_IP with the IP address of your Electrum server
+# Set the value of INDEXER_RPC_PORT with the port used by the RPC API of your Electrum server (default= 50001)
+# Set the value of INDEXER_BATCH_SUPPORT to "active" if your Electrum server is ElectrumX, otherwise set the value to "inactive"
+# Save and exit nano
+#
+
+# Edit the nodejs config file (or the corresponding template file if it's your first installation of Dojo)
+nano ./conf/docker-node.conf
+
+#
+# Set the value of NODE_ACTIVE_INDEXER to "local_indexer"
+# Save and exit nano
+#
+```
 
 
 <a name="external_bitcoind"/>
