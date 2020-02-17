@@ -1,0 +1,27 @@
+version: "3.2"
+
+services:
+  indexer:
+    image: "samouraiwallet/dojo-indexer:${DOJO_INDEXER_VERSION_TAG}"
+    container_name: indexer
+    build:
+      context: ./indexer
+    env_file:
+      - ./.env
+      - ./conf/docker-common.conf
+      - ./conf/docker-bitcoind.conf
+      - ./conf/docker-indexer.conf
+    restart: on-failure
+    command: "/wait-for-it.sh tor:9050 --timeout=360 --strict -- /restart.sh"
+    expose:
+      - "50001"
+    volumes:
+      - data-indexer:/home/indexer
+    depends_on:
+      - tor
+    networks:
+      dojonet:
+        ipv4_address: 172.28.1.6
+
+volumes:
+  data-indexer:

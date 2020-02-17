@@ -6,6 +6,7 @@ MyDojo is a set of Docker containers providing a full Samourai backend composed 
 * backend modules with an API accessible as a static Tor hidden service,
 * a maintenance tool accessible through a Tor web browser,
 * a block explorer ([BTC RPC Explorer](https://github.com/janoside/btc-rpc-explorer)) accessible as a static Tor hidden service.
+* an optional indexer of Bitcoin addresses ([addrindexrs](https://github.com/Samourai-Wallet/addrindexrs)) providing fast and private rescans of HD accounts and loose addresses.
 
 
 ## Table of Content ##
@@ -40,24 +41,30 @@ MyDojo is a set of Docker containers providing a full Samourai backend composed 
                   Host machine                  | (Tor hidden services)
                  ______________________________ | _____________________________
                 |                               |                              |
-                |                      -------------------           dmznet    |
-                |                     |   Tor Container   |                    |
-                |                      -------------------                     |
-                |                             |        |                       |
-                |             -------------------      |                       |
-                |            |  Nginx Container  |     |                       |
-                |             -------------------      |                       |
-                |- - - - - - - - - - - | - - -|- - - - | - - - - - - - - - - - |
-                |     --------------------    |     --------------------       |
-                |    |  Nodejs Container  | ------ | Bitcoind Container |      |
-                |     --------------------    |     --------------------       |
-                |               |             |               |                |
-                |     --------------------    |     --------------------       |
-                |    |  MySQL Container   |   ---- |  BTC RPC Explorer  |      |
-                |     --------------------          --------------------       |
-                |                                                              |
-                |                                                  dojonet     |
+                |                           ---------                  dmznet  |
+                |                  --------|   Tor   |------------             |
+                |                 |         ---------             |            |
+                |                 |                               |            |
+                |             ---------                           |            |
+                |          --|  Nginx  |--------                  |            |
+                |         |   ---------         |                 |            |
+                |- - - - -|- - - - - - - - - - -|- - - - - - - - -|- - - - - - |
+                |         |                     |                 |            |
+                |     ----------            ----------        ----------       |
+                |    |  Nodejs  |----------| Explorer |------| Bitcoind |      |
+                |     ----------            ----------        ----------       |
+                |         |   |                 |                 |            |
+                |         |    -------          |                 |            |
+                |         |           |         |                 |            |
+                |     ----------      |     ----------            |            |
+                |    |  MySQL   |      ----|  Indexer |-----------             |
+                |     ----------            ----------                         |
+                |                                                      dojonet |
                 |______________________________________________________________|
+
+
+
+
 
 
 <a name="requirements"/>
@@ -66,7 +73,7 @@ MyDojo is a set of Docker containers providing a full Samourai backend composed 
 
 * A dedicated computer (host machine) connected 24/7 to internet
 * OS: Linux is recommended
-* Disk: 500GB (minimal) / 1TB (recommended) - SSD is recommended
+* Disk: 600GB (minimal) / 1TB (recommended) - SSD is recommended
 * RAM: 4GB (minimal)
 * Docker and Docker Compose installed on the host machine (be sure to run a recent version supporting v3.2 of docker-compose files, i.e. Docker Engine v17.04.0+)
 * Check that the clock of your computer is properly set (required for Tor)
@@ -77,10 +84,11 @@ MyDojo is a set of Docker containers providing a full Samourai backend composed 
 
 ## Configuration files ##
 
-Each new release of Dojo is packaged with 6 template files stored in the `<dojo_dir>/docker/my-dojo/conf` directory:
+Each new release of Dojo is packaged with 7 template files stored in the `<dojo_dir>/docker/my-dojo/conf` directory:
 - docker-common.conf.tpl
 - docker-bitcoin.conf.tpl
 - docker-explorer.conf.tpl
+- docker-indexer.conf.tpl
 - docker-mysql.conf.tpl
 - docker-node.conf.tpl
 - docker-tor.conf.tpl
@@ -105,6 +113,9 @@ Most options provided in the configuration files can be later modified. New valu
 For MacOS, see this detailed [installation guide](./DOCKER_mac_setup.MD).
 
 For Synology, see this detailed [installation guide](./DOCKER_synology_setup.md).
+
+For Raspberry Pi4 and Odroid N2, see the [Ronin Dojo Project](https://github.com/RoninDojo/RoninDojo)
+
 
 This procedure allows to install a new Dojo from scratch.
 
@@ -146,7 +157,9 @@ This procedure allows to install a new Dojo from scratch.
       * If you want to deactivate the block explorer, set the value of `EXPLORER_INSTALL` to `off`.
     See this [section](#explorer) for more details about the block explorer.
 
-* Dojo provides a few additional settings for advanced setups: 
+* Dojo provides a few additional settings for advanced setups:
+  * installation of an address indexer used for fast imports and rescans,
+  * support of an external electrum server (ElectrumX or electrs) used for fast imports and rescans,
   * static onion address for your full node,
   * bitcoind RPC API exposed to external apps,
   * use of an external full node,
@@ -239,6 +252,7 @@ Available commands:
                                   dojo.sh logs bitcoind       : display the logs of bitcoind
                                   dojo.sh logs db             : display the logs of the MySQL database
                                   dojo.sh logs tor            : display the logs of tor
+                                  dojo.sh logs indexer        : display the logs of the internal indexer
                                   dojo.sh logs api            : display the logs of the REST API (nodejs)
                                   dojo.sh logs tracker        : display the logs of the Tracker (nodejs)
                                   dojo.sh logs pushtx         : display the logs of the pushTx API (nodejs)
