@@ -129,18 +129,37 @@ install() {
   source "$DIR/install/install-scripts.sh"
 
   launchInstall=1
+  auto=1
+  noLog=1
 
-  if [ "$1" = "--auto" ]; then
+  # Extract install options from arguments
+  if [ $# -gt 0 ]; then
+    for option in $@
+    do
+      case "$option" in
+        --auto )    auto=0 ;;
+        --nolog )   noLog=0 ;;
+        * )         break ;;
+      esac
+    done
+  fi
+
+  # Confirmation
+  if [ $auto -eq 0 ]; then
     launchInstall=0
   else
     get_confirmation
     launchInstall=$?
   fi
 
+  # Installation
   if [ $launchInstall -eq 0 ]; then
+    # Initialize the config files
     init_config_files
+    # Build and start Dojo
     docker_up --remove-orphans
-    if [ "$1" != "--nolog" ]; then
+    # Display the logs
+    if [ $noLog -eq 1 ]; then
       logs
     fi
   fi
@@ -191,24 +210,47 @@ upgrade() {
   source "$DIR/install/upgrade-scripts.sh"
 
   launchUpgrade=1
+  auto=1
+  noLog=1
 
-  if [ "$1" = "--auto" ]; then
+  # Extract upgrade options from arguments
+  if [ $# -gt 0 ]; then
+    for option in $@
+    do
+      case "$option" in
+        --auto )      auto=0 ;;
+        --nolog )     noLog=0 ;;
+        * )           break ;;
+      esac
+    done
+  fi
+
+  # Confirmation
+  if [ $auto -eq 0 ]; then
     launchUpgrade=0
   else
     get_confirmation
     launchUpgrade=$?
   fi
 
+  # Upgrade Dojo
   if [ $launchUpgrade -eq 0 ]; then
+    # Select yaml files
     yamlFiles=$(select_yaml_files)
+    # Update config files
     update_config_files
+    # Cleanup
     cleanup
+    # Load env vars for compose files
     source_file "$DIR/conf/docker-bitcoind.conf"
     export BITCOIND_RPC_EXTERNAL_IP
     eval "docker-compose $yamlFiles build --no-cache"
+    # Start Dojo
     docker_up --remove-orphans
+    # Update the database
     update_dojo_db
-    if [ "$1" != "--nolog" ]; then
+    # Display the logs
+    if [ $noLog -eq 1 ]; then
       logs
     fi
   fi
