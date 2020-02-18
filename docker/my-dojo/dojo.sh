@@ -212,6 +212,7 @@ upgrade() {
   launchUpgrade=1
   auto=1
   noLog=1
+  noCache=1
 
   # Extract upgrade options from arguments
   if [ $# -gt 0 ]; then
@@ -220,6 +221,7 @@ upgrade() {
       case "$option" in
         --auto )      auto=0 ;;
         --nolog )     noLog=0 ;;
+        --nocache )   noCache=0 ;;
         * )           break ;;
       esac
     done
@@ -244,7 +246,12 @@ upgrade() {
     # Load env vars for compose files
     source_file "$DIR/conf/docker-bitcoind.conf"
     export BITCOIND_RPC_EXTERNAL_IP
-    eval "docker-compose $yamlFiles build --no-cache"
+    # Rebuild the images (with or without cache)
+    if [ $noCache -eq 0 ]; then
+      eval "docker-compose $yamlFiles build --no-cache"
+    else
+      eval "docker-compose $yamlFiles build"
+    fi
     # Start Dojo
     docker_up --remove-orphans
     # Update the database
@@ -442,7 +449,7 @@ case "$subcommand" in
     clean
     ;;
   install )
-    install $1
+    install "$@"
     ;;
   logs )
     module=$1; shift
@@ -488,7 +495,7 @@ case "$subcommand" in
     uninstall
     ;;
   upgrade )
-    upgrade $1
+    upgrade "$@"
     ;;
   version )
     version
