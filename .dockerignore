@@ -1,3 +1,4 @@
 node_modules
 .git
 private-tests
+docker/my-dojo/conf
