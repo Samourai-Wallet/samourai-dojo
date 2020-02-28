@@ -8,9 +8,8 @@ RUN       mkdir -p "$LOGS_DIR" && \
 
 # Copy configuration files
 COPY      ./nginx.conf /etc/nginx/nginx.conf
-COPY      ./dojo.conf /etc/nginx/sites-enabled/dojo.conf
-COPY      ./dojo-explorer.conf /etc/nginx/sites-enabled/dojo-explorer.conf
-
+COPY      foo ./dojo-explorer.con[f] ./dojo.con[f] /etc/nginx/sites-enabled/
+RUN       rm /etc/nginx/sites-enabled/foo
 # Copy wait-for script
 COPY      ./wait-for /wait-for
 

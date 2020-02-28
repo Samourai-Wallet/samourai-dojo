@@ -1,0 +1,492 @@
+version: 2
+jobs:
+  build:
+    machine: 
+      docker_layer_caching: false
+    steps: 
+      - checkout
+  # publish jobs require $DOCKERHUB_REPO, $DOCKERHUB_USER, $DOCKERHUB_PASS defined
+  publish_docker_linuxamd64_dojo-nodejs:
+    machine:
+      docker_layer_caching: false
+    steps:
+      - checkout  
+      - run:
+          command: |
+            LATEST_TAG=${CIRCLE_TAG:1} #trim v from tag
+            #
+            LATEST_TAG=${CIRCLE_TAG:1} #trim v from tag
+            if [ -z "$LATEST_TAG" ]
+            then
+              LATEST_TAG="latest" && [[ "$CIRCLE_BRANCH" == "develop" ]] && LATEST_TAG="dev"
+            fi
+            #
+            sudo docker build --pull -t $DOCKERHUB_REPO/dojo-nodejs:$LATEST_TAG-amd64 -f docker/my-dojo/node/Dockerfile .
+            sudo docker login --username=$DOCKERHUB_USER --password=$DOCKERHUB_PASS
+            sudo docker push $DOCKERHUB_REPO/dojo-nodejs:$LATEST_TAG-amd64
+  publish_docker_linuxarm32_dojo-nodejs:
+    machine:
+      docker_layer_caching: false
+    steps:
+      - checkout  
+      - run:
+          command: |
+            sudo docker run --rm --privileged multiarch/qemu-user-static:register --reset
+            LATEST_TAG=${CIRCLE_TAG:1} #trim v from tag
+            #
+            LATEST_TAG=${CIRCLE_TAG:1} #trim v from tag
+            if [ -z "$LATEST_TAG" ]
+            then
+              LATEST_TAG="latest" && [[ "$CIRCLE_BRANCH" == "develop" ]] && LATEST_TAG="dev"
+            fi
+            #
+            sudo docker build --pull -t $DOCKERHUB_REPO/dojo-nodejs:$LATEST_TAG-arm32v7 -f docker/my-dojo/node/Dockerfile .
+            sudo docker login --username=$DOCKERHUB_USER --password=$DOCKERHUB_PASS
+            sudo docker push $DOCKERHUB_REPO/dojo-nodejs:$LATEST_TAG-arm32v7
+  publish_docker_linuxarm64_dojo-nodejs:
+    machine:
+      docker_layer_caching: false
+    steps:
+      - checkout
+      - run:
+          command: |
+            sudo docker run --rm --privileged multiarch/qemu-user-static:register --reset
+            LATEST_TAG=${CIRCLE_TAG:1} #trim v from tag
+            #
+            LATEST_TAG=${CIRCLE_TAG:1} #trim v from tag
+            if [ -z "$LATEST_TAG" ]
+            then
+              LATEST_TAG="latest" && [[ "$CIRCLE_BRANCH" == "develop" ]] && LATEST_TAG="dev"
+            fi
+            #
+            sudo docker build --pull -t $DOCKERHUB_REPO/dojo-nodejs:$LATEST_TAG-arm64v8 -f docker/my-dojo/node/Dockerfile .
+            sudo docker login --username=$DOCKERHUB_USER --password=$DOCKERHUB_PASS
+            sudo docker push $DOCKERHUB_REPO/dojo-nodejs:$LATEST_TAG-arm64v8
+  publish_docker_multiarch_dojo-nodejs:
+    machine:
+      enabled: true
+      image: circleci/classic:201808-01
+    steps:
+      - run:
+          command: |
+            # Turn on Experimental features
+            sudo mkdir $HOME/.docker
+            sudo sh -c 'echo "{ \"experimental\": \"enabled\" }" >> $HOME/.docker/config.json'
+            #
+            sudo docker login --username=$DOCKERHUB_USER --password=$DOCKERHUB_PASS
+            #
+            LATEST_TAG=${CIRCLE_TAG:1} #trim v from tag
+            #
+            LATEST_TAG=${CIRCLE_TAG:1} #trim v from tag
+            if [ -z "$LATEST_TAG" ]
+            then
+              LATEST_TAG="latest" && [[ "$CIRCLE_BRANCH" == "develop" ]] && LATEST_TAG="dev"
+            fi
+            #
+            sudo docker manifest create --amend $DOCKERHUB_REPO/dojo-nodejs:$LATEST_TAG $DOCKERHUB_REPO/dojo-nodejs:$LATEST_TAG-amd64 $DOCKERHUB_REPO/dojo-nodejs:$LATEST_TAG-arm32v7 $DOCKERHUB_REPO/dojo-nodejs:$LATEST_TAG-arm64v8
+            sudo docker manifest annotate $DOCKERHUB_REPO/dojo-nodejs:$LATEST_TAG $DOCKERHUB_REPO/dojo-nodejs:$LATEST_TAG-amd64 --os linux --arch amd64
+            sudo docker manifest annotate $DOCKERHUB_REPO/dojo-nodejs:$LATEST_TAG $DOCKERHUB_REPO/dojo-nodejs:$LATEST_TAG-arm32v7 --os linux --arch arm --variant v7
+            sudo docker manifest annotate $DOCKERHUB_REPO/dojo-nodejs:$LATEST_TAG $DOCKERHUB_REPO/dojo-nodejs:$LATEST_TAG-arm64v8 --os linux --arch arm64 --variant v8
+            sudo docker manifest push $DOCKERHUB_REPO/dojo-nodejs:$LATEST_TAG -p
+
+  publish_docker_linuxamd64_dojo-db:
+    machine:
+      docker_layer_caching: false
+    steps:
+      - checkout  
+      - run:
+          command: |
+            LATEST_TAG=${CIRCLE_TAG:1} #trim v from tag
+            #
+            LATEST_TAG=${CIRCLE_TAG:1} #trim v from tag
+            if [ -z "$LATEST_TAG" ]
+            then
+              LATEST_TAG="latest" && [[ "$CIRCLE_BRANCH" == "develop" ]] && LATEST_TAG="dev"
+            fi
+            #
+            sudo docker build --pull -t $DOCKERHUB_REPO/dojo-db:$LATEST_TAG-amd64 -f docker/my-dojo/node/Dockerfile .
+            sudo docker login --username=$DOCKERHUB_USER --password=$DOCKERHUB_PASS
+            sudo docker push $DOCKERHUB_REPO/dojo-db:$LATEST_TAG-amd64
+  publish_docker_linuxarm32_dojo-db:
+    machine:
+      docker_layer_caching: false
+    steps:
+      - checkout  
+      - run:
+          command: |
+            sudo docker run --rm --privileged multiarch/qemu-user-static:register --reset
+            LATEST_TAG=${CIRCLE_TAG:1} #trim v from tag
+            #
+            LATEST_TAG=${CIRCLE_TAG:1} #trim v from tag
+            if [ -z "$LATEST_TAG" ]
+            then
+              LATEST_TAG="latest" && [[ "$CIRCLE_BRANCH" == "develop" ]] && LATEST_TAG="dev"
+            fi
+            #
+            sudo docker build --pull -t $DOCKERHUB_REPO/dojo-db:$LATEST_TAG-arm32v7 -f docker/my-dojo/node/Dockerfile .
+            sudo docker login --username=$DOCKERHUB_USER --password=$DOCKERHUB_PASS
+            sudo docker push $DOCKERHUB_REPO/dojo-db:$LATEST_TAG-arm32v7
+  publish_docker_linuxarm64_dojo-db:
+    machine:
+      docker_layer_caching: false
+    steps:
+      - checkout
+      - run:
+          command: |
+            sudo docker run --rm --privileged multiarch/qemu-user-static:register --reset
+            LATEST_TAG=${CIRCLE_TAG:1} #trim v from tag
+            #
+            LATEST_TAG=${CIRCLE_TAG:1} #trim v from tag
+            if [ -z "$LATEST_TAG" ]
+            then
+              LATEST_TAG="latest" && [[ "$CIRCLE_BRANCH" == "develop" ]] && LATEST_TAG="dev"
+            fi
+            #
+            sudo docker build --pull -t $DOCKERHUB_REPO/dojo-db:$LATEST_TAG-arm64v8 -f docker/my-dojo/node/Dockerfile .
+            sudo docker login --username=$DOCKERHUB_USER --password=$DOCKERHUB_PASS
+            sudo docker push $DOCKERHUB_REPO/dojo-db:$LATEST_TAG-arm64v8
+  publish_docker_multiarch_dojo-db:
+    machine:
+      enabled: true
+      image: circleci/classic:201808-01
+    steps:
+      - run:
+          command: |
+            # Turn on Experimental features
+            sudo mkdir $HOME/.docker
+            sudo sh -c 'echo "{ \"experimental\": \"enabled\" }" >> $HOME/.docker/config.json'
+            #
+            sudo docker login --username=$DOCKERHUB_USER --password=$DOCKERHUB_PASS
+            #
+            LATEST_TAG=${CIRCLE_TAG:1} #trim v from tag
+            if [ -z "$LATEST_TAG" ]
+            then
+              LATEST_TAG="latest" && [[ "$CIRCLE_BRANCH" == "develop" ]] && LATEST_TAG="dev"
+            fi
+            #
+            sudo docker manifest create --amend $DOCKERHUB_REPO/dojo-db:$LATEST_TAG $DOCKERHUB_REPO/dojo-db:$LATEST_TAG-amd64 $DOCKERHUB_REPO/dojo-db:$LATEST_TAG-arm32v7 $DOCKERHUB_REPO/dojo-db:$LATEST_TAG-arm64v8
+            sudo docker manifest annotate $DOCKERHUB_REPO/dojo-db:$LATEST_TAG $DOCKERHUB_REPO/dojo-db:$LATEST_TAG-amd64 --os linux --arch amd64
+            sudo docker manifest annotate $DOCKERHUB_REPO/dojo-db:$LATEST_TAG $DOCKERHUB_REPO/dojo-db:$LATEST_TAG-arm32v7 --os linux --arch arm --variant v7
+            sudo docker manifest annotate $DOCKERHUB_REPO/dojo-db:$LATEST_TAG $DOCKERHUB_REPO/dojo-db:$LATEST_TAG-arm64v8 --os linux --arch arm64 --variant v8
+            sudo docker manifest push $DOCKERHUB_REPO/dojo-db:$LATEST_TAG -p
+  publish_docker_linuxamd64_dojo-nginx:
+    machine:
+      docker_layer_caching: false
+    steps:
+      - checkout  
+      - run:
+          command: |
+            LATEST_TAG=${CIRCLE_TAG:1} #trim v from tag
+            #
+            LATEST_TAG=${CIRCLE_TAG:1} #trim v from tag
+            if [ -z "$LATEST_TAG" ]
+            then
+              LATEST_TAG="latest" && [[ "$CIRCLE_BRANCH" == "develop" ]] && LATEST_TAG="dev"
+            fi
+            #
+            sudo docker build --pull -t $DOCKERHUB_REPO/dojo-nginx:$LATEST_TAG-amd64 -f  docker/my-dojo/nginx/Dockerfile docker/my-dojo/nginx
+            sudo docker login --username=$DOCKERHUB_USER --password=$DOCKERHUB_PASS
+            sudo docker push $DOCKERHUB_REPO/dojo-nginx:$LATEST_TAG-amd64
+  publish_docker_linuxarm32_dojo-nginx:
+    machine:
+      docker_layer_caching: false
+    steps:
+      - checkout  
+      - run:
+          command: |
+            sudo docker run --rm --privileged multiarch/qemu-user-static:register --reset
+            LATEST_TAG=${CIRCLE_TAG:1} #trim v from tag
+            #
+            LATEST_TAG=${CIRCLE_TAG:1} #trim v from tag
+            if [ -z "$LATEST_TAG" ]
+            then
+              LATEST_TAG="latest" && [[ "$CIRCLE_BRANCH" == "develop" ]] && LATEST_TAG="dev"
+            fi
+            #
+            sudo docker build --pull -t $DOCKERHUB_REPO/dojo-nginx:$LATEST_TAG-arm32v7 -f  docker/my-dojo/nginx/Dockerfile docker/my-dojo/nginx
+            sudo docker login --username=$DOCKERHUB_USER --password=$DOCKERHUB_PASS
+            sudo docker push $DOCKERHUB_REPO/dojo-nginx:$LATEST_TAG-arm32v7
+  publish_docker_linuxarm64_dojo-nginx:
+    machine:
+      docker_layer_caching: false
+    steps:
+      - checkout
+      - run:
+          command: |
+            sudo docker run --rm --privileged multiarch/qemu-user-static:register --reset
+            LATEST_TAG=${CIRCLE_TAG:1} #trim v from tag
+            #
+            LATEST_TAG=${CIRCLE_TAG:1} #trim v from tag
+            if [ -z "$LATEST_TAG" ]
+            then
+              LATEST_TAG="latest" && [[ "$CIRCLE_BRANCH" == "develop" ]] && LATEST_TAG="dev"
+            fi
+            #
+            sudo docker build --pull -t $DOCKERHUB_REPO/dojo-nginx:$LATEST_TAG-arm64v8 -f  docker/my-dojo/nginx/Dockerfile docker/my-dojo/nginx
+            sudo docker login --username=$DOCKERHUB_USER --password=$DOCKERHUB_PASS
+            sudo docker push $DOCKERHUB_REPO/dojo-nginx:$LATEST_TAG-arm64v8
+  publish_docker_multiarch_dojo-nginx:
+    machine:
+      enabled: true
+      image: circleci/classic:201808-01
+    steps:
+      - run:
+          command: |
+            # Turn on Experimental features
+            sudo mkdir $HOME/.docker
+            sudo sh -c 'echo "{ \"experimental\": \"enabled\" }" >> $HOME/.docker/config.json'
+            #
+            sudo docker login --username=$DOCKERHUB_USER --password=$DOCKERHUB_PASS
+            #
+            LATEST_TAG=${CIRCLE_TAG:1} #trim v from tag
+            #
+            LATEST_TAG=${CIRCLE_TAG:1} #trim v from tag
+            if [ -z "$LATEST_TAG" ]
+            then
+              LATEST_TAG="latest" && [[ "$CIRCLE_BRANCH" == "develop" ]] && LATEST_TAG="dev"
+            fi
+            #
+            sudo docker manifest create --amend $DOCKERHUB_REPO/dojo-nginx:$LATEST_TAG $DOCKERHUB_REPO/dojo-nginx:$LATEST_TAG-amd64 $DOCKERHUB_REPO/dojo-nginx:$LATEST_TAG-arm32v7 $DOCKERHUB_REPO/dojo-nginx:$LATEST_TAG-arm64v8
+            sudo docker manifest annotate $DOCKERHUB_REPO/dojo-nginx:$LATEST_TAG $DOCKERHUB_REPO/dojo-nginx:$LATEST_TAG-amd64 --os linux --arch amd64
+            sudo docker manifest annotate $DOCKERHUB_REPO/dojo-nginx:$LATEST_TAG $DOCKERHUB_REPO/dojo-nginx:$LATEST_TAG-arm32v7 --os linux --arch arm --variant v7
+            sudo docker manifest annotate $DOCKERHUB_REPO/dojo-nginx:$LATEST_TAG $DOCKERHUB_REPO/dojo-nginx:$LATEST_TAG-arm64v8 --os linux --arch arm64 --variant v8
+            sudo docker manifest push $DOCKERHUB_REPO/dojo-nginx:$LATEST_TAG -p
+
+  publish_docker_linuxamd64_dojo-tor:
+    machine:
+      docker_layer_caching: false
+    steps:
+      - checkout  
+      - run:
+          command: |
+            LATEST_TAG=${CIRCLE_TAG:1} #trim v from tag
+            #
+            LATEST_TAG=${CIRCLE_TAG:1} #trim v from tag
+            if [ -z "$LATEST_TAG" ]
+            then
+              LATEST_TAG="latest" && [[ "$CIRCLE_BRANCH" == "develop" ]] && LATEST_TAG="dev"
+            fi
+            #
+            sudo docker build --pull -t $DOCKERHUB_REPO/dojo-tor:$LATEST_TAG-amd64 -f  docker/my-dojo/tor/Dockerfile docker/my-dojo/tor
+            sudo docker login --username=$DOCKERHUB_USER --password=$DOCKERHUB_PASS
+            sudo docker push $DOCKERHUB_REPO/dojo-tor:$LATEST_TAG-amd64
+  publish_docker_linuxarm32_dojo-tor:
+    machine:
+      docker_layer_caching: false
+    steps:
+      - checkout  
+      - run:
+          command: |
+            sudo docker run --rm --privileged multiarch/qemu-user-static:register --reset
+            LATEST_TAG=${CIRCLE_TAG:1} #trim v from tag
+            #
+            LATEST_TAG=${CIRCLE_TAG:1} #trim v from tag
+            if [ -z "$LATEST_TAG" ]
+            then
+              LATEST_TAG="latest" && [[ "$CIRCLE_BRANCH" == "develop" ]] && LATEST_TAG="dev"
+            fi
+            #
+            sudo docker build --pull -t $DOCKERHUB_REPO/dojo-tor:$LATEST_TAG-arm32v7 -f  docker/my-dojo/tor/Dockerfile docker/my-dojo/tor
+            sudo docker login --username=$DOCKERHUB_USER --password=$DOCKERHUB_PASS
+            sudo docker push $DOCKERHUB_REPO/dojo-tor:$LATEST_TAG-arm32v7
+  publish_docker_linuxarm64_dojo-tor:
+    machine:
+      docker_layer_caching: false
+    steps:
+      - checkout
+      - run:
+          command: |
+            sudo docker run --rm --privileged multiarch/qemu-user-static:register --reset
+            LATEST_TAG=${CIRCLE_TAG:1} #trim v from tag
+            #
+            LATEST_TAG=${CIRCLE_TAG:1} #trim v from tag
+            if [ -z "$LATEST_TAG" ]
+            then
+              LATEST_TAG="latest" && [[ "$CIRCLE_BRANCH" == "develop" ]] && LATEST_TAG="dev"
+            fi
+            #
+            sudo docker build --pull -t $DOCKERHUB_REPO/dojo-tor:$LATEST_TAG-arm64v8 -f  docker/my-dojo/tor/Dockerfile docker/my-dojo/tor
+            sudo docker login --username=$DOCKERHUB_USER --password=$DOCKERHUB_PASS
+            sudo docker push $DOCKERHUB_REPO/dojo-tor:$LATEST_TAG-arm64v8
+  publish_docker_multiarch_dojo-tor:
+    machine:
+      enabled: true
+      image: circleci/classic:201808-01
+    steps:
+      - run:
+          command: |
+            # Turn on Experimental features
+            sudo mkdir $HOME/.docker
+            sudo sh -c 'echo "{ \"experimental\": \"enabled\" }" >> $HOME/.docker/config.json'
+            #
+            sudo docker login --username=$DOCKERHUB_USER --password=$DOCKERHUB_PASS
+            #
+            LATEST_TAG=${CIRCLE_TAG:1} #trim v from tag
+            #
+            LATEST_TAG=${CIRCLE_TAG:1} #trim v from tag
+            if [ -z "$LATEST_TAG" ]
+            then
+              LATEST_TAG="latest" && [[ "$CIRCLE_BRANCH" == "develop" ]] && LATEST_TAG="dev"
+            fi
+            #
+            sudo docker manifest create --amend $DOCKERHUB_REPO/dojo-tor:$LATEST_TAG $DOCKERHUB_REPO/dojo-tor:$LATEST_TAG-amd64 $DOCKERHUB_REPO/dojo-tor:$LATEST_TAG-arm32v7 $DOCKERHUB_REPO/dojo-tor:$LATEST_TAG-arm64v8
+            sudo docker manifest annotate $DOCKERHUB_REPO/dojo-tor:$LATEST_TAG $DOCKERHUB_REPO/dojo-tor:$LATEST_TAG-amd64 --os linux --arch amd64
+            sudo docker manifest annotate $DOCKERHUB_REPO/dojo-tor:$LATEST_TAG $DOCKERHUB_REPO/dojo-tor:$LATEST_TAG-arm32v7 --os linux --arch arm --variant v7
+            sudo docker manifest annotate $DOCKERHUB_REPO/dojo-tor:$LATEST_TAG $DOCKERHUB_REPO/dojo-tor:$LATEST_TAG-arm64v8 --os linux --arch arm64 --variant v8
+            sudo docker manifest push $DOCKERHUB_REPO/dojo-tor:$LATEST_TAG -p
+
+
+workflows:
+  version: 2
+
+  publish:
+    jobs:
+      - publish_docker_linuxamd64_dojo-nodejs:
+          filters:
+            branches:
+              only:
+                - master
+                - develop
+            # only act on version tags
+            tags:
+              only: /v[0-9]+(\.[0-9]+)*/
+      - publish_docker_linuxarm32_dojo-nodejs:
+          filters:
+            branches:
+              only:
+                - master
+                - develop
+            tags:
+              only: /v[0-9]+(\.[0-9]+)*/
+      - publish_docker_linuxarm64_dojo-nodejs:
+           filters:
+            branches:
+              only:
+                - master
+                - develop
+            tags:
+              only: /v[0-9]+(\.[0-9]+)*/
+      - publish_docker_multiarch_dojo-nodejs:
+          requires:
+            - publish_docker_linuxamd64_dojo-nodejs
+            - publish_docker_linuxarm32_dojo-nodejs
+            - publish_docker_linuxarm64_dojo-nodejs
+          filters:
+            branches:
+              only:
+                - master
+                - develop
+            tags:
+              only: /v[0-9]+(\.[0-9]+)*/
+      - publish_docker_linuxamd64_dojo-db:
+          filters:
+            branches:
+              only:
+                - master
+                - develop
+            # only act on version tags
+            tags:
+              only: /v[0-9]+(\.[0-9]+)*/
+      - publish_docker_linuxarm32_dojo-db:
+          filters:
+            branches:
+              only:
+                - master
+                - develop
+            tags:
+              only: /v[0-9]+(\.[0-9]+)*/
+      - publish_docker_linuxarm64_dojo-db:
+           filters:
+            branches:
+              only:
+                - master
+                - develop
+            tags:
+              only: /v[0-9]+(\.[0-9]+)*/
+      - publish_docker_multiarch_dojo-db:
+          requires:
+            - publish_docker_linuxamd64_dojo-db
+            - publish_docker_linuxarm32_dojo-db
+            - publish_docker_linuxarm64_dojo-db
+          filters:
+            branches:
+              only:
+                - master
+                - develop
+            tags:
+              only: /v[0-9]+(\.[0-9]+)*/
+      - publish_docker_linuxamd64_dojo-nginx:
+                filters:
+                  branches:
+                    only:
+                      - master
+                      - develop
+                  # only act on version tags
+                  tags:
+                    only: /v[0-9]+(\.[0-9]+)*/
+      - publish_docker_linuxarm32_dojo-nginx:
+          filters:
+            branches:
+              only:
+                - master
+                - develop
+            tags:
+              only: /v[0-9]+(\.[0-9]+)*/
+      - publish_docker_linuxarm64_dojo-nginx:
+           filters:
+            branches:
+              only:
+                - master
+                - develop
+            tags:
+              only: /v[0-9]+(\.[0-9]+)*/
+      - publish_docker_multiarch_dojo-nginx:
+          requires:
+            - publish_docker_linuxamd64_dojo-nginx
+            - publish_docker_linuxarm32_dojo-nginx
+            - publish_docker_linuxarm64_dojo-nginx
+          filters:
+            branches:
+              only:
+                - master
+                - develop
+            tags:
+              only: /v[0-9]+(\.[0-9]+)*/
+      - publish_docker_linuxamd64_dojo-tor:
+          filters:
+
+            branches:
+              only:
+                - master
+                - develop
+            # only act on version tags
+            tags:
+              only: /v[0-9]+(\.[0-9]+)*/
+      - publish_docker_linuxarm32_dojo-tor:
+          filters:
+            branches:
+              only:
+                - master
+                - develop
+            tags:
+              only: /v[0-9]+(\.[0-9]+)*/
+      - publish_docker_linuxarm64_dojo-tor:
+           filters:
+            branches:
+              only:
+                - master
+                - develop
+            tags:
+              only: /v[0-9]+(\.[0-9]+)*/
+      - publish_docker_multiarch_dojo-tor:
+          requires:
+            - publish_docker_linuxamd64_dojo-tor
+            - publish_docker_linuxarm32_dojo-tor
+            - publish_docker_linuxarm64_dojo-tor
+          filters:
+            branches:
+              only:
+                - master
+                - develop
+            tags:
+              only: /v[0-9]+(\.[0-9]+)*/
