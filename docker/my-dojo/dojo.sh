@@ -152,6 +152,30 @@ install() {
     launchInstall=$?
   fi
 
+  # Detection of past install
+  if [ $launchInstall -eq 0 ]; then
+    pastInstallsfound=$(docker image ls | grep samouraiwallet/dojo-db | wc -l)
+    if [ $pastInstallsfound -ne 0 ]; then
+      # Past installation found. Ask confirmation forreinstall
+      echo -e "\nWarning: Found traces of a previous installation of Dojo on this machine."
+      echo "A new installation requires to remove these elements first."
+      get_confirmation_reinstall
+      launchReinstall=$?
+
+      if [ $launchReinstall -eq 0 ]; then
+        # Uninstall
+        echo ""
+        uninstall
+        launchReinstall=$?
+      fi
+
+      if [ $launchReinstall -eq 1 ]; then
+        launchInstall=1
+        echo -e "\nInstallation was cancelled."
+      fi
+    fi
+  fi
+
   # Installation
   if [ $launchInstall -eq 0 ]; then
     # Initialize the config files
@@ -167,20 +191,30 @@ install() {
 
 # Delete everything
 uninstall() {
-  docker-compose rm
+  source "$DIR/install/uninstall-scripts.sh"
 
-  yamlFiles=$(select_yaml_files)
-  eval "docker-compose $yamlFiles down"
+  get_confirmation
+  launchUninstall=$?
 
-  docker image rm samouraiwallet/dojo-db:"$DOJO_DB_VERSION_TAG"
-  docker image rm samouraiwallet/dojo-bitcoind:"$DOJO_BITCOIND_VERSION_TAG"
-  docker image rm samouraiwallet/dojo-explorer:"$DOJO_EXPLORER_VERSION_TAG"
-  docker image rm samouraiwallet/dojo-nodejs:"$DOJO_NODEJS_VERSION_TAG"
-  docker image rm samouraiwallet/dojo-nginx:"$DOJO_NGINX_VERSION_TAG"
-  docker image rm samouraiwallet/dojo-tor:"$DOJO_TOR_VERSION_TAG"
-  docker image rm samouraiwallet/dojo-indexer:"$DOJO_INDEXER_VERSION_TAG"
+  if [ $launchUninstall -eq 0 ]; then
+    docker-compose rm
 
-  docker volume prune
+    yamlFiles=$(select_yaml_files)
+    eval "docker-compose $yamlFiles down"
+
+    docker image rm samouraiwallet/dojo-db:"$DOJO_DB_VERSION_TAG"
+    docker image rm samouraiwallet/dojo-bitcoind:"$DOJO_BITCOIND_VERSION_TAG"
+    docker image rm samouraiwallet/dojo-explorer:"$DOJO_EXPLORER_VERSION_TAG"
+    docker image rm samouraiwallet/dojo-nodejs:"$DOJO_NODEJS_VERSION_TAG"
+    docker image rm samouraiwallet/dojo-nginx:"$DOJO_NGINX_VERSION_TAG"
+    docker image rm samouraiwallet/dojo-tor:"$DOJO_TOR_VERSION_TAG"
+    docker image rm samouraiwallet/dojo-indexer:"$DOJO_INDEXER_VERSION_TAG"
+
+    docker volume prune
+    return 0
+  else
+    return 1
+  fi
 }
 
 # Clean-up (remove old docker images)

@@ -31,6 +31,18 @@ get_confirmation() {
   done
 }
 
+# Confirm reinstallation
+get_confirmation_reinstall() {
+  while true; do
+    read -p "Do you really wish to reinstall Dojo on your computer? [y/n]" yn
+    case $yn in
+      [Yy]* ) return 0;;
+      [Nn]* ) echo "Reinstallation was cancelled."; return 1;;
+      * ) echo "Please answer yes or no.";;
+    esac
+  done
+}
+
 # Initialize configuration files from templates
 init_config_files() {
   # Initialize db scripts
