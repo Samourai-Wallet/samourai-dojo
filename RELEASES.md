@@ -26,7 +26,7 @@ The local indexer provides private, fast and exhaustive imports and rescans.
 
 Warning: The local indexer requires around 120GB of additionnal disk space during its installation, and around 60GB after the compaction of its database.
 
-See this [documentation](https://github.com/Samourai-Wallet/samourai-dojo/blob/master/doc/DOCKER_advanced_setups.md)#local_indexer for the detailed procedure allowing to configure and install the indexer.
+See this [documentation](https://github.com/Samourai-Wallet/samourai-dojo/blob/master/doc/DOCKER_advanced_setups.md#local_indexer) for the detailed procedure allowing to configure and install the indexer.
 
 
 #### Local Electrum server used as data source for imports/rescans ####
@@ -52,6 +52,11 @@ A new option for the upgrade command allows to force a complete rebuild of all t
 A few controls and confirmations were added to the installation process in order to avoid multiple calls leading to problems with database credentials. Additionally, a full uninstallation is forced before a new installation is allowed.
 
 
+#### Upgrade of bitcoind to v0.19.1 ####
+
+Upgrade to Bitcoin Core v0.19.1
+
+
 ### Change log ###
 
 
@@ -61,6 +66,7 @@ A few controls and confirmations were added to the installation process in order
 - [#119](https://github.com/Samourai-Wallet/samourai-dojo/pull/119) improve performances of dojo upgrades
 - [#120](https://github.com/Samourai-Wallet/samourai-dojo/pull/120) upgrade btc-rpc-explorer to v1.1.8 
 - [#121](https://github.com/Samourai-Wallet/samourai-dojo/pull/121) add controls and confirmations before reinstalls and uninstalls
+- [#124](https://github.com/Samourai-Wallet/samourai-dojo/pull/124) upgrade bitcoin v0.19.1
 
 
 #### Bug fixes ####
