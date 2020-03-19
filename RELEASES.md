@@ -67,11 +67,18 @@ Upgrade to Bitcoin Core v0.19.1
 - [#120](https://github.com/Samourai-Wallet/samourai-dojo/pull/120) upgrade btc-rpc-explorer to v1.1.8 
 - [#121](https://github.com/Samourai-Wallet/samourai-dojo/pull/121) add controls and confirmations before reinstalls and uninstalls
 - [#124](https://github.com/Samourai-Wallet/samourai-dojo/pull/124) upgrade bitcoin v0.19.1
+- [#125](https://github.com/Samourai-Wallet/samourai-dojo/pull/125) improve support of --auto option in dojo.sh
+- [#127](https://github.com/Samourai-Wallet/samourai-dojo/pull/127) upgrade btc-rpc-explorer to v1.1.9
 
 
 #### Bug fixes ####
 
 - [#115](https://github.com/Samourai-Wallet/samourai-dojo/pull/115) backport of fix implemented in 1.4.1
+
+
+#### Security ####
+
+- [#126](https://github.com/Samourai-Wallet/samourai-dojo/pull/126) upgrade nodejs packages
 
 
 #### Credits ###
