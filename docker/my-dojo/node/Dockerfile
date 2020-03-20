@@ -1,4 +1,4 @@
-FROM    node:8.12.0-stretch
+FROM    node:12-buster
 
 ENV     LOGS_DIR    /data/logs
 ENV     APP_DIR     /home/node/app
