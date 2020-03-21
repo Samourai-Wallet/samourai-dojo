@@ -1,4 +1,4 @@
-FROM    debian:stretch
+FROM    debian:buster
 
 ENV     TOR_HOME            /var/lib/tor
 ENV     TOR_URL             https://archive.torproject.org/tor-package-archive

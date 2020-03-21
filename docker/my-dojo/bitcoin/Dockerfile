@@ -1,4 +1,4 @@
-FROM    debian:stretch
+FROM    debian:buster
 
 
 #################################################################
@@ -14,7 +14,7 @@ ENV     BITCOIN_PGP_KEY     01EA5486DE18A882D4C2684590C8019E36C2E964
 
 RUN     set -ex && \
         apt-get update && \
-        apt-get install -qq --no-install-recommends ca-certificates dirmngr gosu gpg wget && \
+        apt-get install -qq --no-install-recommends ca-certificates dirmngr gosu gpg gpg-agent wget && \
         rm -rf /var/lib/apt/lists/*
 
 # Build and install bitcoin binaries
