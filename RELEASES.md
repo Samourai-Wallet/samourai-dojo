@@ -75,6 +75,7 @@ Upgrade to Bitcoin Core v0.19.1
 #### Bug fixes ####
 
 - [#115](https://github.com/Samourai-Wallet/samourai-dojo/pull/115) backport of fix implemented in 1.4.1
+- [#131](https://github.com/Samourai-Wallet/samourai-dojo/pull/131) fix issue 130
 
 
 #### Security ####
