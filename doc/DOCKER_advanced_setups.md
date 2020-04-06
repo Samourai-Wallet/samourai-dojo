@@ -45,8 +45,11 @@ To date, the initial installation of the indexer requires 120GB of additionnal d
 ### Procedure ###
 
 ```
-# Edit the indexer config template file
+# If you're installing a new Dojo or if you're upgrading from a Dojo version <= 1.4.1, edit the docker-indexer.conf.tpl file
 nano ./conf/docker-indexer.conf.tpl
+
+# Otherwise, edit the docker-indexer.conf file
+nano ./conf/docker-indexer.conf
 
 #
 # Set the value of INDEXER_INSTALL to "on"
@@ -90,8 +93,11 @@ Important: Do not use an Electrum server operated by a third party or hosted on 
 ### Procedure ###
 
 ```
-# Edit the indexer config template file
+# If you're installing a new Dojo or if you're upgrading from a Dojo version <= 1.4.1, edit the docker-indexer.conf.tpl file
 nano ./conf/docker-indexer.conf.tpl
+
+# Otherwise, edit the docker-indexer.conf file
+nano ./conf/docker-indexer.conf
 
 #
 # Set the value of INDEXER_INSTALL to "off"
@@ -162,8 +168,11 @@ zmqpubrawtx=...
 #### Configuration of Dojo ####
 
 ```
-# Edit the bitcoin config template file
+# If you're installing a new Dojo, edit the docker-bitcoind.conf.tpl file
 nano ./conf/docker-bitcoind.conf.tpl
+
+# Otherwise, edit the docker-bitcoind.conf file
+nano ./conf/docker-bitcoind.conf
 
 #
 # Set the value of BITCOIND_INSTALL to "off"
@@ -214,7 +223,10 @@ The following steps allow to expose the RPC API and ZMQ notifications to applica
 # Stop your Dojo
 ./dojo.sh stop
 
-# Edit the bitcoin config file
+# If you're installing a new Dojo, edit the docker-bitcoind.conf.tpl file
+nano ./conf/docker-bitcoind.conf.tpl
+
+# Otherwise, edit the docker-bitcoind.conf file
 nano ./conf/docker-bitcoind.conf
 
 #
@@ -252,7 +264,10 @@ The following steps allow to keep a static onion address (not recommended).
 # Stop your Dojo
 ./dojo.sh stop
 
-# Edit the bitcoin config file
+# If you're installing a new Dojo, edit the docker-bitcoind.conf.tpl file
+nano ./conf/docker-bitcoind.conf.tpl
+
+# Otherwise, edit the docker-bitcoind.conf file
 nano ./conf/docker-bitcoind.conf
 
 #
@@ -286,7 +301,10 @@ The following steps allow to activate the use of Tor bridges by Dojo.
 #   obfs4 ...
 #   obfs4 ...
 
-# Edit the tor config file
+# If you're installing a new Dojo, edit the docker-tor.conf.tpl file
+nano ./conf/docker-tor.conf.tpl
+
+# Otherwise, edit the docker-tor.conf file
 nano ./conf/docker-tor.conf
 
 #
@@ -312,7 +330,7 @@ By default, Dojo is installed for running on Bitcoin mainnet.
 The following steps allow to install an instance of Dojo running on Bitcoin testnet.
 
 ```
-# Edit the common config template file
+# Edit the docker-common.conf.tpl file
 nano ./conf/docker-common.conf.tpl
 
 #
