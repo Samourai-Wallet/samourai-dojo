@@ -83,6 +83,11 @@ Upgrade to Bitcoin Core v0.19.1
 - [#126](https://github.com/Samourai-Wallet/samourai-dojo/pull/126) upgrade nodejs packages
 
 
+#### Documentation ####
+
+- [#137](https://github.com/Samourai-Wallet/samourai-dojo/pull/137) improved instructions related to config files
+
+
 #### Credits ###
 
 - BTCxZelko
