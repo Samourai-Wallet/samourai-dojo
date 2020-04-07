@@ -1,6 +1,6 @@
 {
   "name": "samourai-dojo",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "description": "Backend server for Samourai Wallet",
   "main": "accounts/index.js",
   "scripts": {
@@ -26,6 +26,7 @@
     "helmet": "3.12.1",
     "lodash": "4.17.14",
     "lru-cache": "4.0.2",
+    "minimist": "1.2.2",
     "mysql": "2.16.0",
     "passport": "0.4.0",
     "passport-localapikey-update": "0.6.0",
@@ -37,6 +38,6 @@
     "zeromq": "4.2.0"
   },
   "devDependencies": {
-    "mocha": "^6.2.0"
+    "mocha": "^7.1.1"
   }
 }

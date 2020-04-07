@@ -9,6 +9,8 @@ services:
     env_file:
       - ./.env
       - ./conf/docker-bitcoind.conf
+      - ./conf/docker-node.conf
+      - ./conf/docker-indexer.conf
       - ./conf/docker-explorer.conf
     restart: always
     command: "/home/node/app/restart.sh"

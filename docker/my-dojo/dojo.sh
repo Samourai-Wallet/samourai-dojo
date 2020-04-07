@@ -14,6 +14,7 @@ source_file() {
 }
 
 # Source config files
+source_file "$DIR/conf/docker-indexer.conf"
 source_file "$DIR/conf/docker-bitcoind.conf"
 source_file "$DIR/conf/docker-explorer.conf"
 source_file "$DIR/conf/docker-common.conf"
@@ -36,6 +37,10 @@ select_yaml_files() {
 
   if [ "$EXPLORER_INSTALL" == "on" ]; then
     yamlFiles="$yamlFiles -f $DIR/overrides/explorer.install.yaml"
+  fi
+
+  if [ "$INDEXER_INSTALL" == "on" ]; then
+    yamlFiles="$yamlFiles -f $DIR/overrides/indexer.install.yaml"
   fi
 
   # Return yamlFiles
@@ -124,18 +129,70 @@ install() {
   source "$DIR/install/install-scripts.sh"
 
   launchInstall=1
+  auto=1
+  noLog=1
 
-  if [ "$1" = "--auto" ]; then
+  # Extract install options from arguments
+  if [ $# -gt 0 ]; then
+    for option in $@
+    do
+      case "$option" in
+        --auto )    auto=0 ;;
+        --nolog )   noLog=0 ;;
+        * )         break ;;
+      esac
+    done
+  fi
+
+  # Confirmation
+  if [ $auto -eq 0 ]; then
     launchInstall=0
   else
     get_confirmation
     launchInstall=$?
   fi
 
+  # Detection of past install
   if [ $launchInstall -eq 0 ]; then
+    pastInstallsfound=$(docker image ls | grep samouraiwallet/dojo-db | wc -l)
+    if [ $pastInstallsfound -ne 0 ]; then
+      # Past installation found. Ask confirmation forreinstall
+      echo -e "\nWarning: Found traces of a previous installation of Dojo on this machine."
+      echo "A new installation requires to remove these elements first."
+      if [ $auto -eq 0 ]; then
+        launchReinstall=0
+      else
+        get_confirmation_reinstall
+        launchReinstall=$?
+      fi
+
+      if [ $launchReinstall -eq 0 ]; then
+        echo ""
+        # Uninstall
+        if [ $auto -eq 0 ]; then
+          uninstall --auto
+          launchReinstall=$?
+        else
+          uninstall
+          launchReinstall=$?
+        fi
+      fi
+
+      if [ $launchReinstall -eq 1 ]; then
+        launchInstall=1
+        echo -e "\nInstallation was cancelled."
+      fi
+    fi
+  fi
+
+  # Installation
+  if [ $launchInstall -eq 0 ]; then
+    # Initialize the config files
     init_config_files
+    # Build and start Dojo
     docker_up --remove-orphans
-    if [ "$1" != "--nolog" ]; then
+    # Display the logs
+    if [ $noLog -eq 1 ]; then
       logs
     fi
   fi
@@ -143,19 +200,48 @@ install() {
 
 # Delete everything
 uninstall() {
-  docker-compose rm
+  source "$DIR/install/uninstall-scripts.sh"
 
-  yamlFiles=$(select_yaml_files)
-  eval "docker-compose $yamlFiles down"
+  auto=1
 
-  docker image rm samouraiwallet/dojo-db:"$DOJO_DB_VERSION_TAG"
-  docker image rm samouraiwallet/dojo-bitcoind:"$DOJO_BITCOIND_VERSION_TAG"
-  docker image rm samouraiwallet/dojo-explorer:"$DOJO_EXPLORER_VERSION_TAG"
-  docker image rm samouraiwallet/dojo-nodejs:"$DOJO_NODEJS_VERSION_TAG"
-  docker image rm samouraiwallet/dojo-nginx:"$DOJO_NGINX_VERSION_TAG"
-  docker image rm samouraiwallet/dojo-tor:"$DOJO_TOR_VERSION_TAG"
+  # Extract install options from arguments
+  if [ $# -gt 0 ]; then
+    for option in $@
+    do
+      case "$option" in
+        --auto )    auto=0 ;;
+        * )         break ;;
+      esac
+    done
+  fi
 
-  docker volume prune
+  # Confirmation
+  if [ $auto -eq 0 ]; then
+    launchUninstall=0
+  else
+    get_confirmation
+    launchUninstall=$?
+  fi
+
+  if [ $launchUninstall -eq 0 ]; then
+    docker-compose rm -f
+
+    yamlFiles=$(select_yaml_files)
+    eval "docker-compose $yamlFiles down"
+
+    docker image rm -f samouraiwallet/dojo-db:"$DOJO_DB_VERSION_TAG"
+    docker image rm -f samouraiwallet/dojo-bitcoind:"$DOJO_BITCOIND_VERSION_TAG"
+    docker image rm -f samouraiwallet/dojo-explorer:"$DOJO_EXPLORER_VERSION_TAG"
+    docker image rm -f samouraiwallet/dojo-nodejs:"$DOJO_NODEJS_VERSION_TAG"
+    docker image rm -f samouraiwallet/dojo-nginx:"$DOJO_NGINX_VERSION_TAG"
+    docker image rm -f samouraiwallet/dojo-tor:"$DOJO_TOR_VERSION_TAG"
+    docker image rm -f samouraiwallet/dojo-indexer:"$DOJO_INDEXER_VERSION_TAG"
+
+    docker volume prune -f
+    return 0
+  else
+    return 1
+  fi
 }
 
 # Clean-up (remove old docker images)
@@ -177,6 +263,7 @@ clean() {
   del_images_for samouraiwallet/dojo-nodejs "$DOJO_NODEJS_VERSION_TAG"
   del_images_for samouraiwallet/dojo-nginx "$DOJO_NGINX_VERSION_TAG"
   del_images_for samouraiwallet/dojo-tor "$DOJO_TOR_VERSION_TAG"
+  del_images_for samouraiwallet/dojo-indexer "$DOJO_INDEXER_VERSION_TAG"
 }
 
 # Upgrade
@@ -184,24 +271,54 @@ upgrade() {
   source "$DIR/install/upgrade-scripts.sh"
 
   launchUpgrade=1
+  auto=1
+  noLog=1
+  noCache=1
 
-  if [ "$1" = "--auto" ]; then
+  # Extract upgrade options from arguments
+  if [ $# -gt 0 ]; then
+    for option in $@
+    do
+      case "$option" in
+        --auto )      auto=0 ;;
+        --nolog )     noLog=0 ;;
+        --nocache )   noCache=0 ;;
+        * )           break ;;
+      esac
+    done
+  fi
+
+  # Confirmation
+  if [ $auto -eq 0 ]; then
     launchUpgrade=0
   else
     get_confirmation
     launchUpgrade=$?
   fi
 
+  # Upgrade Dojo
   if [ $launchUpgrade -eq 0 ]; then
+    # Select yaml files
     yamlFiles=$(select_yaml_files)
+    # Update config files
     update_config_files
+    # Cleanup
     cleanup
+    # Load env vars for compose files
     source_file "$DIR/conf/docker-bitcoind.conf"
     export BITCOIND_RPC_EXTERNAL_IP
-    eval "docker-compose $yamlFiles build --no-cache"
+    # Rebuild the images (with or without cache)
+    if [ $noCache -eq 0 ]; then
+      eval "docker-compose $yamlFiles build --no-cache"
+    else
+      eval "docker-compose $yamlFiles build"
+    fi
+    # Start Dojo
     docker_up --remove-orphans
+    # Update the database
     update_dojo_db
-    if [ "$1" != "--nolog" ]; then
+    # Display the logs
+    if [ $noLog -eq 1 ]; then
       logs
     fi
   fi
@@ -249,6 +366,7 @@ logs_explorer() {
 
 logs() {
   source_file "$DIR/conf/docker-bitcoind.conf"
+  source_file "$DIR/conf/docker-indexer.conf"
   source_file "$DIR/conf/docker-common.conf"
 
   case $1 in
@@ -265,6 +383,14 @@ logs() {
         docker exec -ti bitcoind tail -f "$bitcoindDataDir/debug.log"
       else
         echo -e "Command not supported for your setup.\nCause: Your Dojo is using an external bitcoind"
+      fi
+      ;;
+    indexer )
+      if [ "$INDEXER_INSTALL" == "on" ]; then
+        yamlFiles=$(select_yaml_files)
+        eval "docker-compose $yamlFiles logs --tail=50 --follow indexer"
+      else
+        echo -e "Command not supported for your setup.\nCause: Your Dojo is not using an internal indexer"
       fi
       ;;
     tor )
@@ -284,6 +410,9 @@ logs() {
       fi
       if [ "$EXPLORER_INSTALL" == "on" ]; then
         services="$services explorer"
+      fi
+      if [ "$INDEXER_INSTALL" == "on" ]; then
+        services="$services indexer"
       fi
       eval "docker-compose $yamlFiles logs --tail=0 --follow $services"
       ;;
@@ -305,6 +434,9 @@ help() {
   echo " "
   echo "  install                       Install your dojo."
   echo " "
+  echo "                                Available options:"
+  echo "                                  --nolog     : do not display the logs after Dojo has been laucnhed."
+  echo " "
   echo "  logs [module] [options]       Display the logs of your dojo. Use CTRL+C to stop the logs."
   echo " "
   echo "                                Available modules:"
@@ -312,6 +444,7 @@ help() {
   echo "                                  dojo.sh logs bitcoind       : display the logs of bitcoind"
   echo "                                  dojo.sh logs db             : display the logs of the MySQL database"
   echo "                                  dojo.sh logs tor            : display the logs of tor"
+  echo "                                  dojo.sh logs indexer        : display the logs of the internal indexer"
   echo "                                  dojo.sh logs api            : display the logs of the REST API (nodejs)"
   echo "                                  dojo.sh logs tracker        : display the logs of the Tracker (nodejs)"
   echo "                                  dojo.sh logs pushtx         : display the logs of the pushTx API (nodejs)"
@@ -333,7 +466,11 @@ help() {
   echo " "
   echo "  uninstall                     Delete your dojo. Be careful! This command will also remove all data."
   echo " "
-  echo "  upgrade                       Upgrade your dojo."
+  echo "  upgrade [options]             Upgrade your dojo."
+  echo " "
+  echo "                                Available options:"
+  echo "                                  --nolog     : do not display the logs after Dojo has been restarted."
+  echo "                                  --nocache   : rebuild the docker containers without reusing the cached layers."
   echo " "
   echo "  version                       Display the version of dojo"
 }
@@ -380,7 +517,7 @@ case "$subcommand" in
     clean
     ;;
   install )
-    install $1
+    install "$@"
     ;;
   logs )
     module=$1; shift
@@ -423,10 +560,10 @@ case "$subcommand" in
     stop
     ;;
   uninstall )
-    uninstall
+    uninstall "$@"
     ;;
   upgrade )
-    upgrade $1
+    upgrade "$@"
     ;;
   version )
     version

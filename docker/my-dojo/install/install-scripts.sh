@@ -31,6 +31,18 @@ get_confirmation() {
   done
 }
 
+# Confirm reinstallation
+get_confirmation_reinstall() {
+  while true; do
+    read -p "Do you really wish to reinstall Dojo on your computer? [y/n]" yn
+    case $yn in
+      [Yy]* ) return 0;;
+      [Nn]* ) echo "Reinstallation was cancelled."; return 1;;
+      * ) echo "Please answer yes or no.";;
+    esac
+  done
+}
+
 # Initialize configuration files from templates
 init_config_files() {
   # Initialize db scripts
@@ -61,7 +73,9 @@ init_config_files() {
   cp ./conf/docker-tor.conf.tpl ./conf/docker-tor.conf
   echo "Initialized docker-tor.conf"
 
-  # Initialize config files for nginx and the maintenance tool
+  cp ./conf/docker-indexer.conf.tpl ./conf/docker-indexer.conf
+  echo "Initialized docker-indexer.conf"
+
   if [ "$EXPLORER_INSTALL" == "on" ]; then
     cp ./nginx/explorer.conf ./nginx/dojo-explorer.conf
   else
@@ -69,6 +83,7 @@ init_config_files() {
   fi
   echo "Initialized dojo-explorer.conf (nginx)"
 
+  # Initialize config files for nginx and the maintenance tool 
   if [ "$COMMON_BTC_NETWORK" == "testnet" ]; then
     cp ./nginx/testnet.conf ./nginx/dojo.conf
     echo "Initialized dojo.conf (nginx)"
