@@ -20,7 +20,7 @@ This will install Dojo on your Synology hardware.
 
 <a name="install"/>
 
-## Install procedure
+## Install
 
 - Connect to Synology web ui as administrator
 - Open `Package center`, search for `Docker`, click `Install`.
@@ -55,3 +55,41 @@ db          | WARNING: no logs are available with the 'db' log driver
   * nodejs
   * tor
 - Select a container (ie `bitcoind`), click `Detail`, `Log` to see container's logs in real time
+
+## Usage
+- Retrieve the Tor onion addresses (v3) of the API and block explorer of your Dojo
+```
+./dojo.sh onion
+```
+Use Tor Browser for:
+- Explorer: <explorer-onion-address>.onion (username=any, password=<EXPLORER_KEY>)
+- Maintenance tool: <api-onion-address>.onion/admin (password=<NODE_ADMIN_KEY>)
+
+## Upgrade
+- Open SSH terminal to your Synology
+- Stop Dojo
+```
+cd <dojo_dir>
+./docker/my-dojo/dojo.sh stop
+```
+- Backup
+```
+cp -r ./ ../dojo-backup
+```
+- Download latest Dojo from [GitHub releases](https://github.com/Samourai-Wallet/samourai-dojo/releases)
+```
+  mkdir newDojo
+  cd newDojo
+  wget https://github.com/Samourai-Wallet/samourai-dojo/archive/v1.5.0.tar.gz
+  tar xzvf v1.5.0.tar.gz
+  cp -r samourai-dojo-1.5.0/* ../
+  cd ..
+```
+- Upgrade
+```
+  ./docker/my-dojo/dojo.sh upgrade
+```
+- Clean
+```
+  rm -Rf newDojo
+```
