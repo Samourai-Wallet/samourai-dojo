@@ -2,9 +2,216 @@
 
 
 ## Releases ##
+
+- [v1.5.0](#1_5_0)
+- [v1.4.1](#1_4_1)
+- [v1.4.0](#1_4_0)
 - [v1.3.0](#1_3_0)
 - [v1.2.0](#1_2_0)
 - [v1.1.0](#1_1_0)
+
+
+<a name="1_5_0"/>
+
+## Samourai Dojo v1.5.0 ##
+
+
+### Notable changes ###
+
+
+#### Local indexer of Bitcoin addresses ####
+
+Previous versions of Dojo provided the choice between 2 data sources for import and rescan operations, the local bitcoind and OXT. This version introduces a new optional Docker container running a local indexer ([addrindexrs](https://github.com/Samourai-Wallet/addrindexrs)) that can be used as an alternative to the 2 existing options.
+
+The local indexer provides private, fast and exhaustive imports and rescans.
+
+Warning: The local indexer requires around 120GB of additionnal disk space during its installation, and around 60GB after the compaction of its database.
+
+See this [documentation](https://github.com/Samourai-Wallet/samourai-dojo/blob/master/doc/DOCKER_advanced_setups.md#local_indexer) for the detailed procedure allowing to configure and install the indexer.
+
+
+#### Local Electrum server used as data source for imports/rescans ####
+
+This version of Dojo introduces the support of a local external Electrum server (ElectrumX or Electrs) as the data source of imports and rescans. This option provides the same benefits as the new local indexer to users running an Electrum server.
+
+See this [documentation](https://github.com/Samourai-Wallet/samourai-dojo/blob/master/doc/DOCKER_advanced_setups.md#local_electrum) for the detailed procedure allowing to configure your Electrum server as the data source of imports and rescans.
+
+
+#### Improved performances of Dojo upgrades ####
+
+By default, the upgrade process will try to reuse the image layers cached by Docker in order to reduce the duration of upgrades.
+
+A new option for the upgrade command allows to force a complete rebuild of all the containers (equivalemt to the former default behavior of the upgrade process).
+
+```
+> ./dojo.sh upgrade --nocache
+```
+
+
+#### Additional controls before installation ####
+
+A few controls and confirmations were added to the installation process in order to avoid multiple calls leading to problems with database credentials. Additionally, a full uninstallation is forced before a new installation is allowed.
+
+
+#### Upgrade of bitcoind to v0.19.1 ####
+
+Upgrade to Bitcoin Core v0.19.1
+
+
+### Change log ###
+
+
+#### MyDojo ####
+
+- [#118](https://github.com/Samourai-Wallet/samourai-dojo/pull/118) add support of local indexers as the data source of imports and rescans
+- [#119](https://github.com/Samourai-Wallet/samourai-dojo/pull/119) improve performances of dojo upgrades
+- [#120](https://github.com/Samourai-Wallet/samourai-dojo/pull/120) upgrade btc-rpc-explorer to v1.1.8 
+- [#121](https://github.com/Samourai-Wallet/samourai-dojo/pull/121) add controls and confirmations before reinstalls and uninstalls
+- [#124](https://github.com/Samourai-Wallet/samourai-dojo/pull/124) upgrade bitcoin v0.19.1
+- [#125](https://github.com/Samourai-Wallet/samourai-dojo/pull/125) improve support of --auto option in dojo.sh
+- [#127](https://github.com/Samourai-Wallet/samourai-dojo/pull/127) upgrade btc-rpc-explorer to v1.1.9
+- [#129](https://github.com/Samourai-Wallet/samourai-dojo/pull/129) fix mydojo buster
+
+
+#### Bug fixes ####
+
+- [#115](https://github.com/Samourai-Wallet/samourai-dojo/pull/115) backport of fix implemented in 1.4.1
+- [#131](https://github.com/Samourai-Wallet/samourai-dojo/pull/131) fix issue 130
+
+
+#### Security ####
+
+- [#126](https://github.com/Samourai-Wallet/samourai-dojo/pull/126) upgrade nodejs packages
+
+
+#### Documentation ####
+
+- [#137](https://github.com/Samourai-Wallet/samourai-dojo/pull/137) improved instructions related to config files
+
+
+#### Credits ###
+
+- BTCxZelko
+- Crazyk031
+- GuerraMoneta
+- kenshin-samourai
+- LaurentMT
+
+
+<a name="1_4_1"/>
+
+## Samourai Dojo v1.4.1 ##
+
+
+### Notable changes ###
+
+
+#### Prevents a hang of Dojo on shutdown ####
+
+Since v1.4.0, some users that Dojo is hanging during its shutdown. This release provides a fix for the users affected by this problem.
+
+
+#### Prevents automatic restarts of bitcoind container ####
+
+This release removes automatic restarts of the bitcoind container when bitcoind has exited with an error.
+
+
+### Change log ###
+
+#### Bug fixes ####
+
+- [0ff045d](https://github.com/Samourai-Wallet/samourai-dojo/commit/0ff045d1495807902e9fd7dcfbd2fdb4dc21c608) keep bitcoind container up if bitcoind exits with an error
+- [bd43526](https://github.com/Samourai-Wallet/samourai-dojo/commit/bd43526bca1f36a1ada07ad799c87b11a897e873) fix for dojo hanging on shutdown 
+- [3ee85db](https://github.com/Samourai-Wallet/samourai-dojo/commit/3ee85db3bf69f4312204e502c98d414a4180dc53) force kill of docker exec used for testing bitcoind shutdown if command hangs more than 12s
+
+
+#### Misc. ####
+
+- [21925f7](https://github.com/Samourai-Wallet/samourai-dojo/commit/21925f7c321974ef7eb55c1ad897a5e02ef52bee) bump versions of dojo and bitcoind container 
+- [08342e3](https://github.com/Samourai-Wallet/samourai-dojo/commit/08342e3995c473b589bb2a517e5bc30cf5f7dc9a) add trace in stop() function of dojo.sh
+
+
+### Credits ###
+
+- BTCxZelko
+- Crazyk031
+- GuerraMoneta
+- kenshin-samourai
+- LaurentMT
+- mj
+
+
+<a name="1_4_0"/>
+
+## Samourai Dojo v1.4.0 ##
+
+
+### Notable changes ###
+
+
+#### Local block explorer ####
+
+This release adds a new docker container hosting a local block explorer ([BTC RPC Explorer](https://github.com/janoside/btc-rpc-explorer)).
+
+Access to the block explorer is secured by a password defined in /docker/my-dojo/conf/docker-explorer.conf (see `EXPLORER_KEY` configuration parameter).
+
+*Upgrade procedure*
+
+```
+# Stop your Dojo
+
+# Download the Dojo archive for this release
+
+# Override the content of your <dojo_dir> with the content of the Dojo archive
+
+# Edit <dojo_dir>/docker/my-dojo/conf/docker-explorer.conf.tpl and set the value of `EXPLORER_KEY` with a custom password.
+
+# Launch the upgrade of your Dojo with: dojo.sh upgrade
+```
+
+This local block explorer is available as a Tor hidden service. Its static onion address can be retrieved with the command
+
+```
+dojo.sh onion
+```
+
+
+#### Autostart of Dojo ####
+
+Starting with this release, Dojo is automatically launched when the docker daemon starts.
+
+
+### Change log ###
+
+#### MyDojo ####
+
+- [#101](https://github.com/Samourai-Wallet/samourai-dojo/pull/101) add --auto and --nolog options to install and upgrade commands
+- [#102](https://github.com/Samourai-Wallet/samourai-dojo/pull/102) improve performances of transactions imports
+- [#107](https://github.com/Samourai-Wallet/samourai-dojo/pull/107) add optional block explorer
+- [#108](https://github.com/Samourai-Wallet/samourai-dojo/pull/108) switch restart policies of containers to always
+- [#109](https://github.com/Samourai-Wallet/samourai-dojo/pull/109) use port 80 of keyservers
+- [#110](https://github.com/Samourai-Wallet/samourai-dojo/pull/110) replace keyserver
+- [#111](https://github.com/Samourai-Wallet/samourai-dojo/pull/111) enable autostart of dojo
+- [#113](https://github.com/Samourai-Wallet/samourai-dojo/pull/113) check if dojo is running (start and stop commands)
+
+
+#### Bug fixes ####
+
+- [#100](https://github.com/Samourai-Wallet/samourai-dojo/pull/100) fix issue caused by sed -i on osx
+
+
+#### Documentation ####
+
+- [#99](https://github.com/Samourai-Wallet/samourai-dojo/pull/99) doc: installation of dojo on synology
+- [b12d24d](https://github.com/Samourai-Wallet/samourai-dojo/commit/b12d24d088a95023a8e1c9e8a1b1c4b40491d4a7) update readme
+
+
+### Credits ###
+
+- anwfr
+- jochemin
+- kenshin-samourai
+- LaurentMT
 
 
 <a name="1_3_0"/>

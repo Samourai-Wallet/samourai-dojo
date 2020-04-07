@@ -25,6 +25,13 @@ tor_options=(
   --HiddenServiceDirGroupReadable 1
 )
 
+if [ "$EXPLORER_INSTALL" == "on" ]; then
+  tor_options+=(--HiddenServiceDir /var/lib/tor/hsv3explorer)
+  tor_options+=(--HiddenServiceVersion 3)
+  tor_options+=(--HiddenServicePort "80 172.29.1.3:9080")
+  tor_options+=(--HiddenServiceDirGroupReadable 1)
+fi
+
 if [ "$TOR_USE_BRIDGES" == "on" ]; then
   tor_options+=(--ClientTransportPlugin "obfs4 exec /usr/local/bin/obfs4proxy")
   tor_options+=(--UseBridges 1)

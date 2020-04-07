@@ -16,7 +16,9 @@ It provides in a single command the setup of a full Samourai backend composed of
 * a bitcoin full node only accessible as an ephemeral Tor hidden service,
 * the backend database,
 * the backend modules with an API accessible as a static Tor hidden service,
-* a maintenance tool accessible through a Tor web browser.
+* a maintenance tool accessible through a Tor web browser,
+* a block explorer ([BTC RPC Explorer](https://github.com/janoside/btc-rpc-explorer)) accessible through a Tor web browser,
+* an optional indexer of Bitcoin addresses ([addrindexrs](https://github.com/Samourai-Wallet/addrindexrs)) providing fast and private rescans of HD accounts and loose addresses.
 
 See [the documentation](./doc/DOCKER_setup.md) for detailed setup instructions.
 
@@ -60,12 +62,15 @@ Authentication is enforced by an API key and Json Web Tokens.
 
 **Import of HD Accounts and data sources**
 
-* First import of an unknown HD account relies on a data source (local bitcoind or OXT). After that, the tracker will keep everything current.
+* First import of an unknown HD account relies on a data source (local bitcoind, local indexer or OXT). After that, the tracker will keep everything current.
 
-* Default option relies on the local bitcoind and makes you 100% independent of Samourai Wallet's infrastructure. This option is recommended for better privacy.
+* Using the local bitcoind (default option) or the local indexer makes you 100% independent of Samourai Wallet's infrastructure and is recommended for better privacy.
 
 * Activation of bitcoind as the data source:
   * Edit /keys/index.js and set "indexer.active" to "local_bitcoind". OXT API will be ignored.
+
+* Activation of the local indexer as the data source:
+  * Edit /keys/index.js and set "indexer.active" to "local_indexer". OXT API will be ignored.
 
 * Activation of OXT as the data source (through socks5):
   * Edit /keys/index.js and set "indexer.active" to "third_party_explorer".
@@ -76,5 +81,8 @@ Authentication is enforced by an API key and Json Web Tokens.
   * It's slightly slower than using the option relying on the OXT API.
   * It may fail to correctly import an existing wallet if this wallet had a large activity.
   * If you use bitcoind and if the import seems to return an invalid balance, you can use the "XPUB rescan" function provided by the maintenance tool. This function allows you to force the minimum number of addresses to be derived and the start index for the derivation.
-  * As a rule of thumb, we recommend to use bitcoind as the source of imports and to setup your Dojo with a new clean wallet. It increases your privacy and it removes all potential issues with the import of a large wallet.
-  
+
+* Main drawbacks of using your local indexer for these imports:
+  * It requires 120GB of additional disk space during its initialization.
+
+As a rule of thumb, we recommend to use the local indexer as the source of imports and to setup your Dojo with a new clean wallet. It increases your privacy and it removes all potential issues with the import of a large wallet.

@@ -1,8 +1,9 @@
-FROM    debian:stretch
+FROM    debian:buster
 
 ENV     TOR_HOME            /var/lib/tor
 ENV     TOR_URL             https://archive.torproject.org/tor-package-archive
 ENV     TOR_VERSION         0.3.5.8
+ENV     TOR_GPG_KS_URI      hkp://keyserver.ubuntu.com:80
 ENV     TOR_GPG_KEY1        0xEB5A896A28988BF5
 ENV     TOR_GPG_KEY2        0xC218525819F78451
 ENV     TOR_GPG_KEY3        0x21194EBB165733EA
@@ -24,10 +25,10 @@ RUN     set -ex && \
         cd /usr/local/src && \
         wget -qO "tor-$TOR_VERSION.tar.gz" "$TOR_URL/tor-$TOR_VERSION.tar.gz" && \
         wget -qO "tor-$TOR_VERSION.tar.gz.asc" "$TOR_URL/tor-$TOR_VERSION.tar.gz.asc" && \
-        gpg --keyserver ipv4.pool.sks-keyservers.net --recv-keys "$TOR_GPG_KEY1" && \
-        gpg --keyserver ipv4.pool.sks-keyservers.net --recv-keys "$TOR_GPG_KEY2" && \
-        gpg --keyserver ipv4.pool.sks-keyservers.net --recv-keys "$TOR_GPG_KEY3" && \
-        gpg --keyserver ipv4.pool.sks-keyservers.net --recv-keys "$TOR_GPG_KEY4" && \
+        gpg --keyserver "$TOR_GPG_KS_URI" --recv-keys "$TOR_GPG_KEY1" && \
+        gpg --keyserver "$TOR_GPG_KS_URI" --recv-keys "$TOR_GPG_KEY2" && \
+        gpg --keyserver "$TOR_GPG_KS_URI" --recv-keys "$TOR_GPG_KEY3" && \
+        gpg --keyserver "$TOR_GPG_KS_URI" --recv-keys "$TOR_GPG_KEY4" && \
         gpg --verify "tor-$TOR_VERSION.tar.gz.asc" && \
         tar -xzvf "tor-$TOR_VERSION.tar.gz" -C /usr/local/src && \
         cd "/usr/local/src/tor-$TOR_VERSION" && \

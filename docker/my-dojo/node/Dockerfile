@@ -1,8 +1,12 @@
-FROM    node:8.12.0-stretch
+FROM    node:12-buster
 
 ENV     LOGS_DIR    /data/logs
 ENV     APP_DIR     /home/node/app
 
+
+# Add node user to tor group
+RUN     addgroup --system -gid 1107 tor && \
+        usermod -a -G tor node
 
 # Install forever
 RUN     npm install -g forever

@@ -40,3 +40,9 @@ if [ "$COMMON_BTC_NETWORK" == "testnet" ]; then
 fi
 
 bitcoind "${bitcoind_options[@]}"
+
+# Keep the container up
+while true
+do
+  sleep 1
+done

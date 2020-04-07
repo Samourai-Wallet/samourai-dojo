@@ -6,6 +6,12 @@ else
   source ./conf/docker-bitcoind.conf.tpl
 fi
 
+if [ -f ./conf/docker-explorer.conf ]; then
+  source ./conf/docker-explorer.conf
+else
+  source ./conf/docker-explorer.conf.tpl
+fi
+
 if [ -f ./conf/docker-common.conf ]; then
   source ./conf/docker-common.conf
 else
@@ -20,6 +26,18 @@ get_confirmation() {
     case $yn in
       [Yy]* ) return 0;;
       [Nn]* ) echo "Installation was cancelled."; return 1;;
+      * ) echo "Please answer yes or no.";;
+    esac
+  done
+}
+
+# Confirm reinstallation
+get_confirmation_reinstall() {
+  while true; do
+    read -p "Do you really wish to reinstall Dojo on your computer? [y/n]" yn
+    case $yn in
+      [Yy]* ) return 0;;
+      [Nn]* ) echo "Reinstallation was cancelled."; return 1;;
       * ) echo "Please answer yes or no.";;
     esac
   done
@@ -49,8 +67,21 @@ init_config_files() {
   cp ./conf/docker-node.conf.tpl ./conf/docker-node.conf
   echo "Initialized docker-node.conf"
 
+  cp ./conf/docker-explorer.conf.tpl ./conf/docker-explorer.conf
+  echo "Initialized docker-explorer.conf"
+
   cp ./conf/docker-tor.conf.tpl ./conf/docker-tor.conf
   echo "Initialized docker-tor.conf"
+
+  cp ./conf/docker-indexer.conf.tpl ./conf/docker-indexer.conf
+  echo "Initialized docker-indexer.conf"
+
+  if [ "$EXPLORER_INSTALL" == "on" ]; then
+    cp ./nginx/explorer.conf ./nginx/dojo-explorer.conf
+  else
+    cp /dev/null ./nginx/dojo-explorer.conf
+  fi
+  echo "Initialized dojo-explorer.conf (nginx)"
 
   # Initialize config files for nginx and the maintenance tool 
   if [ "$COMMON_BTC_NETWORK" == "testnet" ]; then

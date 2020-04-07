@@ -40,6 +40,15 @@ var lib_api = {
   },
 
   /**
+   * Get block explorer pairing info
+   */
+  getExplorerPairingInfo: function() {
+    let prefix = conf['prefixes']['support'];
+    let uri = this.baseUri + '/' + prefix + '/pairing/explorer';
+    return this.sendGetUriEncoded(uri, {});
+  },
+
+  /**
    * PushTx Status
    */
   getPushtxStatus: function() {
