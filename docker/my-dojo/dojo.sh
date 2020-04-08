@@ -328,17 +328,15 @@ upgrade() {
 onion() {
   if [ "$EXPLORER_INSTALL" == "on" ]; then
     V3_ADDR_EXPLORER=$( docker exec -it tor cat /var/lib/tor/hsv3explorer/hostname )
-    echo "Explorer hidden service address (v3) = $V3_ADDR_EXPLORER"
+    echo "Explorer hidden service address = $V3_ADDR_EXPLORER"
   fi
 
-  V2_ADDR=$( docker exec -it tor cat /var/lib/tor/hsv2dojo/hostname )
   V3_ADDR=$( docker exec -it tor cat /var/lib/tor/hsv3dojo/hostname )
-  echo "API hidden service address (v3) = $V3_ADDR"
-  echo "API hidden service address (v2) = $V2_ADDR"
+  echo "Maintenance Tool hidden service address = $V3_ADDR"
 
   if [ "$BITCOIND_INSTALL" == "on" ]; then
     V2_ADDR_BTCD=$( docker exec -it tor cat /var/lib/tor/hsv2bitcoind/hostname )
-    echo "bitcoind hidden service address (v2) = $V2_ADDR_BTCD"
+    echo "bitcoind hidden service address = $V2_ADDR_BTCD"
   fi
 }
 
