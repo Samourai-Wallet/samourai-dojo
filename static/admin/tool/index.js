@@ -84,6 +84,18 @@ function initTabs() {
 function preparePage() {
   const activeTab = sessionStorage.getItem('activeTab');
 
+  // Dojo version
+  let lblVersion = sessionStorage.getItem('lblVersion');
+  if (lblVersion == null) {
+    lib_api.getPairingInfo().then(apiInfo => {
+      lblVersion = 'v' + apiInfo['pairing']['version'] + ' beta';
+      sessionStorage.setItem('lblVersion', lblVersion);
+      $('#dojo-version').text(lblVersion);
+    });
+  } else {
+    $('#dojo-version').text(lblVersion);
+  }
+
   // Pairing
   if (activeTab == '#link-pairing') {
     $('#screen-pairing').show();
