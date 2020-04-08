@@ -55,9 +55,12 @@ class BlockchainProcessor extends AbstractProcessor {
    * @returns {Promise}
    */
   async catchup() {
-    // Consider that we are in IBD mode if Dojo is far in the past
     const highest = await db.getHighestBlock()
-    this.isIBD = highest.blockHeight < 570000
+    const info = await this.client.getblockchaininfo()
+    const daemonNbHeaders = info.headers
+
+    // Consider that we are in IBD mode if Dojo is far in the past (> 13,000 blocks)
+    this.isIBD = highest.blockHeight < daemonNbHeaders - 13000
 
     if (this.isIBD)
       return this.catchupIBDMode()
