@@ -216,6 +216,7 @@ module.exports = {
    * Testnet parameters
    */
   testnet: {
+    dojoVersion: '1.5.0',
     bitcoind: {
       rpc: {
         user: 'user',
