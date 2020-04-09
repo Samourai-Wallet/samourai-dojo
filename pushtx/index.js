@@ -40,7 +40,7 @@
 
   // Initialize notification sockets of singleton pushTxProcessor
   pushTxProcessor.initNotifications({
-    uriSocket: `tcp://*:${keys.ports.notifpushtx}`
+    uriSocket: `tcp://127.0.0.1:${keys.ports.notifpushtx}`
   })
 
   // Initialize the http server

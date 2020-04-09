@@ -22,7 +22,7 @@ class Tracker {
   constructor() {
     // Notification socket for client events
     this.notifSock = zmq.socket('pub')
-    this.notifSock.bindSync(`tcp://*:${keys.ports.tracker}`)
+    this.notifSock.bindSync(`tcp://127.0.0.1:${keys.ports.tracker}`)
 
     // Initialize the blockchain processor
     // and the mempool buffer
