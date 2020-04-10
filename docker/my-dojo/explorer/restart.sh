@@ -13,6 +13,7 @@ explorer_options=(
   --bitcoind-pass "$BITCOIND_RPC_PASSWORD"
   --no-rates
   --privacy-mode
+  --slow-device-mode
 )
 
 # Blacklist all functions provided by the RPC API

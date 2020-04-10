@@ -4,7 +4,7 @@ ENV     LOGS_DIR             /data/logs
 ENV     APP_DIR              /home/node/app
 
 ENV     EXPLORER_URL         https://github.com/janoside/btc-rpc-explorer/archive
-ENV     EXPLORER_VERSION     1.1.9
+ENV     EXPLORER_VERSION     2.0.0
 
 
 # Install netcat
