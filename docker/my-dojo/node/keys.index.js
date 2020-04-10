@@ -65,6 +65,10 @@ module.exports = {
       connectionLimitPushTxOrchestrator: 5
     },
     /*
+     * IP address used to expose the API ports
+     */
+    apiBind: '0.0.0.0',
+    /*
      * TCP Ports
      */
     ports: {

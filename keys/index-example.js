@@ -62,6 +62,10 @@ module.exports = {
       connectionLimitPushTxOrchestrator: 5
     },
     /*
+     * IP address used to expose the API ports
+     */
+    apiBind: '127.0.0.1',
+    /*
      * TCP Ports
      */
     ports: {
@@ -240,6 +244,7 @@ module.exports = {
       connectionLimitPushTxApi: 1,
       connectionLimitPushTxOrchestrator: 5
     },
+    apiBind: '127.0.0.1',
     ports: {
       account: 18080,
       pushtx: 18081,

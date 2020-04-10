@@ -44,8 +44,9 @@
   })
 
   // Initialize the http server
+  const host = keys.apiBind
   const port = keys.ports.pushtx
-  const httpServer = new HttpServer(port)
+  const httpServer = new HttpServer(port, host)
 
   // Initialize the PushTx rest api
   const pushtxRestApi = new PushTxRestApi(httpServer)
