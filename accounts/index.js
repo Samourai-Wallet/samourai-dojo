@@ -52,8 +52,9 @@
   hdaHelper.activateExternalDerivation()
 
   // Initialize the http server
+  const host = keys.apiBind
   const port = keys.ports.account
-  const httpServer = new HttpServer(port)
+  const httpServer = new HttpServer(port, host)
 
   // Initialize the rest api endpoints
   const authRestApi = new AuthRestApi(httpServer)

@@ -40,12 +40,13 @@
 
   // Initialize notification sockets of singleton pushTxProcessor
   pushTxProcessor.initNotifications({
-    uriSocket: `tcp://*:${keys.ports.notifpushtx}`
+    uriSocket: `tcp://127.0.0.1:${keys.ports.notifpushtx}`
   })
 
   // Initialize the http server
+  const host = keys.apiBind
   const port = keys.ports.pushtx
-  const httpServer = new HttpServer(port)
+  const httpServer = new HttpServer(port, host)
 
   // Initialize the PushTx rest api
   const pushtxRestApi = new PushTxRestApi(httpServer)

@@ -39,8 +39,9 @@
   const tracker = new Tracker()
 
   // Initialize the http server
+  const host = keys.apiBind
   const port = keys.ports.trackerApi
-  const httpServer = new HttpServer(port)
+  const httpServer = new HttpServer(port, host)
 
   // Initialize the rest api endpoints
   const trackerRestApi = new TrackerRestApi(httpServer, tracker)
