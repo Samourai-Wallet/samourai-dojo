@@ -60,6 +60,9 @@ update_config_files() {
   update_config_file ./conf/docker-indexer.conf ./conf/docker-indexer.conf.tpl
   echo "Initialized docker-indexer.conf"
 
+  update_config_file ./conf/docker-whirlpool.conf ./conf/docker-whirlpool.conf.tpl
+  echo "Initialized docker-whirlpool.conf"
+
   # Initialize config files for nginx and the maintenance tool 
   if [ "$EXPLORER_INSTALL" == "on" ]; then
     cp ./nginx/explorer.conf ./nginx/dojo-explorer.conf

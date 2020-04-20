@@ -76,6 +76,9 @@ init_config_files() {
   cp ./conf/docker-indexer.conf.tpl ./conf/docker-indexer.conf
   echo "Initialized docker-indexer.conf"
 
+  cp ./conf/docker-whirlpool.conf.tpl ./conf/docker-whirlpool.conf
+  echo "Initialized docker-whirlpool.conf"
+
   if [ "$EXPLORER_INSTALL" == "on" ]; then
     cp ./nginx/explorer.conf ./nginx/dojo-explorer.conf
   else
