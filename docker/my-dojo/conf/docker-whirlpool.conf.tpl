@@ -13,4 +13,3 @@ WHIRLPOOL_INSTALL=off
 #   otherwise: IP address on the LAN of the machine running dojo
 # Type: string
 WHIRLPOOL_RPC_EXTERNAL_IP=172.30.1.8
-
