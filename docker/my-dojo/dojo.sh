@@ -23,6 +23,7 @@ source_file "$DIR/.env"
 
 # Export some variables for compose
 export BITCOIND_RPC_EXTERNAL_IP
+export WHIRLPOOL_RPC_EXTERNAL_IP
 
 # Select YAML files
 select_yaml_files() {
@@ -314,6 +315,10 @@ upgrade() {
     # Load env vars for compose files
     source_file "$DIR/conf/docker-bitcoind.conf"
     export BITCOIND_RPC_EXTERNAL_IP
+    if [ "$WHIRLPOOL_INSTALL" == "on" ]; then
+      source_file "$DIR/conf/docker-whirlpool.conf"
+      export WHIRLPOOL_RPC_EXTERNAL_IP
+    fi
     # Rebuild the images (with or without cache)
     if [ $noCache -eq 0 ]; then
       eval "docker-compose $yamlFiles build --no-cache"

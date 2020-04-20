@@ -15,6 +15,8 @@ services:
     command: "/wait-for-it.sh nginx:80 --timeout=720 --strict -- /restart.sh"
     expose:
       - "8899"
+    ports:
+      - "${WHIRLPOOL_RPC_EXTERNAL_IP}:8899:8899"
     volumes:
       - data-whirlpool:/home/whirlpool
     depends_on:
