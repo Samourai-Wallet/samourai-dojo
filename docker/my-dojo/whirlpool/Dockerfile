@@ -71,15 +71,8 @@ RUN     chown whirlpool:whirlpool /restart.sh && \
         chmod u+x /restart.sh && \
         chmod g+x /restart.sh
 
-# Copy wait-for-it script
-COPY    ./wait-for-it.sh /wait-for-it.sh
-
-RUN     chown whirlpool:whirlpool /wait-for-it.sh && \
-        chmod u+x /wait-for-it.sh && \
-        chmod g+x /wait-for-it.sh
-
-# Expose API port 
-EXPOSE  8899
+# Expose HTTP API port 
+EXPOSE  8898
 
 # Switch to user whirlpool
 USER    whirlpool

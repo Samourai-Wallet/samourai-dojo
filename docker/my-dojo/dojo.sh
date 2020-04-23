@@ -23,7 +23,6 @@ source_file "$DIR/.env"
 
 # Export some variables for compose
 export BITCOIND_RPC_EXTERNAL_IP
-export WHIRLPOOL_RPC_EXTERNAL_IP
 
 # Select YAML files
 select_yaml_files() {
@@ -315,10 +314,6 @@ upgrade() {
     # Load env vars for compose files
     source_file "$DIR/conf/docker-bitcoind.conf"
     export BITCOIND_RPC_EXTERNAL_IP
-    if [ "$WHIRLPOOL_INSTALL" == "on" ]; then
-      source_file "$DIR/conf/docker-whirlpool.conf"
-      export WHIRLPOOL_RPC_EXTERNAL_IP
-    fi
     # Rebuild the images (with or without cache)
     if [ $noCache -eq 0 ]; then
       eval "docker-compose $yamlFiles build --no-cache"
@@ -345,6 +340,11 @@ onion() {
 
   V3_ADDR=$( docker exec -it tor cat /var/lib/tor/hsv3dojo/hostname )
   echo "Maintenance Tool hidden service address = $V3_ADDR"
+
+  if [ "$WHIRLPOOL_INSTALL" == "on" ]; then
+    V3_ADDR_WHIRLPOOL=$( docker exec -it tor cat /var/lib/tor/hsv3whirlpool/hostname )
+    echo "Whirlpool API hidden service address = $V3_ADDR_WHIRLPOOL"
+  fi
 
   if [ "$BITCOIND_INSTALL" == "on" ]; then
     V2_ADDR_BTCD=$( docker exec -it tor cat /var/lib/tor/hsv2bitcoind/hostname )

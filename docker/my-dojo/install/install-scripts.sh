@@ -12,6 +12,12 @@ else
   source ./conf/docker-explorer.conf.tpl
 fi
 
+if [ -f ./conf/docker-whirlpool.conf ]; then
+  source ./conf/docker-whirlpool.conf
+else
+  source ./conf/docker-whirlpool.conf.tpl
+fi
+
 if [ -f ./conf/docker-common.conf ]; then
   source ./conf/docker-common.conf
 else
@@ -85,6 +91,13 @@ init_config_files() {
     cp /dev/null ./nginx/dojo-explorer.conf
   fi
   echo "Initialized dojo-explorer.conf (nginx)"
+
+  if [ "$WHIRLPOOL_INSTALL" == "on" ]; then
+    cp ./nginx/whirlpool.conf ./nginx/dojo-whirlpool.conf
+  else
+    cp /dev/null ./nginx/dojo-ewhirlpool.conf
+  fi
+  echo "Initialized dojo-whirlpool.conf (nginx)"
 
   # Initialize config files for nginx and the maintenance tool 
   if [ "$COMMON_BTC_NETWORK" == "testnet" ]; then

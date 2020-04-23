@@ -9,18 +9,13 @@ services:
     env_file:
       - ./.env
       - ./conf/docker-common.conf
-      - ./conf/docker-node.conf
       - ./conf/docker-whirlpool.conf
     restart: always
-    command: "/wait-for-it.sh nginx:80 --timeout=720 --strict -- /restart.sh"
+    command: /restart.sh
     expose:
-      - "8899"
-    ports:
-      - "${WHIRLPOOL_RPC_EXTERNAL_IP}:8899:8899"
+      - "8898"
     volumes:
       - data-whirlpool:/home/whirlpool
-    depends_on:
-      - nginx
     networks:
       whirlnet:
         ipv4_address: 172.30.1.8

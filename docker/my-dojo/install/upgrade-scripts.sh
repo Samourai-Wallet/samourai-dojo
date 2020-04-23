@@ -12,6 +12,12 @@ else
   source ./conf/docker-explorer.conf.tpl
 fi
 
+if [ -f ./conf/docker-whirlpool.conf ]; then
+  source ./conf/docker-whirlpool.conf
+else
+  source ./conf/docker-whirlpool.conf.tpl
+fi
+
 source ./conf/docker-bitcoind.conf
 
 # Confirm upgrade operation
@@ -70,6 +76,13 @@ update_config_files() {
     cp /dev/null ./nginx/dojo-explorer.conf
   fi
   echo "Initialized dojo-explorer.conf (nginx)"
+
+  if [ "$WHIRLPOOL_INSTALL" == "on" ]; then
+    cp ./nginx/whirlpool.conf ./nginx/dojo-whirlpool.conf
+  else
+    cp /dev/null ./nginx/dojo-ewhirlpool.conf
+  fi
+  echo "Initialized dojo-whirlpool.conf (nginx)"
 
   if [ "$COMMON_BTC_NETWORK" == "testnet" ]; then
     cp ./nginx/testnet.conf ./nginx/dojo.conf

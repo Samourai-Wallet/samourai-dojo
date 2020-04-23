@@ -124,7 +124,7 @@ nano ./conf/docker-node.conf
 
 This setup allows to install and run a [Whirlpool client](https://github.com/Samourai-Wallet/whirlpool-client-cli) inside MyDojo.
 
-Note: In order to interact with the Whirlpool client, you'll need to install the [Whirlpool GUI application]((https://github.com/Samourai-Wallet/whirlpool-gui)) on a computer (either the machine running MyDojo or any computer connected to your LAN).
+The client can be configured and controlled through a REST API exposed as a Tor hidden service.
 
 
 ### Procedure ###
@@ -138,14 +138,15 @@ nano ./conf/docker-whirlpool.conf
 
 #
 # Set the value of WHIRLPOOL_INSTALL to "on"
-# If you plan to run whirlpool-gui on a machine than isn't the machine running MyDojo, set the value of WHIRLPOOL_RPC_EXTERNAL_IP with the IP address of the machine hosting MyDojo. Do not use the public IP address of the machine, use its address on your LAN (192.168.xXX.xxx).
-# Save and exit nano
+## Save and exit nano
 #
 ```
 
-### Initialization with Whirlppol GUI ###
+### Installation of Whirlppol GUI ###
 
-These steps describe how to connect the Whirlpool GUI application ([whirlpool-gui](https://github.com/Samourai-Wallet/whirlpool-gui/releases)) to your Whirlpool client.
+The [Whirlpool GUI application]((https://github.com/Samourai-Wallet/whirlpool-gui)) provides a graphical interface for your Whirlpool client.  
+
+These steps describe how to install the Whirlpool GUI application how a computer and how to connect it to your Whirlpool client.
 
 
 **Requirements**
@@ -154,27 +155,42 @@ These steps describe how to connect the Whirlpool GUI application ([whirlpool-gu
 - Whirlpool client has been activated in MyDojo,
 - Your Samourai Wallet is paired to MyDojo,
 - MyDojo is running.
+- Tor browser is installed on the computer that will run the Whirlpool GUI application. 
 
 
 **Procedure**
 
-```
-# Install the Whirlpool GUI application on a computer and launch it.
+- Retrieve the onion address of the API provided by your Whirlpool client
 
-# Select 'Connect to remote CLI'.
-# Insert the value of WHIRLPOOL_RPC_EXTERNAL_IP in the first block
-# For example, you should insert `https://172.30.1.8` if WHIRLPOOL_RPC_EXTERNAL_IP is set to `172.30.1.8`  
-# Keep the Port 8899 and API pairing key BLANK. Click 'Connect'.
+  ```
+  # Open a terminal console on the computer hosting your Dojo
+  
+  # Retrieve the onion address of the Whirlpool API
+  ./dojo.sh onion
+  ```
 
-# Paste the pairing payload from your mobile device when prompted:
-#   Select the Samourai Wallet Menu (3 dots top right),
-#   Go to Settings -> Transactions -> Pair to Whirlpool GUI,
-#   Copy the payload and send to your main computer using any method you prefer,
-#   Paste the payload. 
+- Install and configure the Whirlpool GUI application
 
-# The GUI will restart and prompt for you to enter your Samourai Wallet passphrase.
-# You are all set and ready to mix!
-```
+  ```
+  # If needed, install Tor browser on the computer that will run the Whirlpool GUI application
+
+  # Install the Whirlpool GUI application on the computer and launch it.
+  
+  # Select 'Connect to remote CLI'.
+  # Insert the onion address of the Whirlpool API, **prefixed by HTTP**, in the first block
+  # Set the port to 80 
+  # Let the API pairing key BLANK.
+  # Click 'Connect'.
+
+  # Paste the pairing payload from your mobile device when prompted:
+  #   Select the Samourai Wallet Menu (3 dots top right),
+  #   Go to Settings -> Transactions -> Pair to Whirlpool GUI,
+  #   Copy the payload and send to your main computer using any method you prefer,
+  #   Paste the payload. 
+  
+  # The GUI will restart and prompt for you to enter your Samourai Wallet passphrase.
+  # You are all set and ready to mix!
+  ```
 
 <a name="external_bitcoind"/>
 

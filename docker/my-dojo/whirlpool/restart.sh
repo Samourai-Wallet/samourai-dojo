@@ -3,6 +3,8 @@ set -e
 
 whirlpool_options=(
   --listen
+  --cli.api.http-enable=true
+  --cli.api.http-port=8898
   --cli.dojo.enabled=true
   --cli.tor=true
   --cli.torConfig.executable=/usr/local/bin/tor

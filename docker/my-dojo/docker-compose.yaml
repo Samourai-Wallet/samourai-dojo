@@ -81,6 +81,7 @@ services:
     env_file:
       - ./.env
       - ./conf/docker-explorer.conf
+      - ./conf/docker-whirlpool.conf
       - ./conf/docker-tor.conf
     restart: always
     command: /restart.sh
