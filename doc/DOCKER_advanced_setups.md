@@ -173,13 +173,13 @@ These steps describe how to install the Whirlpool GUI application how a computer
 
   ```
   # If needed, install Tor browser on the computer that will run the Whirlpool GUI application
+  # Launch the Tor browser
 
-  # Install the Whirlpool GUI application on the computer and launch it.
+  # Install the Whirlpool GUI application on the computer and launch it
   
-  # Select 'Connect to remote CLI'.
-  # Insert the onion address of the Whirlpool API, **prefixed by HTTP**, in the first block
-  # Set the port to 80 
-  # Let the API pairing key BLANK.
+  # Select 'Advanced: remote CLI'
+  # Set 'CLI address' with 'http://your_onion_address' where your_onion_address is the address of the Whirlpool API
+  # Check that the 'Tor proxy' field has the correct socks5 port used by your Tor browser (default should be ok).
   # Click 'Connect'.
 
   # Paste the pairing payload from your mobile device when prompted:
