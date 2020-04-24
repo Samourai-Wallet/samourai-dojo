@@ -23,5 +23,13 @@ else
   whirlpool_options+=(--cli.dojo.url="http://172.30.1.3:80/v2/")
 fi
 
+if [ "$WHIRLPOOL_DEBUG" == "on" ]; then
+  whirlpool_options+=(--debug)
+fi
+
+if [ "$WHIRLPOOL_DEBUG_CLIENT" == "on" ]; then
+  whirlpool_options+=(--debug-client)
+fi
+
 cd /home/whirlpool/.whirlpool-cli
 java -jar /usr/local/whirlpool-cli/whirlpool-client-cli-run.jar "${whirlpool_options[@]}"
