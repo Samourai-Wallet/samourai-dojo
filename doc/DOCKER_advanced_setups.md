@@ -142,7 +142,7 @@ nano ./conf/docker-whirlpool.conf
 #
 ```
 
-### Installation of Whirlppol GUI ###
+### Installation of Whirlpool GUI ###
 
 The [Whirlpool GUI application]((https://github.com/Samourai-Wallet/whirlpool-gui)) provides a graphical interface for your Whirlpool client.  
 
@@ -179,7 +179,7 @@ These steps describe how to install the Whirlpool GUI application how a computer
   
   # Select 'Advanced: remote CLI'
   # Set 'CLI address' with 'http://your_onion_address' where your_onion_address is the address of the Whirlpool API
-  # Check that the 'Tor proxy' field has the correct socks5 port used by your Tor browser (default should be ok).
+  # Check that the 'Tor proxy' field has the correct socks5 port used by your Tor browser.
   # Click 'Connect'.
 
   # Paste the pairing payload from your mobile device when prompted:
