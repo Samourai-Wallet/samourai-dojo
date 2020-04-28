@@ -17,6 +17,11 @@ services:
       - "50001"
     volumes:
       - data-indexer:/home/indexer
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "20m"
+        max-file: "10"
     depends_on:
       - tor
     networks:

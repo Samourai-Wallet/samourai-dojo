@@ -15,6 +15,11 @@ services:
       - "3306"
     volumes:
       - data-mysql:/var/lib/mysql
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "20m"
+        max-file: "10"
     networks:
       dojonet:
         ipv4_address: 172.28.1.1
@@ -40,8 +45,12 @@ services:
       - "8081"
       - "8082"
     volumes:
-      - data-nodejs:/data
       - data-tor:/var/lib/tor
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "20m"
+        max-file: "10"
     depends_on:
       - db
     networks:
@@ -61,8 +70,11 @@ services:
     expose:
       - "80"
       - "9080"
-    volumes:
-      - data-nginx:/data
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "20m"
+        max-file: "10"
     depends_on:
       - node
     networks:
@@ -87,6 +99,11 @@ services:
     command: /restart.sh
     volumes:
       - data-tor:/var/lib/tor
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "20m"
+        max-file: "10"
     networks:
       dmznet:
         ipv4_address: 172.29.1.4
@@ -115,6 +132,4 @@ networks:
 
 volumes:
   data-mysql:
-  data-nodejs:
-  data-nginx:
   data-tor:

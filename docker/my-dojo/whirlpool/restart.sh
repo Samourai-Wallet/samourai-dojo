@@ -12,7 +12,6 @@ whirlpool_options=(
   --cli.torConfig.coordinator.onion=true
   --cli.torConfig.backend.enabled=false
   --cli.torConfig.backend.onion=false
-  --logging.file="/home/whirlpool/.whirlpool-cli/whirlpool-output.log"
 )
 
 if [ "$COMMON_BTC_NETWORK" == "testnet" ]; then

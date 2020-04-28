@@ -6,6 +6,7 @@ echo "## Start bitcoind #############################"
 bitcoind_options=(
   -bind=172.28.1.5
   -datadir=/home/bitcoin/.bitcoin
+  -printtoconsole=1
   -dbcache=$BITCOIND_DB_CACHE
   -disablewallet=1
   -dns=$BITCOIND_DNS

@@ -42,4 +42,4 @@ if [ "$NODE_ACTIVE_INDEXER" == "local_indexer" ]; then
   fi
 fi
 
-node ./bin/cli.js "${explorer_options[@]}" > /data/logs/explorer-error.log  2> /data/logs/explorer-output.log
+node ./bin/cli.js "${explorer_options[@]}"

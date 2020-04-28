@@ -198,7 +198,7 @@ install() {
     docker_up --remove-orphans
     # Display the logs
     if [ $noLog -eq 1 ]; then
-      logs
+      logs "" 0
     fi
   fi
 }
@@ -326,7 +326,7 @@ upgrade() {
     update_dojo_db
     # Display the logs
     if [ $noLog -eq 1 ]; then
-      logs
+      logs "" 0
     fi
   fi
 }
@@ -381,78 +381,55 @@ whirlpool() {
 }
 
 # Display logs
-logs_node() {
-  if [ $3 -eq 0 ]; then
-    docker exec -ti nodejs tail -f /data/logs/$1-$2.log
+display_logs() {
+  yamlFiles=$(select_yaml_files)
+  if [ $2 -eq 0 ]; then
+    docker-compose $yamlFiles logs --tail=50 --follow $1
   else
-    docker exec -ti nodejs tail -n $3 /data/logs/$1-$2.log
-  fi 
-}
-
-logs_explorer() {
-  if [ $3 -eq 0 ]; then
-    docker exec -ti explorer tail -f /data/logs/$1-$2.log
-  else
-    docker exec -ti explorer tail -n $3 /data/logs/$1-$2.log
-  fi 
-}
-
-logs_whirlpool() {
-  if [ $3 -eq 0 ]; then
-    docker exec -ti whirlpool tail -f /home/whirlpool/.whirlpool-cli/whirlpool-output.log
-  else
-    docker exec -ti whirlpool tail -n $3 /home/whirlpool/.whirlpool-cli/whirlpool-output.log
+    docker-compose $yamlFiles logs --tail=$2 $1
   fi 
 }
 
 logs() {
   source_file "$DIR/conf/docker-bitcoind.conf"
   source_file "$DIR/conf/docker-indexer.conf"
+  source_file "$DIR/conf/docker-explorer.conf"
   source_file "$DIR/conf/docker-whirlpool.conf"
   source_file "$DIR/conf/docker-common.conf"
 
   case $1 in
-    db )
-      docker-compose logs --tail=50 --follow db
+    db | tor | nginx | node )
+      display_logs $1 $2
       ;;
     bitcoind )
       if [ "$BITCOIND_INSTALL" == "on" ]; then
-        if [ "$COMMON_BTC_NETWORK" == "testnet" ]; then
-          bitcoindDataDir="/home/bitcoin/.bitcoin/testnet3"
-        else
-          bitcoindDataDir="/home/bitcoin/.bitcoin"
-        fi
-        docker exec -ti bitcoind tail -f "$bitcoindDataDir/debug.log"
+        display_logs $1 $2
       else
         echo -e "Command not supported for your setup.\nCause: Your Dojo is using an external bitcoind"
       fi
       ;;
     indexer )
       if [ "$INDEXER_INSTALL" == "on" ]; then
-        yamlFiles=$(select_yaml_files)
-        eval "docker-compose $yamlFiles logs --tail=50 --follow indexer"
+        display_logs $1 $2
       else
-        echo -e "Command not supported for your setup.\nCause: Your Dojo is not using an internal indexer"
+        echo -e "Command not supported for your setup.\nCause: Your Dojo is not running the internal indexer"
       fi
       ;;
-    tor )
-      docker-compose logs --tail=50 --follow tor
-      ;;
-    api | pushtx | pushtx-orchest | tracker )
-      logs_node $1 $2 $3
-      ;;
     explorer )
-      logs_explorer $1 $2 $3
+      if [ "$EXPLORER_INSTALL" == "on" ]; then
+        display_logs $1 $2
+      else
+        echo -e "Command not supported for your setup.\nCause: Your Dojo is not running the internal block explorer"
+      fi
       ;;
     whirlpool )
       if [ "$WHIRLPOOL_INSTALL" == "on" ]; then
-        logs_whirlpool $1 $2 $3
+        display_logs $1 $2
       else
         echo -e "Command not supported for your setup.\nCause: Your Dojo is not running a whirlpool client"
       fi
       ;;
     * )
-      yamlFiles=$(select_yaml_files)
       services="nginx node tor db" 
       if [ "$BITCOIND_INSTALL" == "on" ]; then
         services="$services bitcoind"
@@ -466,7 +443,7 @@ logs() {
       if [ "$WHIRLPOOL_INSTALL" == "on" ]; then
         services="$services whirlpool"
       fi
-      eval "docker-compose $yamlFiles logs --tail=0 --follow $services"
+      display_logs "$services" $2
       ;;
   esac
 }
@@ -489,24 +466,22 @@ help() {
   echo "                                Available options:"
   echo "                                  --nolog     : do not display the logs after Dojo has been laucnhed."
   echo " "
-  echo "  logs [module] [options]       Display the logs of your dojo. Use CTRL+C to stop the logs."
+  echo "  logs [module] [options]       Display the logs of your dojo."
+  echo "                                  By default, the command displays the live logs. Use CTRL+C to stop the logs."
+  echo "                                  Use the -n option to display past logs."
   echo " "
   echo "                                Available modules:"
   echo "                                  dojo.sh logs                : display the logs of all the Docker containers"
   echo "                                  dojo.sh logs bitcoind       : display the logs of bitcoind"
   echo "                                  dojo.sh logs db             : display the logs of the MySQL database"
   echo "                                  dojo.sh logs tor            : display the logs of tor"
+  echo "                                  dojo.sh logs nginx          : display the logs of nginx"
   echo "                                  dojo.sh logs indexer        : display the logs of the internal indexer"
-  echo "                                  dojo.sh logs api            : display the logs of the REST API (nodejs)"
-  echo "                                  dojo.sh logs tracker        : display the logs of the Tracker (nodejs)"
-  echo "                                  dojo.sh logs pushtx         : display the logs of the pushTx API (nodejs)"
-  echo "                                  dojo.sh logs pushtx-orchest : display the logs of the pushTx Orchestrator (nodejs)"
+  echo "                                  dojo.sh logs node           : display the logs of NodeJS modules (API, Tracker, PushTx API, Orchestrator)"
   echo "                                  dojo.sh logs explorer       : display the logs of the Explorer"
   echo "                                  dojo.sh logs whirlpool      : display the logs of the Whirlpool client"
   echo " "
-  echo "                                Available options (only available for api, tracker, pushtx, pushtx-orchest, explorer and whirlpool modules):"
-  echo "                                  -d [VALUE]                  : select the type of log to be displayed."
-  echo "                                                                VALUE can be output (default) or error."
+  echo "                                Available options:"
   echo "                                  -n [VALUE]                  : display the last VALUE lines"
   echo " "
   echo "  onion                         Display the Tor onion address allowing your wallet to access your dojo."
@@ -580,15 +555,11 @@ case "$subcommand" in
     ;;
   logs )
     module=$1; shift
-    display="output"
     numlines=0
 
     # Process package options
-    while getopts ":d:n:" opt; do
+    while getopts ":n:" opt; do
       case ${opt} in
-        d )
-          display=$OPTARG
-          ;;
         n )
           numlines=$OPTARG
           ;;
@@ -604,7 +575,7 @@ case "$subcommand" in
     done
     shift $((OPTIND -1))
 
-    logs $module $display $numlines
+    logs "$module" $numlines
     ;;
   onion )
     onion
