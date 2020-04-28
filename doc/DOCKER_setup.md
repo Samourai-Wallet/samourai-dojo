@@ -27,42 +27,41 @@ MyDojo is a set of Docker containers providing a full Samourai backend composed 
 ## Architecture ##
 
 
-                -------------------    -------------------      --------------------
-               |  Samourai Wallet  |  |     Sentinel      |    | Bitcoin full nodes |
-                -------------------    -------------------      --------------------
-                        |_______________________|_______________________|
-                                                |
-                                          ------------
-
-                                          Tor network
-
-                                          ------------
-                                                |
-                  Host machine                  | (Tor hidden services)
-                 ______________________________ | _____________________________
-                |                               |                              |
-                |                           ---------                  dmznet  |
-                |                  --------|   Tor   |------------             |
-                |                 |         ---------             |            |
-                |                 |                               |            |
-                |             ---------                           |            |
-                |          --|  Nginx  |--------                  |            |
-                |         |   ---------         |                 |            |
-                |- - - - -|- - - - - - - - - - -|- - - - - - - - -|- - - - - - |
-                |         |                     |                 |            |
-                |     ----------            ----------        ----------       |
-                |    |  Nodejs  |----------| Explorer |------| Bitcoind |      |
-                |     ----------            ----------        ----------       |
-                |         |   |                 |                 |            |
-                |         |    -------          |                 |            |
-                |         |           |         |                 |            |
-                |     ----------      |     ----------            |            |
-                |    |  MySQL   |      ----|  Indexer |-----------             |
-                |     ----------            ----------                         |
-                |                                                      dojonet |
-                |______________________________________________________________|
-
-
+  ------------------    --------------------    ---------------     -----------------------
+ |  Mobile Wallets  |  | Bitcoin full nodes |  | Whirlpool GUI |   | Whirlpool Coordinator |
+  ------------------    --------------------    ---------------     -----------------------
+          |_______________________|____________________|_______________________|
+                                            |
+                                      -------------
+                                     |             |
+              ---------------------- | Tor network |
+             |                       |             |
+             |                        ------------
+             |                              |
+             |                              | (Tor hidden services)
+       _____ | ____________________________ | _________________________________________
+      |      |          |                   |                                          |
+      |      |          |               ---------                              dmznet  |
+      |      |          |   -----------|   Tor   |------------------------             |
+      |      |          |  |            ---------                         |            |
+      |      |      ---------                                             |            |
+      |      |     |  nginx  | - - - - - - - - - - - - - - - - - - - - - -|- - - - - - |
+      |      |      ---------                                             |            |
+      |      |       |  |  |                                              |            |
+      |      |    ---   |   ----------------------------                  |            |
+      |      |   |      |         |                     |                 |            |
+      |   -----------   |     ----------            ----------        ----------       |
+      |  | whirlpool |  |    |  Nodejs  |----------| Explorer |------| Bitcoind |      |
+      |   -----------   |     ----------            ----------        ----------       |
+      |                 |         |   |                 |                 |            |
+      |                 |         |    -------          |                 |            |
+      |                 |         |           |         |                 |            |
+      |                 |     ----------      |     ----------            |            |
+      |                 |    |  MySQL   |      ----|  Indexer |-----------             |
+      |                 |     ----------            ----------                         |
+      |        whirlnet |                                                      dojonet |
+      |_________________|______________________________________________________________|
+        Host machine  
 
 
 
@@ -160,6 +159,7 @@ This procedure allows to install a new Dojo from scratch.
 * Dojo provides a few additional settings for advanced setups:
   * installation of an address indexer used for fast imports and rescans,
   * support of an external electrum server (ElectrumX or electrs) used for fast imports and rescans,
+  * installation of a Whirlpool client,
   * static onion address for your full node,
   * bitcoind RPC API exposed to external apps,
   * use of an external full node,
@@ -258,6 +258,7 @@ Available commands:
                                   dojo.sh logs pushtx         : display the logs of the pushTx API (nodejs)
                                   dojo.sh logs pushtx-orchest : display the logs of the Orchestrator (nodejs)
                                   dojo.sh logs explorer       : display the logs of the Explorer
+                                  dojo.sh logs whirlpool      : display the logs of the Whirlpool client
 
                                 Available options (for api, tracker, pushtx, pushtx-orchest and explorer modules):
                                   -d [VALUE]                  : select the type of log to be displayed.
@@ -277,6 +278,12 @@ Available commands:
   upgrade                       Upgrade your Dojo.
 
   version                       Display the version of dojo.
+
+  whirlpool [action]            Interact with the internal whirlpool-cli mdule."
+
+                                Available actions:"
+                                  apikey : display the API key generated by whirlpool-cli."
+                                  reset  : reset the whirlpool-cli instance (delete configuration file)."
 ```
 
 
@@ -345,6 +352,10 @@ If OXT is selected as the default source for imports, OXT clearnet API is access
 The maintenance tool is accessed as a Tor hidden service (static onion address).
 
 The block explorer is accessed as a Tor hidden service (static onion address).
+
+The Whirlpool API  is accessed as a Tor hidden service (static onion address).
+
+The Whirlpool client connects to the Whirlpool Coordinator hidden service. 
 
 The Bitcoin node only allows incoming connections from Tor (ephemeral onion address).
 

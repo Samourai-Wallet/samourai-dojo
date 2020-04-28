@@ -66,6 +66,8 @@ services:
     depends_on:
       - node
     networks:
+      whirlnet:
+        ipv4_address: 172.30.1.3
       dmznet:
         ipv4_address: 172.29.1.3
       dojonet:
@@ -79,6 +81,7 @@ services:
     env_file:
       - ./.env
       - ./conf/docker-explorer.conf
+      - ./conf/docker-whirlpool.conf
       - ./conf/docker-tor.conf
     restart: always
     command: /restart.sh
@@ -103,6 +106,12 @@ networks:
       driver: default
       config:
         - subnet: 172.29.0.0/16
+  whirlnet:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.30.0.0/16
 
 volumes:
   data-mysql:
