@@ -95,7 +95,7 @@ init_config_files() {
   if [ "$WHIRLPOOL_INSTALL" == "on" ]; then
     cp ./nginx/whirlpool.conf ./nginx/dojo-whirlpool.conf
   else
-    cp /dev/null ./nginx/dojo-ewhirlpool.conf
+    cp /dev/null ./nginx/dojo-whirlpool.conf
   fi
   echo "Initialized dojo-whirlpool.conf (nginx)"
 
