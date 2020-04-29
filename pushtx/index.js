@@ -19,8 +19,8 @@
   /**
    * PushTx API
    */
-  Logger.info('Process ID: ' + process.pid)
-  Logger.info('Preparing the pushTx API')
+  Logger.info('PushTx : Process ID: ' + process.pid)
+  Logger.info('PushTx : Preparing the pushTx API')
 
   // Wait for Bitcoind RPC API
   // being ready to process requests

@@ -151,7 +151,7 @@ class XPubRestApi {
       return HttpServer.sendError(res, errors.generic.GEN)
 
     } finally {
-      debugApi && Logger.info(`Completed POST /xpub ${req.body.xpub}`)
+      debugApi && Logger.info(`API : Completed POST /xpub ${req.body.xpub}`)
     }
   }
 
@@ -194,11 +194,11 @@ class XPubRestApi {
       HttpServer.sendOkData(res, ret)
 
     } catch(e) {
-      Logger.error(e, 'XpubRestApi.getXpub()')
+      Logger.error(e, 'API : XpubRestApi.getXpub()')
       HttpServer.sendError(res, e)
 
     } finally {
-      debugApi && Logger.info(`Completed GET /xpub/${req.params.xpub}`)
+      debugApi && Logger.info(`API : Completed GET /xpub/${req.params.xpub}`)
     }
   }
 
@@ -253,7 +253,7 @@ class XPubRestApi {
       }
 
     } finally {
-      debugApi && Logger.info(`Completed POST /xpub/${req.params.xpub}/lock`)
+      debugApi && Logger.info(`API : Completed POST /xpub/${req.params.xpub}/lock`)
     }
   }
 
@@ -303,7 +303,7 @@ class XPubRestApi {
       HttpServer.sendError(res, errors.generic.GEN)
 
     } finally {
-      debugApi && Logger.info(`Completed DELETE /xpub/${req.params.xpub}`)
+      debugApi && Logger.info(`API : Completed DELETE /xpub/${req.params.xpub}`)
     }
   }
 
@@ -327,8 +327,8 @@ class XPubRestApi {
         xpub = hdaHelper.xlatXPUB(origXpub)
         scheme = isYpub ? hdaHelper.BIP49 : hdaHelper.BIP84
         if (trace) {
-          Logger.info('Converted: ' + origXpub)
-          Logger.info('Resulting xpub: ' + xpub)
+          Logger.info('API : Converted: ' + origXpub)
+          Logger.info('API : Resulting xpub: ' + xpub)
         }
       }
 
@@ -371,7 +371,7 @@ class XPubRestApi {
       HttpServer.sendError(res, errors.body.INVDATA)
       Logger.error(
         req.body,
-        'XpubRestApi.validateArgsPostXpub() : Invalid arguments'
+        'API : XpubRestApi.validateArgsPostXpub() : Invalid arguments'
       )
     } else {
       next()
@@ -391,7 +391,7 @@ class XPubRestApi {
       HttpServer.sendError(res, errors.body.INVDATA)
       Logger.error(
         req.params.xpub,
-        'XpubRestApi.validateArgsGetXpub() : Invalid arguments'
+        'API : XpubRestApi.validateArgsGetXpub() : Invalid arguments'
       )
     } else {
       next()
@@ -414,7 +414,7 @@ class XPubRestApi {
       HttpServer.sendError(res, errors.body.INVDATA)
       Logger.error(
         req.params,
-        'XpubRestApi.validateArgsPostLockXpub() : Invalid arguments'
+        'API : XpubRestApi.validateArgsPostLockXpub() : Invalid arguments'
       )
       Logger.error(req.body, '')
     } else {
@@ -437,7 +437,7 @@ class XPubRestApi {
       HttpServer.sendError(res, errors.body.INVDATA)
       Logger.error(
         req.params,
-        'XpubRestApi.validateArgsDeleteXpub() : Invalid arguments'
+        'API : XpubRestApi.validateArgsDeleteXpub() : Invalid arguments'
       )
       Logger.error(req.body, '')
     } else {

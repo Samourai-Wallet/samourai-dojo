@@ -85,7 +85,7 @@ class MultiaddrRestApi {
           ${req.query.bip49 ? req.query.bip49 : ''} \
           ${req.query.bip84 ? req.query.bip84 : ''}`
 
-        Logger.info(`Completed GET /multiaddr ${strParams}`)
+        Logger.info(`API : Completed GET /multiaddr ${strParams}`)
       }
     }
   }
@@ -126,7 +126,7 @@ class MultiaddrRestApi {
           ${req.body.bip49 ? req.body.bip49 : ''} \
           ${req.body.bip84 ? req.body.bip84 : ''}`
 
-        Logger.info(`Completed POST /multiaddr ${strParams}`)
+        Logger.info(`API : Completed POST /multiaddr ${strParams}`)
       }
     }
   }

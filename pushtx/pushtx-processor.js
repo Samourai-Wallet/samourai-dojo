@@ -51,7 +51,7 @@ class PushTxProcessor {
       const tx = bitcoin.Transaction.fromHex(rawtx)
       for (let output of tx.outs)
         value += output.value
-      Logger.info('Push for ' + (value / 1e8).toFixed(8) + ' BTC')
+      Logger.info('PushTx : Push for ' + (value / 1e8).toFixed(8) + ' BTC')
     } catch(e) {
       throw errors.tx.PARSE
     }
@@ -60,14 +60,14 @@ class PushTxProcessor {
     // Attempt to send via RPC to the bitcoind instance
     try {
       const txid = await this.rpcClient.sendrawtransaction(rawtx)
-      Logger.info('Pushed!')
+      Logger.info('PushTx : Pushed!')
       // Update the stats
       status.updateStats(value)
       // Notify the tracker
       this.notifSock.send(['pushtx', rawtx])
       return txid
     } catch(err) {
-      Logger.info('Push failed')
+      Logger.info('PushTx : Push failed')
       throw err
     }
   }

@@ -69,7 +69,7 @@ class TransactionsScheduler {
         // Check that nlocktimes are matching
         if (!(tx.locktime && tx.locktime == entry.nlocktime)) {
           const msg = `TransactionsScheduler.schedule() : nLockTime mismatch : ${tx.locktime} - ${entry.nlocktime}`
-          Logger.error(null, msg)
+          Logger.error(null, `PushTx : ${msg}`)
           throw errors.pushtx.NLOCK_MISMATCH
         }
         // Check that order of hop and nlocktime values are consistent
@@ -113,7 +113,7 @@ class TransactionsScheduler {
         }
 
         parentId = await db.addScheduledTransaction(objTx)
-        Logger.info(`Registered scheduled tx ${objTx.txid} (trigger=${objTx.trigger})`)
+        Logger.info(`PushTx : Registered scheduled tx ${objTx.txid} (trigger=${objTx.trigger})`)
         parentTxid = tx.getId()
         parentNlocktime = entry.nlocktime
       }

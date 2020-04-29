@@ -59,7 +59,7 @@ class NotificationsService {
   _initWSServer(server) {
     this.ws = new WebSocket.server({httpServer: server})
 
-    Logger.info('Created WebSocket server')
+    Logger.info('API : Created WebSocket server')
 
     this.ws.on('request', req => {
       try {
@@ -67,14 +67,14 @@ class NotificationsService {
         conn.id = status.sessions++
         conn.subs = []
 
-        debug && Logger.info(`Client ${conn.id} connected`)
+        debug && Logger.info(`API : Client ${conn.id} connected`)
 
         conn.on('close', () => {
           this._closeWSConnection(conn, false)
         })
 
         conn.on('error', err => {
-          Logger.error(err, `NotificationsService : Error on connection ${conn.id}`)
+          Logger.error(err, `API : NotificationsService : Error on connection ${conn.id}`)
           if (conn.connected)
             this._closeWSConnection(conn, true)
         })
@@ -91,7 +91,7 @@ class NotificationsService {
         status.maxConn = Math.max(status.maxConn, Object.keys(this.conn).length)
 
       } catch(e) {
-        Logger.error(e, `NotificationsService._initWSServer() : Error during request accept`)
+        Logger.error(e, `API : NotificationsService._initWSServer() : Error during request accept`)
       }
     })
   }
@@ -120,10 +120,10 @@ class NotificationsService {
       if (forcedClose && conn.connected)
         conn.drop(1008, 'Get out of here!')
 
-      debug && Logger.info(`Client ${conn.id} disconnected`)
+      debug && Logger.info(`API : Client ${conn.id} disconnected`)
 
     } catch(e) {
-      Logger.error(e, 'NotificationsService._closeWSConnection()')
+      Logger.error(e, 'API : NotificationsService._closeWSConnection()')
     }
   }
 
@@ -134,7 +134,7 @@ class NotificationsService {
    */
   _filterWSMessage(msg) {
     if (this.cacheSubs.has(msg)) {
-      debug && Logger.info('Duplicate subscriptions detected')
+      debug && Logger.info('API : Duplicate subscriptions detected')
       return false
     } else {
       this.cacheSubs.set(msg, true)
@@ -150,7 +150,7 @@ class NotificationsService {
    */
   _handleWSMessage(msg, conn) {
     try {
-      debug && Logger.info(`Received from client ${conn.id}: ${msg}`)
+      debug && Logger.info(`API : Received from client ${conn.id}: ${msg}`)
 
       const data = JSON.parse(msg)
 
@@ -183,7 +183,7 @@ class NotificationsService {
           break
       }
     } catch(e) {
-      Logger.error(e, 'NotificationsService._handleWSMessage() : WebSocket message error')
+      Logger.error(e, 'API : NotificationsService._handleWSMessage() : WebSocket message error')
     }
   }
 
@@ -223,7 +223,7 @@ class NotificationsService {
 
     this.subs[topic].push(conn.id)
 
-    debug && Logger.info(`Client ${conn.id} subscribed to ${topic}`)
+    debug && Logger.info(`API : Client ${conn.id} subscribed to ${topic}`)
   }
 
   /**
@@ -267,7 +267,7 @@ class NotificationsService {
       try {
         this.conn[cid].sendUTF(msg)
       } catch(e) {
-        Logger.error(e, `NotificationsService.dispatch() : Error sending dispatch for ${topic} to client ${cid}`)
+        Logger.error(e, `API : NotificationsService.dispatch() : Error sending dispatch for ${topic} to client ${cid}`)
       }
     }
   }
@@ -284,7 +284,7 @@ class NotificationsService {
       }
       this.dispatch('block', JSON.stringify(data))
     } catch(e) {
-      Logger.error(e, `NotificationsService.notifyBlock()`)
+      Logger.error(e, `API : NotificationsService.notifyBlock()`)
     }
   }
 
@@ -440,14 +440,14 @@ class NotificationsService {
 
         try {
           this.conn[cid].sendUTF(JSON.stringify(data))
-          debug && Logger.error(`Sent ctx ${ctx.hash} to client ${cid}`)
+          debug && Logger.error(`API : Sent ctx ${ctx.hash} to client ${cid}`)
         } catch(e) {
-          Logger.error(e, `NotificationsService.notifyTransaction() : Trouble sending ctx to client ${cid}`)
+          Logger.error(e, `API : NotificationsService.notifyTransaction() : Trouble sending ctx to client ${cid}`)
         }
       }
 
     } catch(e) {
-      Logger.error(e, `NotificationsService.notifyTransaction()`)
+      Logger.error(e, `API : NotificationsService.notifyTransaction()`)
     }
   }
 
@@ -464,9 +464,9 @@ class NotificationsService {
 
     try {
       this.conn[cid].sendUTF(JSON.stringify(data))
-      debug && Logger.error(`Sent authentication error to client ${cid}`)
+      debug && Logger.error(`API : Sent authentication error to client ${cid}`)
     } catch(e) {
-      Logger.error(e, `NotificationsService.notifyAuthError() : Trouble sending authentication error to client ${cid}`)
+      Logger.error(e, `API : NotificationsService.notifyAuthError() : Trouble sending authentication error to client ${cid}`)
     }
   }
   

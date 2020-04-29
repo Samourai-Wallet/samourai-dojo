@@ -59,11 +59,11 @@ class Orchestrator {
           this.onBlockHash(message)
           break
         default:
-          Logger.info(topic.toString())
+          Logger.info(`Orchestrator : ${topic.toString()}`)
       }
     })
 
-    Logger.info('Listening for blocks')
+    Logger.info('Orchestrator : Listening for blocks')
   }
 
   /**
@@ -80,7 +80,7 @@ class Orchestrator {
       const header = await this.rpcClient.getblockheader(blockHash, true)
       const height = header.height
 
-      Logger.info(`Block ${height} ${blockHash}`)
+      Logger.info(`Orchestrator : Block ${height} ${blockHash}`)
 
       let nbTxsPushed
       let rpcConnOk = true
@@ -102,7 +102,7 @@ class Orchestrator {
             try {
               parentTx = await this.rpcClient.getrawtransaction(tx.schParentTxid, true)
             } catch(e) {
-              Logger.error(e, 'Transaction.getTransaction()')
+              Logger.error(e, 'Orchestrator : Transaction.getTransaction()')
             }
           }
 
@@ -110,14 +110,14 @@ class Orchestrator {
             // Push the transaction
             try {
               await pushTxProcessor.pushTx(tx.schRaw)
-              Logger.info(`Pushed scheduled transaction ${tx.schTxid}`)
+              Logger.info(`Orchestrator : Pushed scheduled transaction ${tx.schTxid}`)
             } catch(e) {
               const msg = 'A problem was met while trying to push a scheduled transaction'
-              Logger.error(e, `Orchestrator.onBlockHash() : ${msg}`)
+              Logger.error(e, `Orchestrator : Orchestrator.onBlockHash() : ${msg}`)
               // Check if it's an issue with the connection to the RPC API
               // (=> immediately stop the loop)
               if (RpcClient.isConnectionError(e)) {
-                Logger.info('Connection issue')
+                Logger.info('Orchestrator : Connection issue')
                 rpcConnOk = false
                 break
               }
@@ -130,7 +130,7 @@ class Orchestrator {
                 await this.updateTriggers(tx.schID, shift)
               } catch(e) {
                 const msg = 'A problem was met while shifting scheduled transactions'
-                Logger.error(e, `Orchestrator.onBlockHash() : ${msg}`)
+                Logger.error(e, `Orchestrator : Orchestrator.onBlockHash() : ${msg}`)
               }
             }
 
@@ -141,14 +141,14 @@ class Orchestrator {
               nbTxsPushed++
             } catch(e) {
               const msg = 'A problem was met while trying to delete a scheduled transaction'
-              Logger.error(e, `Orchestrator.onBlockHash() : ${msg}`)
+              Logger.error(e, `Orchestrator : Orchestrator.onBlockHash() : ${msg}`)
             }
           }
         }
       } while (rpcConnOk && nbTxsPushed > 0)
 
     } catch(e) {
-      Logger.error(e, 'Orchestrator.onBlockHash() : Error')
+      Logger.error(e, 'Orchestrator : Orchestrator.onBlockHash() : Error')
     } finally {
       // Release the semaphor
       await this._onBlockHashSemaphor.release()
@@ -173,7 +173,7 @@ class Orchestrator {
       await db.updateTriggerScheduledTransaction(tx.schID, newTrigger)
       // Update the triggers of next transactions in the chain
       await this.updateTriggers(tx.schID, shift)
-      Logger.info(`Rescheduled tx ${tx.schTxid} (trigger=${newTrigger})`)
+      Logger.info(`Orchestrator : Rescheduled tx ${tx.schTxid} (trigger=${newTrigger})`)
     }
   }
 

@@ -20,15 +20,15 @@ if (cluster.isMaster) {
   })
 
   cluster.on('listening', function(worker) {
-    Logger.info(`Cluster ${worker.process.pid} connected`)
+    Logger.info(`API : Cluster ${worker.process.pid} connected`)
   })
   
   cluster.on('disconnect', function(worker) {
-    Logger.info(`Cluster ${worker.process.pid} disconnected`)
+    Logger.info(`API : Cluster ${worker.process.pid} disconnected`)
   })
   
   cluster.on('exit', function(worker) {
-    Logger.info(`Cluster ${worker.process.pid} is dead`)
+    Logger.info(`API : Cluster ${worker.process.pid} is dead`)
     // Ensuring a new cluster will start if an old one dies
     cluster.fork()
   })
