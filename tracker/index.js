@@ -16,8 +16,8 @@
   const TrackerRestApi = require('./tracker-rest-api')
 
 
-  Logger.info('Process ID: ' + process.pid)
-  Logger.info('Preparing the tracker')
+  Logger.info('Tracker : Process ID: ' + process.pid)
+  Logger.info('Tracker : Preparing the tracker')
 
   // Wait for Bitcoind RPC API
   // being ready to process requests

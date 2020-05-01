@@ -33,7 +33,7 @@ class Block extends TransactionsBundle {
    * @returns {Promise - object[]} returns an array of transactions to be broadcast
    */
   async checkBlock() {
-    Logger.info('Beginning to process new block.')
+    Logger.info('Tracker : Beginning to process new block.')
 
     let block
     const txsForBroadcast = []
@@ -42,7 +42,7 @@ class Block extends TransactionsBundle {
       block = bitcoin.Block.fromHex(this.hex)
       this.transactions = block.transactions
     } catch (e) {
-      Logger.error(e, 'Block.checkBlock()')
+      Logger.error(e, 'Tracker : Block.checkBlock()')
       Logger.error(null, this.header)
       return Promise.reject(e)
     }
@@ -74,7 +74,7 @@ class Block extends TransactionsBundle {
       blockParent: prevID
     })
 
-    Logger.info(` Added block ${this.header.height} (id=${blockId})`)
+    Logger.info(`Tracker :  Added block ${this.header.height} (id=${blockId})`)
 
     // Confirms the transactions
     const txids = this.transactions.map(t => t.getId())
@@ -85,7 +85,7 @@ class Block extends TransactionsBundle {
     // Logs and result returned
     const dt = ((Date.now()-t0)/1000).toFixed(1)
     const per = ((Date.now()-t0)/ntx).toFixed(0)
-    Logger.info(` Finished block ${this.header.height}, ${dt}s, ${ntx} tx, ${per}ms/tx`)
+    Logger.info(`Tracker :  Finished block ${this.header.height}, ${dt}s, ${ntx} tx, ${per}ms/tx`)
 
     return txsForBroadcast
   }
@@ -96,7 +96,7 @@ class Block extends TransactionsBundle {
    * @returns {Promise}
    */
   async checkBlockHeader(prevBlockID) {
-    Logger.info('Beginning to process new block header.')
+    Logger.info('Tracker : Beginning to process new block header.')
 
     // Insert the block header into the database
     const blockId = await db.addBlock({
@@ -106,7 +106,7 @@ class Block extends TransactionsBundle {
       blockParent: prevBlockID
     })
 
-    Logger.info(` Added block header ${this.header.height} (id=${blockId})`)
+    Logger.info(`Tracker :  Added block header ${this.header.height} (id=${blockId})`)
 
     return blockId
   }

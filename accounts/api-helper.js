@@ -137,7 +137,7 @@ class ApiHelper {
       HttpServer.sendError(res, errors.body.INVDATA)
       Logger.error(
         params,
-        `ApiHelper.validateEntitiesParams() : Invalid arguments`
+        `API : ApiHelper.validateEntitiesParams() : Invalid arguments`
       )
     }
   }

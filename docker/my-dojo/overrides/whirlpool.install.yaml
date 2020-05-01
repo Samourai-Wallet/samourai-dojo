@@ -16,6 +16,11 @@ services:
       - "8898"
     volumes:
       - data-whirlpool:/home/whirlpool
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "20m"
+        max-file: "10"
     networks:
       whirlnet:
         ipv4_address: 172.30.1.8

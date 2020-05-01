@@ -85,7 +85,7 @@ class UnspentRestApi {
           ${req.query.bip49 ? req.query.bip49 : ''} \
           ${req.query.bip84 ? req.query.bip84 : ''}`
 
-        Logger.info(`Completed GET /unspent ${strParams}`)
+        Logger.info(`API : Completed GET /unspent ${strParams}`)
       }
     }
   }
@@ -126,7 +126,7 @@ class UnspentRestApi {
           ${req.body.bip49 ? req.body.bip49 : ''} \
           ${req.body.bip84 ? req.body.bip84 : ''}`
 
-        Logger.info(`Completed POST /unspent ${strParams}`)
+        Logger.info(`API : Completed POST /unspent ${strParams}`)
       }
     }
   }

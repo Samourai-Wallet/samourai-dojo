@@ -108,7 +108,7 @@ class SupportRestApi {
       HttpServer.sendError(res, errors.generic.GEN)
 
     } finally {
-      debugApi && Logger.info(`Completed GET /support/address/${req.params.addr}/info`)
+      debugApi && Logger.info(`API : Completed GET /support/address/${req.params.addr}/info`)
     }
   }
 
@@ -175,7 +175,7 @@ class SupportRestApi {
       HttpServer.sendError(res, errors.generic.GEN)
 
     } finally {
-      debugApi && Logger.info(`Completed GET /support/address/${req.params.addr}/rescan`)
+      debugApi && Logger.info(`API : Completed GET /support/address/${req.params.addr}/rescan`)
     }
   }
 
@@ -212,7 +212,7 @@ class SupportRestApi {
       HttpServer.sendError(res, errors.generic.GEN)
 
     } finally {
-      debugApi && Logger.info(`Completed GET /support/xpub/${req.params.xpub}/info`)
+      debugApi && Logger.info(`API : Completed GET /support/xpub/${req.params.xpub}/info`)
     }
   }
 
@@ -270,7 +270,7 @@ class SupportRestApi {
           HttpServer.sendRawData(res, JSON.stringify(ret, null, 2))
         } else {
           ret.status = 'Rescan Error'
-          Logger.error(e, 'SupportRestApi.getXpubRescan() : Support rescan error')
+          Logger.error(e, 'API : SupportRestApi.getXpubRescan() : Support rescan error')
           HttpServer.sendError(res, JSON.stringify(ret, null, 2))
         }
       }
@@ -279,7 +279,7 @@ class SupportRestApi {
       HttpServer.sendError(res, errors.generic.GEN)
 
     } finally {
-      debugApi && Logger.info(`Completed GET /support/xpub/${req.params.xpub}/rescan`)
+      debugApi && Logger.info(`API : Completed GET /support/xpub/${req.params.xpub}/rescan`)
     }
   }
 
@@ -300,10 +300,10 @@ class SupportRestApi {
       const ret = {
         status: 'error'
       }
-      Logger.error(e, 'SupportRestApi.getPairing() : Support pairing error')
+      Logger.error(e, 'API : SupportRestApi.getPairing() : Support pairing error')
       HttpServer.sendError(res, JSON.stringify(ret, null, 2))
     } finally {
-      debugApi && Logger.info(`Completed GET /pairing`)
+      debugApi && Logger.info(`API : Completed GET /pairing`)
     }
   }
 
@@ -318,7 +318,7 @@ class SupportRestApi {
           url = fs.readFileSync('/var/lib/tor/hsv3explorer/hostname', 'utf8')
           url = url.replace('\n', '')
         } catch(e) {
-          Logger.error(e, 'SupportRestApi.getPairing() : Cannot read explorer onion address')
+          Logger.error(e, 'API : SupportRestApi.getPairing() : Cannot read explorer onion address')
         }
       }
       const ret = {
@@ -333,10 +333,10 @@ class SupportRestApi {
       const ret = {
         status: 'error'
       }
-      Logger.error(e, 'SupportRestApi.getPairingExplorer() : Support pairing error')
+      Logger.error(e, 'API : SupportRestApi.getPairingExplorer() : Support pairing error')
       HttpServer.sendError(res, JSON.stringify(ret, null, 2))
     } finally {
-      debugApi && Logger.info(`Completed GET /pairing/explorer`)
+      debugApi && Logger.info(`API : Completed GET /pairing/explorer`)
     }
   }
 
@@ -351,7 +351,7 @@ class SupportRestApi {
 
     if (!isValidXpub) {
       HttpServer.sendError(res, errors.body.INVDATA)
-      Logger.error(null, `SupportRestApi.validateArgsGetXpubInfo() : Invalid xpub ${req.params.xpub}`)
+      Logger.error(null, `API : SupportRestApi.validateArgsGetXpubInfo() : Invalid xpub ${req.params.xpub}`)
     } else {
       next()
     }
@@ -369,7 +369,7 @@ class SupportRestApi {
 
     if (!(isValidXpub && isValidGap)) {
       HttpServer.sendError(res, errors.body.INVDATA)
-      Logger.error(null, 'SupportRestApi.validateArgsGetXpubRescan() : Invalid arguments')
+      Logger.error(null, 'API : SupportRestApi.validateArgsGetXpubRescan() : Invalid arguments')
     } else {
       next()
     }
@@ -386,7 +386,7 @@ class SupportRestApi {
 
     if (!isValidAddress) {
       HttpServer.sendError(res, errors.body.INVDATA)
-      Logger.error(null, `SupportRestApi.validateAddress() : Invalid address ${req.params.addr}`)
+      Logger.error(null, `API : SupportRestApi.validateAddress() : Invalid address ${req.params.addr}`)
     } else {
       next()
     }

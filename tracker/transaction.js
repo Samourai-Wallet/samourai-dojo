@@ -63,7 +63,7 @@ class Transaction {
       }
 
     } catch(e) {
-      Logger.error(e, 'Transaction.checkTransaction()')
+      Logger.error(e, 'Tracker : Transaction.checkTransaction()')
       return Promise.reject(e)
     }
   }
@@ -122,7 +122,7 @@ class Transaction {
 
       // Detect potential double spends
       if (r.spendingTxnID !== null && r.spendingTxnID != this.storedTxnID) {
-        Logger.info(`DOUBLE SPEND of ${r.txnTxid}-${r.outIndex} by ${this.txid}!`)
+        Logger.info(`Tracker : DOUBLE SPEND of ${r.txnTxid}-${r.outIndex} by ${this.txid}!`)
         // Delete the existing transaction that has been double-spent:
         // since the deepest block keeps its transactions, this will
         // eventually work itself out, and the wallet will not show
@@ -366,7 +366,7 @@ class Transaction {
         const derived = await hdaHelper.deriveAddresses(xpub, chain, indices, hdType)
         Array.prototype.push.apply(newAddresses, derived)
 
-        Logger.info(`Derived hdID(${hdAccount.hdID}) M/${chain}/${indices.join(',')}`)
+        Logger.info(`Tracker : Derived hdID(${hdAccount.hdID}) M/${chain}/${indices.join(',')}`)
 
         // Update view of derived address indices
         derivedIndices[chain] = chainMaxUsedIndex + gapLimit[chain]
@@ -374,7 +374,7 @@ class Transaction {
         // Check derived addresses for use in this transaction
         for (let d of derived) {
           if (indexedOutputs[d.address]) {
-            Logger.info(`Derived address already in outputs: M/${d.chain}/${d.index}`)
+            Logger.info(`Tracker : Derived address already in outputs: M/${d.chain}/${d.index}`)
             // This transaction spends to an address
             // beyond the original derived gap limit!
             chainMaxUsedIndex = d.index
@@ -405,7 +405,7 @@ class Transaction {
         locktime: this.tx.locktime,
       })
 
-      Logger.info(`Storing transaction ${this.txid}`)
+      Logger.info(`Tracker : Storing transaction ${this.txid}`)
     }
   }
 

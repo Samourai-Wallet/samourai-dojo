@@ -95,11 +95,11 @@ class MempoolProcessor extends AbstractProcessor {
           this.onPushTx(message)
           break
         default:
-          Logger.info(topic.toString())
+          Logger.info(`Tracker : ${topic.toString()}`)
       }
     })
 
-    Logger.info('Listening for pushTx')
+    Logger.info('Tracker : Listening for pushTx')
 
     // Socket listening to pushTx Orchestrator
     this.orchestratorSock = zmq.socket('sub')
@@ -112,11 +112,11 @@ class MempoolProcessor extends AbstractProcessor {
           this.onPushTx(message)
           break
         default:
-          Logger.info(topic.toString())
+          Logger.info(`Tracker : ${topic.toString()}`)
       }
     })
 
-    Logger.info('Listening for pushTx orchestrator')
+    Logger.info('Tracker : Listening for pushTx orchestrator')
 
     // Socket listening to bitcoind Txs messages
     this.txSock = zmq.socket('sub')
@@ -129,11 +129,11 @@ class MempoolProcessor extends AbstractProcessor {
           this.onTx(message)
           break
         default:
-          Logger.info(topic.toString())
+          Logger.info(`Tracker : ${topic.toString()}`)
       }
     })
 
-    Logger.info('Listening for mempool transactions')
+    Logger.info('Tracker : Listening for mempool transactions')
   }
 
   /**
@@ -145,7 +145,7 @@ class MempoolProcessor extends AbstractProcessor {
     await this._refreshActiveStatus()
 
     const activeLbl = this.isActive ? 'active' : 'inactive'
-    Logger.info(`Processing ${activeLbl} Mempool (${this.mempoolBuffer.size()} transactions)`)
+    Logger.info(`Tracker : Processing ${activeLbl} Mempool (${this.mempoolBuffer.size()} transactions)`)
 
     let currentMempool = new TransactionsBundle(this.mempoolBuffer.toArray())
     this.mempoolBuffer.clear()
@@ -171,7 +171,7 @@ class MempoolProcessor extends AbstractProcessor {
         let tx = bitcoin.Transaction.fromBuffer(buf)
         this.mempoolBuffer.addTransaction(tx)
       } catch (e) {
-        Logger.error(e, 'MempoolProcessor.onTx()')
+        Logger.error(e, 'Tracker : MempoolProcessor.onTx()')
         return Promise.reject(e)
       }
     }
@@ -190,7 +190,7 @@ class MempoolProcessor extends AbstractProcessor {
       let pushedTx = bitcoin.Transaction.fromHex(buf.toString())
       const txid = pushedTx.getId()
 
-      Logger.info(`Processing tx for pushtx ${txid}`)
+      Logger.info(`Tracker : Processing tx for pushtx ${txid}`)
 
       if (!TransactionsBundle.cache.has(txid)) {
         // Process the transaction
@@ -201,7 +201,7 @@ class MempoolProcessor extends AbstractProcessor {
           this.notifyTx(txCheck.tx)
       }
     } catch (e) {
-      Logger.error(e, 'MempoolProcessor.onPushTx()')
+      Logger.error(e, 'Tracker : MempoolProcessor.onPushTx()')
       return Promise.reject(e)
     }
   }
@@ -213,7 +213,7 @@ class MempoolProcessor extends AbstractProcessor {
   async checkUnconfirmed() {
     const t0 = Date.now()
 
-    Logger.info('Processing unconfirmed transactions')
+    Logger.info('Tracker : Processing unconfirmed transactions')
 
     const unconfirmedTxs = await db.getUnconfirmedTransactions()
 
@@ -226,7 +226,7 @@ class MempoolProcessor extends AbstractProcessor {
               // Transaction is confirmed
               const block = await db.getBlockByHash(rtx.blockhash)
               if (block && block.blockID) {
-                Logger.info(`Marking TXID ${tx.txnTxid} confirmed`)
+                Logger.info(`Tracker : Marking TXID ${tx.txnTxid} confirmed`)
                 return db.confirmTransactions([tx.txnTxid], block.blockID)
               }
             },
@@ -238,7 +238,7 @@ class MempoolProcessor extends AbstractProcessor {
             }
           )
         } catch(e) {
-          Logger.error(e, 'MempoolProcessor.checkUnconfirmed()')
+          Logger.error(e, 'Tracker : MempoolProcessor.checkUnconfirmed()')
         }
       })
     }
@@ -247,7 +247,7 @@ class MempoolProcessor extends AbstractProcessor {
     const ntx = unconfirmedTxs.length
     const dt = ((Date.now() - t0) / 1000).toFixed(1)
     const per = (ntx == 0) ? 0 : ((Date.now() - t0) / ntx).toFixed(0)
-    Logger.info(` Finished processing unconfirmed transactions ${dt}s, ${ntx} tx, ${per}ms/tx`)
+    Logger.info(`Tracker :  Finished processing unconfirmed transactions ${dt}s, ${ntx} tx, ${per}ms/tx`)
   }
 
   /**
@@ -273,7 +273,7 @@ class MempoolProcessor extends AbstractProcessor {
    * Log mempool statistics
    */
   displayMempoolStats() {
-    Logger.info(`Mempool Size: ${this.mempoolBuffer.size()}`)
+    Logger.info(`Tracker : Mempool Size: ${this.mempoolBuffer.size()}`)
   }
 
 }

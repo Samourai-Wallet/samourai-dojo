@@ -182,7 +182,7 @@ Docker and Docker Compose are going to build the images and containers of your D
 * Monitor the progress made for the initialization of the database with this command displaying the logs of the tracker
 
 ```
-./dojo.sh logs tracker
+./dojo.sh logs nodejs
 ```
 
 Exit the logs with CTRL+C when the syncing of the database has completed.
@@ -245,24 +245,22 @@ Available commands:
 
   install                       Install your Dojo.
 
-  logs [module] [options]       Display the logs of your Dojo. Use CTRL+C to stop the logs.
+  logs [module] [options]       Display the logs of your dojo.
+                                  By default, the command displays the live logs. Use CTRL+C to stop the logs.
+                                  Use the -n option to display past logs.
 
                                 Available modules:
-                                  dojo.sh logs                : display the logs of all containers
+                                  dojo.sh logs                : display the logs of all the Docker containers
                                   dojo.sh logs bitcoind       : display the logs of bitcoind
                                   dojo.sh logs db             : display the logs of the MySQL database
                                   dojo.sh logs tor            : display the logs of tor
+                                  dojo.sh logs nginx          : display the logs of nginx
                                   dojo.sh logs indexer        : display the logs of the internal indexer
-                                  dojo.sh logs api            : display the logs of the REST API (nodejs)
-                                  dojo.sh logs tracker        : display the logs of the Tracker (nodejs)
-                                  dojo.sh logs pushtx         : display the logs of the pushTx API (nodejs)
-                                  dojo.sh logs pushtx-orchest : display the logs of the Orchestrator (nodejs)
+                                  dojo.sh logs nodejs         : display the logs of NodeJS modules (API, Tracker, PushTx API, Orchestrator)
                                   dojo.sh logs explorer       : display the logs of the Explorer
                                   dojo.sh logs whirlpool      : display the logs of the Whirlpool client
 
-                                Available options (for api, tracker, pushtx, pushtx-orchest and explorer modules):
-                                  -d [VALUE]                  : select the type of log to be displayed.
-                                                                VALUE can be output (default) or error.
+                                Available options:
                                   -n [VALUE]                  : display the last VALUE lines
 
   onion                         Display the Tor onion addresses allowing to access the API, maintenance tool and block explorer of your Dojo.

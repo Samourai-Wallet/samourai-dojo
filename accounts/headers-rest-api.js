@@ -49,7 +49,7 @@ class HeadersRestApi {
     } catch(e) {
       HttpServer.sendError(res, e)
     } finally {
-      debugApi && Logger.info(`Completed GET /header/${req.params.hash}`)
+      debugApi && Logger.info(`API : Completed GET /header/${req.params.hash}`)
     }
   }
 
@@ -66,7 +66,7 @@ class HeadersRestApi {
       HttpServer.sendError(res, errors.body.INVDATA)
       Logger.error(
         req.params.hash,
-        'HeadersRestApi.validateArgsGetHeader() : Invalid hash'
+        'API : HeadersRestApi.validateArgsGetHeader() : Invalid hash'
       )
     } else {
       next()

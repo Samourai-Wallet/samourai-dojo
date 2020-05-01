@@ -63,7 +63,7 @@ class TransactionsRestApi {
       HttpServer.sendError(res, e)
     } finally {
       const strParams = `${req.query.fees ? req.query.fees : ''}`
-      debugApi && Logger.info(`Completed GET /tx/${req.params.txid} ${strParams}`)
+      debugApi && Logger.info(`API : Completed GET /tx/${req.params.txid} ${strParams}`)
     }
   }
 
@@ -97,7 +97,7 @@ class TransactionsRestApi {
         ${req.query.page ? req.query.page : ''} \
         ${req.query.count ? req.query.count : ''}`
 
-      debugApi && Logger.info(`Completed GET /txs ${strParams}`)
+      debugApi && Logger.info(`API : Completed GET /txs ${strParams}`)
     }
   }
 
@@ -118,7 +118,7 @@ class TransactionsRestApi {
       HttpServer.sendError(res, errors.body.INVDATA)
       Logger.error(
         req.params,
-        'HeadersRestApi.validateArgsGetTransaction() : Invalid arguments'
+        'API : HeadersRestApi.validateArgsGetTransaction() : Invalid arguments'
       )
       Logger.error(req.query, '')
     } else {
@@ -145,7 +145,7 @@ class TransactionsRestApi {
       HttpServer.sendError(res, errors.body.INVDATA)
       Logger.error(
         req.query,
-        'HeadersRestApi.validateArgsGetTransactions() : Invalid arguments'
+        'API : HeadersRestApi.validateArgsGetTransactions() : Invalid arguments'
       )
     } else {
       next()

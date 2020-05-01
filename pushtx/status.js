@@ -78,7 +78,7 @@ class Status {
       await this._refreshNetworkInfo()
       await this._refreshBlockchainInfo()
     } catch (e) {
-      Logger.error(e, 'Status.getCurrent() : Error')
+      Logger.error(e, 'PushTx : Status.getCurrent() : Error')
     } finally {
       return this.status
     }
