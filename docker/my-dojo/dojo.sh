@@ -464,7 +464,7 @@ help() {
   echo "  install                       Install your dojo."
   echo " "
   echo "                                Available options:"
-  echo "                                  --nolog     : do not display the logs after Dojo has been laucnhed."
+  echo "                                  --nolog     : do not display the logs after Dojo has been launched."
   echo " "
   echo "  logs [module] [options]       Display the logs of your dojo."
   echo "                                  By default, the command displays the live logs. Use CTRL+C to stop the logs."
