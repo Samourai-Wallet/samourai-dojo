@@ -207,7 +207,7 @@ class PushTxRestApi {
           ret = err.message
         }
       } else {
-        Logger.error(err, 'PushTx : )
+        Logger.error(err, 'PushTx : ')
         ret = err
       }
     } catch (e) {
