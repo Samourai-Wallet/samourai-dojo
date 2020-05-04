@@ -322,6 +322,8 @@ upgrade() {
     fi
     # Start Dojo
     docker_up --remove-orphans
+    # Post start clean-up
+    post_start_cleanup
     # Update the database
     update_dojo_db
     # Display the logs
