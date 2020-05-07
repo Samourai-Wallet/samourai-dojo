@@ -3,12 +3,102 @@
 
 ## Releases ##
 
+- [v1.6.0](#1_6_0)
 - [v1.5.0](#1_5_0)
 - [v1.4.1](#1_4_1)
 - [v1.4.0](#1_4_0)
 - [v1.3.0](#1_3_0)
 - [v1.2.0](#1_2_0)
 - [v1.1.0](#1_1_0)
+
+
+<a name="1_6_0"/>
+
+## Samourai Dojo v1.6.0 ##
+
+
+### Notable changes ###
+
+
+#### Whirlpool CLI ####
+
+This version of Dojo introduces the support of an optional Whirlpool client ([whirlpool-client-cli](https://code.samourai.io/whirlpool/whirlpool-client-cli)) running inside MyDojo.
+
+This option provides several benefits:
+- all communications between the Whirlpool client and Dojo's API are internal to Docker,
+- Whirlpool client exposes its API as a Tor hidden service. All communications between Whirlpool GUI and the Whirlpool client are moade over Tor.
+
+See this [documentation](https://github.com/Samourai-Wallet/samourai-dojo/blob/master/doc/DOCKER_advanced_setups.md#local_whirlpool) for the detailed procedure allowing to configure and install the Whirlpool client.
+
+
+#### Unified logs system ####
+
+Starting with this version, logs of all containers are managed with the log system provided by Docker.
+
+Logs of all NodeJS submodules (API, Tracker, PushTx, PushTx Orchestrator) are merged into a single stream.
+
+The -d option of `dojo.sh logs` command is deprecated.
+
+See this [documentation](https://github.com/Samourai-Wallet/samourai-dojo/blob/master/doc/DOCKER_setup.md#shell_script) for a list of logs available through the `dojo.sh` command.
+
+
+#### Upgrade of Tor to v0.4.2.7 ####
+
+Upgrade to [Tor](https://www.torproject.org/) v0.4.2.7
+
+
+#### Upgrade of BTC RPC Explorer to v2.0.0 ####
+
+Upgrade to [btc-rpc-explorer](https://github.com/janoside/btc-rpc-explorer) v2.0.0
+
+
+#### Upgrade of addrindexrs to v0.2.0 ####
+
+Upgrade to [addrindexrs](https://github.com/Samourai-Wallet/addrindexrs) v0.2.0
+
+
+### Change log ###
+
+
+#### MyDojo ####
+
+- [#128](https://github.com/Samourai-Wallet/samourai-dojo/pull/128) drop unneeded reversebuffer util method
+- [#142](https://github.com/Samourai-Wallet/samourai-dojo/pull/142) modify results returned by dojo.sh onion
+- [#143](https://github.com/Samourai-Wallet/samourai-dojo/pull/143) improve display of dojo version 
+- [#144](https://github.com/Samourai-Wallet/samourai-dojo/pull/144) add dynamic switch of startup mode
+- [#147](https://github.com/Samourai-Wallet/samourai-dojo/pull/147) increase control over ports exposed by dojo
+- [#148](https://github.com/Samourai-Wallet/samourai-dojo/pull/148) upgrade explorer to btc-rpc-explorer 2.0.0
+- [#149](https://github.com/Samourai-Wallet/samourai-dojo/pull/149) upgrade tor to v0.4.2.7
+- [#152](https://github.com/Samourai-Wallet/samourai-dojo/pull/152) add new optional whirlpool container
+- [#154](https://github.com/Samourai-Wallet/samourai-dojo/pull/154) manage all logs with docker log system
+- [#156](https://github.com/Samourai-Wallet/samourai-dojo/pull/156) upgrade indexer to addrindexrs v0.2.0
+- [#157](https://github.com/Samourai-Wallet/samourai-dojo/pull/157) clean-up of log files 
+
+
+#### Bug fixes ####
+
+- [4ee1f66](https://github.com/Samourai-Wallet/samourai-dojo/commit/4ee1f666b04f5096eae021f2ffb8b94d7323b7da) fix dojo version in index-example.js
+- [37c4ac6](https://github.com/Samourai-Wallet/samourai-dojo/commit/37c4ac65d50ea849625c20a53fe260af386cc2f5) add missing quote breaking pushtx-rest-api.js script
+- [#150](https://github.com/Samourai-Wallet/samourai-dojo/pull/150) define a floor for tracker normal mode
+- [#153](https://github.com/Samourai-Wallet/samourai-dojo/pull/153) fix typo in install scripts causing a copy error when installing or upgrading
+- [#155](https://github.com/Samourai-Wallet/samourai-dojo/pull/155) fix typo: laucnhed -> launched
+
+
+#### Documentation ####
+
+- [#139](https://github.com/Samourai-Wallet/samourai-dojo/pull/139) update synology documentation
+- [#146](https://github.com/Samourai-Wallet/samourai-dojo/pull/146) fix misleading docs for post_pushtx
+
+
+#### Credits ###
+
+- anwfr
+- dergigi
+- kenshin-samourai
+- LaurentMT
+- lukechilds
+- mikispag
+- pajasevi
 
 
 <a name="1_5_0"/>
