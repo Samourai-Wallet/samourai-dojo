@@ -73,6 +73,7 @@ Upgrade to [addrindexrs](https://github.com/Samourai-Wallet/addrindexrs) v0.2.0
 - [#154](https://github.com/Samourai-Wallet/samourai-dojo/pull/154) manage all logs with docker log system
 - [#156](https://github.com/Samourai-Wallet/samourai-dojo/pull/156) upgrade indexer to addrindexrs v0.2.0
 - [#157](https://github.com/Samourai-Wallet/samourai-dojo/pull/157) clean-up of log files 
+- [#158](https://github.com/Samourai-Wallet/samourai-dojo/pull/158) misc improvements in bitcoind rpc transactions class
 
 
 #### Bug fixes ####
