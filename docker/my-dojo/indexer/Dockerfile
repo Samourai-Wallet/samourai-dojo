@@ -1,4 +1,4 @@
-FROM    rust:1.37.0-slim
+FROM    rust:1.42.0-slim-buster
 
 ENV     INDEXER_HOME        /home/indexer
 ENV     INDEXER_VERSION     0.2.0
