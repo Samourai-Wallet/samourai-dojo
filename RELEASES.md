@@ -74,6 +74,7 @@ Upgrade to [addrindexrs](https://github.com/Samourai-Wallet/addrindexrs) v0.2.0
 - [#156](https://github.com/Samourai-Wallet/samourai-dojo/pull/156) upgrade indexer to addrindexrs v0.2.0
 - [#157](https://github.com/Samourai-Wallet/samourai-dojo/pull/157) clean-up of log files 
 - [#158](https://github.com/Samourai-Wallet/samourai-dojo/pull/158) misc improvements in bitcoind rpc transactions class
+- [#159](https://github.com/Samourai-Wallet/samourai-dojo/pull/159) upgrade indexer to rust 1.42.0 slim buster
 
 
 #### Bug fixes ####
