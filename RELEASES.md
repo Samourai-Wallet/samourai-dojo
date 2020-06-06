@@ -42,6 +42,11 @@ The -d option of `dojo.sh logs` command is deprecated.
 See this [documentation](https://github.com/Samourai-Wallet/samourai-dojo/blob/master/doc/DOCKER_setup.md#shell_script) for a list of logs available through the `dojo.sh` command.
 
 
+#### Upgrade of bitcoind to v0.20.0 ####
+
+Upgrade to Bitcoin Core v0.20.0
+
+
 #### Upgrade of Tor to v0.4.2.7 ####
 
 Upgrade to [Tor](https://www.torproject.org/) v0.4.2.7
@@ -75,6 +80,7 @@ Upgrade to [addrindexrs](https://github.com/Samourai-Wallet/addrindexrs) v0.2.0
 - [#157](https://github.com/Samourai-Wallet/samourai-dojo/pull/157) clean-up of log files 
 - [#158](https://github.com/Samourai-Wallet/samourai-dojo/pull/158) misc improvements in bitcoind rpc transactions class
 - [#159](https://github.com/Samourai-Wallet/samourai-dojo/pull/159) upgrade indexer to rust 1.42.0 slim buster
+- [#160](https://github.com/Samourai-Wallet/samourai-dojo/pull/160) upgrade bitcoind to bitcoin core 0.20.0
 
 
 #### Bug fixes ####
