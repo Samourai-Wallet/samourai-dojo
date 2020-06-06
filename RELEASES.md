@@ -81,6 +81,7 @@ Upgrade to [addrindexrs](https://github.com/Samourai-Wallet/addrindexrs) v0.2.0
 - [#158](https://github.com/Samourai-Wallet/samourai-dojo/pull/158) misc improvements in bitcoind rpc transactions class
 - [#159](https://github.com/Samourai-Wallet/samourai-dojo/pull/159) upgrade indexer to rust 1.42.0 slim buster
 - [#160](https://github.com/Samourai-Wallet/samourai-dojo/pull/160) upgrade bitcoind to bitcoin core 0.20.0
+- [#mr141](https://code.samourai.io/dojo/samourai-dojo/-/merge_requests/141) added more header to allow proper cors
 
 
 #### Bug fixes ####
