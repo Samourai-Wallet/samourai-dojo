@@ -99,12 +99,12 @@ stop() {
     do
       echo "Waiting for shutdown of Bitcoin server."
       # Check if bitcoind rpc api is responding
-      timeout -k 12 10 docker exec -it bitcoind  bitcoin-cli \
+      $( timeout -k 12 10 docker exec -it bitcoind  bitcoin-cli \
         -rpcconnect=bitcoind \
         --rpcport=28256 \
         --rpcuser="$BITCOIND_RPC_USER" \
         --rpcpassword="$BITCOIND_RPC_PASSWORD" \
-        getblockchaininfo > /dev/null
+        getblockchaininfo &> /dev/null ) &> /dev/null
       # rpc api is down
       if [[ $? > 0 ]]; then
         echo "Bitcoin server stopped."
