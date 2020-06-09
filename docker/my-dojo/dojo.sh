@@ -64,6 +64,7 @@ start() {
   isRunning=$(docker inspect --format="{{.State.Running}}" db 2> /dev/null)
 
   if [ $? -eq 1 ] || [ "$isRunning" == "false" ]; then
+    echo "Starting Dojo. Please wait."
     docker_up --remove-orphans
   else
     echo "Dojo is already running."
@@ -72,7 +73,8 @@ start() {
 
 # Stop
 stop() {
-  # Check if dojo is running (check the db container)
+  echo "Preparing shutdown of Dojo. Please wait."
+    # Check if dojo is running (check the db container)
   isRunning=$(docker inspect --format="{{.State.Running}}" db 2> /dev/null)
   if [ $? -eq 1 ] || [ "$isRunning" == "false" ]; then
     echo "Dojo is already stopped."
@@ -82,16 +84,15 @@ stop() {
   if [ "$BITCOIND_INSTALL" == "on" ]; then
     # Renewal of bitcoind onion address
     if [ "$BITCOIND_EPHEMERAL_HS" = "on" ]; then
-      docker exec -it tor rm -rf /var/lib/tor/hsv2bitcoind
+      $( docker exec -it tor rm -rf /var/lib/tor/hsv2bitcoind ) &> /dev/null
     fi
     # Stop the bitcoin daemon
-    echo "Preparing shutdown of dojo. Please wait."
-    docker exec -it bitcoind  bitcoin-cli \
+    $( docker exec -it bitcoind  bitcoin-cli \
       -rpcconnect=bitcoind \
       --rpcport=28256 \
       --rpcuser="$BITCOIND_RPC_USER" \
       --rpcpassword="$BITCOIND_RPC_PASSWORD" \
-      stop
+      stop ) &> /dev/null
     # Check if the bitcoin daemon is still up
     # wait 3mn max
     i="0"
@@ -99,12 +100,12 @@ stop() {
     do
       echo "Waiting for shutdown of Bitcoin server."
       # Check if bitcoind rpc api is responding
-      timeout -k 12 10 docker exec -it bitcoind  bitcoin-cli \
+      $( timeout -k 12 10 docker exec -it bitcoind  bitcoin-cli \
         -rpcconnect=bitcoind \
         --rpcport=28256 \
         --rpcuser="$BITCOIND_RPC_USER" \
         --rpcpassword="$BITCOIND_RPC_PASSWORD" \
-        getblockchaininfo > /dev/null
+        getblockchaininfo &> /dev/null ) &> /dev/null
       # rpc api is down
       if [[ $? > 0 ]]; then
         echo "Bitcoin server stopped."
