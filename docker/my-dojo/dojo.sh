@@ -64,6 +64,7 @@ start() {
   isRunning=$(docker inspect --format="{{.State.Running}}" db 2> /dev/null)
 
   if [ $? -eq 1 ] || [ "$isRunning" == "false" ]; then
+    echo "Starting Dojo. Please wait."
     docker_up --remove-orphans
   else
     echo "Dojo is already running."
