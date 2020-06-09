@@ -86,12 +86,12 @@ stop() {
     fi
     # Stop the bitcoin daemon
     echo "Preparing shutdown of dojo. Please wait."
-    docker exec -it bitcoind  bitcoin-cli \
+    $( docker exec -it bitcoind  bitcoin-cli \
       -rpcconnect=bitcoind \
       --rpcport=28256 \
       --rpcuser="$BITCOIND_RPC_USER" \
       --rpcpassword="$BITCOIND_RPC_PASSWORD" \
-      stop
+      stop ) &> /dev/null
     # Check if the bitcoin daemon is still up
     # wait 3mn max
     i="0"
