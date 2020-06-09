@@ -91,6 +91,7 @@ Upgrade to [addrindexrs](https://github.com/Samourai-Wallet/addrindexrs) v0.2.0
 - [#150](https://github.com/Samourai-Wallet/samourai-dojo/pull/150) define a floor for tracker normal mode
 - [#153](https://github.com/Samourai-Wallet/samourai-dojo/pull/153) fix typo in install scripts causing a copy error when installing or upgrading
 - [#155](https://github.com/Samourai-Wallet/samourai-dojo/pull/155) fix typo: laucnhed -> launched
+- [#161](https://github.com/Samourai-Wallet/samourai-dojo/pull/161) trap docker & bash messages displayed on dojo.sh stop
 
 
 #### Documentation ####
