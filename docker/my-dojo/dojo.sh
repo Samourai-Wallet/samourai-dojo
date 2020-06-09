@@ -83,7 +83,7 @@ stop() {
   if [ "$BITCOIND_INSTALL" == "on" ]; then
     # Renewal of bitcoind onion address
     if [ "$BITCOIND_EPHEMERAL_HS" = "on" ]; then
-      docker exec -it tor rm -rf /var/lib/tor/hsv2bitcoind
+      $( docker exec -it tor rm -rf /var/lib/tor/hsv2bitcoind ) &> /dev/null
     fi
     # Stop the bitcoin daemon
     $( docker exec -it bitcoind  bitcoin-cli \
