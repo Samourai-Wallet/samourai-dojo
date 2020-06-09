@@ -72,7 +72,8 @@ start() {
 
 # Stop
 stop() {
-  # Check if dojo is running (check the db container)
+  echo "Preparing shutdown of Dojo. Please wait."
+    # Check if dojo is running (check the db container)
   isRunning=$(docker inspect --format="{{.State.Running}}" db 2> /dev/null)
   if [ $? -eq 1 ] || [ "$isRunning" == "false" ]; then
     echo "Dojo is already stopped."
@@ -85,7 +86,6 @@ stop() {
       docker exec -it tor rm -rf /var/lib/tor/hsv2bitcoind
     fi
     # Stop the bitcoin daemon
-    echo "Preparing shutdown of dojo. Please wait."
     $( docker exec -it bitcoind  bitcoin-cli \
       -rpcconnect=bitcoind \
       --rpcport=28256 \
