@@ -50,15 +50,16 @@ RUN     set -ex && \
         rm "tor-$WHIRLPOOL_TOR_VERSION.tar.gz.asc"
 
 # Install whirlpool-cli
-ENV     WHIRLPOOL_URL                 https://github.com/Samourai-Wallet/whirlpool-client-cli/releases/download
-ENV     WHIRLPOOL_VERSION             0.10.5
+ENV     WHIRLPOOL_URL                 https://code.samourai.io/whirlpool/whirlpool-client-cli/uploads
+ENV     WHIRLPOOL_VERSION             0.10.6
+ENV     WHIRLPOOL_VERSION_HASH        a05b443bf9d266702327c99fd8bad5da
 ENV     WHIRLPOOL_JAR                 "whirlpool-client-cli-$WHIRLPOOL_VERSION-run.jar"
-ENV     WHIRLPOOL_SHA256              94da0b3dc3da1a6292d7ffe74c0cba324a8b553437e66898e86312051ee1b84f
+ENV     WHIRLPOOL_SHA256              eb07ef5637c2bb52b1be57b62941120a689b0c02600c38dbda3b8dd701d03cc8
 
 RUN     set -ex && \
         cd "$WHIRLPOOL_DIR" && \
         echo "$WHIRLPOOL_SHA256 *$WHIRLPOOL_JAR" > WHIRLPOOL_CHECKSUMS && \
-        wget -qO "$WHIRLPOOL_JAR" "$WHIRLPOOL_URL/$WHIRLPOOL_VERSION/$WHIRLPOOL_JAR" && \
+        wget -qO "$WHIRLPOOL_JAR" "$WHIRLPOOL_URL/$WHIRLPOOL_VERSION_HASH/$WHIRLPOOL_JAR" && \
         sha256sum -c WHIRLPOOL_CHECKSUMS 2>&1 | grep OK && \
         mv "$WHIRLPOOL_JAR" whirlpool-client-cli-run.jar && \
         chown -Rv whirlpool:whirlpool "$WHIRLPOOL_DIR" && \
