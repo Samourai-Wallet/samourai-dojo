@@ -83,6 +83,7 @@ Upgrade to [addrindexrs](https://github.com/Samourai-Wallet/addrindexrs) v0.3.0
 - [#160](https://github.com/Samourai-Wallet/samourai-dojo/pull/160) upgrade bitcoind to bitcoin core 0.20.0
 - [#mr141](https://code.samourai.io/dojo/samourai-dojo/-/merge_requests/141) added more header to allow proper cors
 - [#163](https://github.com/Samourai-Wallet/samourai-dojo/pull/163) upgrade indexer to addrindexrs 0.3.0
+- [#164](https://github.com/Samourai-Wallet/samourai-dojo/pull/164) upgrade whirlpool to whirlpool-cli 0.10.6
 
 
 #### Bug fixes ####
@@ -112,6 +113,7 @@ Upgrade to [addrindexrs](https://github.com/Samourai-Wallet/addrindexrs) v0.3.0
 - lukechilds
 - mikispag
 - pajasevi
+- zeroleak
 
 
 <a name="1_5_0"/>
