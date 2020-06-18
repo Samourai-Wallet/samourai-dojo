@@ -61,7 +61,7 @@ class NotificationsServer {
             const header = JSON.parse(message.toString())
             this.notifService.notifyBlock(header)
           } catch(e) {
-            Logger.error(e, 'NotificationServer._initTrackerSocket() : Error in block message')
+            Logger.error(e, 'API : NotificationServer._initTrackerSocket() : Error in block message')
           }
           break
         case 'transaction':
@@ -69,11 +69,11 @@ class NotificationsServer {
             const tx = JSON.parse(message.toString())
             this.notifService.notifyTransaction(tx)
           } catch(e) {
-            Logger.error(e, 'NotificationServer._initTrackerSocket() : Error in transaction message')
+            Logger.error(e, 'API : NotificationServer._initTrackerSocket() : Error in transaction message')
           }
           break
         default:
-          Logger.info(`Unknown ZMQ message topic: "${topic}"`)
+          Logger.info(`API : Unknown ZMQ message topic: "${topic}"`)
       }
     })
   }

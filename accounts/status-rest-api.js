@@ -47,7 +47,7 @@ class StatusRestApi {
     } catch(e) {
       HttpServer.sendError(res, e)
     } finally {
-      debugApi && Logger.info(`Completed GET /status`)
+      debugApi && Logger.info(`API : Completed GET /status`)
     }
   }
 

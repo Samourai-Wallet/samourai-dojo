@@ -18,7 +18,7 @@ module.exports = {
     /*
      * Dojo version
      */
-    dojoVersion: process.env.DOJO_VERSION_TAG,
+    dojoVersion: process.env.DOJO_NODEJS_VERSION_TAG,
     /*
      * Bitcoind
      */
@@ -64,6 +64,10 @@ module.exports = {
       connectionLimitPushTxApi: 5,
       connectionLimitPushTxOrchestrator: 5
     },
+    /*
+     * IP address used to expose the API ports
+     */
+    apiBind: '0.0.0.0',
     /*
      * TCP Ports
      */

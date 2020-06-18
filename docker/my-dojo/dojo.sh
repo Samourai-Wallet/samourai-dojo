@@ -14,6 +14,7 @@ source_file() {
 }
 
 # Source config files
+source_file "$DIR/conf/docker-whirlpool.conf"
 source_file "$DIR/conf/docker-indexer.conf"
 source_file "$DIR/conf/docker-bitcoind.conf"
 source_file "$DIR/conf/docker-explorer.conf"
@@ -43,6 +44,10 @@ select_yaml_files() {
     yamlFiles="$yamlFiles -f $DIR/overrides/indexer.install.yaml"
   fi
 
+  if [ "$WHIRLPOOL_INSTALL" == "on" ]; then
+    yamlFiles="$yamlFiles -f $DIR/overrides/whirlpool.install.yaml"
+  fi
+
   # Return yamlFiles
   echo "$yamlFiles"
 }
@@ -59,6 +64,7 @@ start() {
   isRunning=$(docker inspect --format="{{.State.Running}}" db 2> /dev/null)
 
   if [ $? -eq 1 ] || [ "$isRunning" == "false" ]; then
+    echo "Starting Dojo. Please wait."
     docker_up --remove-orphans
   else
     echo "Dojo is already running."
@@ -67,7 +73,8 @@ start() {
 
 # Stop
 stop() {
-  # Check if dojo is running (check the db container)
+  echo "Preparing shutdown of Dojo. Please wait."
+    # Check if dojo is running (check the db container)
   isRunning=$(docker inspect --format="{{.State.Running}}" db 2> /dev/null)
   if [ $? -eq 1 ] || [ "$isRunning" == "false" ]; then
     echo "Dojo is already stopped."
@@ -77,16 +84,15 @@ stop() {
   if [ "$BITCOIND_INSTALL" == "on" ]; then
     # Renewal of bitcoind onion address
     if [ "$BITCOIND_EPHEMERAL_HS" = "on" ]; then
-      docker exec -it tor rm -rf /var/lib/tor/hsv2bitcoind
+      $( docker exec -it tor rm -rf /var/lib/tor/hsv2bitcoind ) &> /dev/null
     fi
     # Stop the bitcoin daemon
-    echo "Preparing shutdown of dojo. Please wait."
-    docker exec -it bitcoind  bitcoin-cli \
+    $( docker exec -it bitcoind  bitcoin-cli \
       -rpcconnect=bitcoind \
       --rpcport=28256 \
       --rpcuser="$BITCOIND_RPC_USER" \
       --rpcpassword="$BITCOIND_RPC_PASSWORD" \
-      stop
+      stop ) &> /dev/null
     # Check if the bitcoin daemon is still up
     # wait 3mn max
     i="0"
@@ -94,12 +100,12 @@ stop() {
     do
       echo "Waiting for shutdown of Bitcoin server."
       # Check if bitcoind rpc api is responding
-      timeout -k 12 10 docker exec -it bitcoind  bitcoin-cli \
+      $( timeout -k 12 10 docker exec -it bitcoind  bitcoin-cli \
         -rpcconnect=bitcoind \
         --rpcport=28256 \
         --rpcuser="$BITCOIND_RPC_USER" \
         --rpcpassword="$BITCOIND_RPC_PASSWORD" \
-        getblockchaininfo > /dev/null
+        getblockchaininfo &> /dev/null ) &> /dev/null
       # rpc api is down
       if [[ $? > 0 ]]; then
         echo "Bitcoin server stopped."
@@ -193,7 +199,7 @@ install() {
     docker_up --remove-orphans
     # Display the logs
     if [ $noLog -eq 1 ]; then
-      logs
+      logs "" 0
     fi
   fi
 }
@@ -236,6 +242,7 @@ uninstall() {
     docker image rm -f samouraiwallet/dojo-nginx:"$DOJO_NGINX_VERSION_TAG"
     docker image rm -f samouraiwallet/dojo-tor:"$DOJO_TOR_VERSION_TAG"
     docker image rm -f samouraiwallet/dojo-indexer:"$DOJO_INDEXER_VERSION_TAG"
+    docker image rm -f samouraiwallet/dojo-whirlpool:"$DOJO_WHIRLPOOL_VERSION_TAG"
 
     docker volume prune -f
     return 0
@@ -264,6 +271,7 @@ clean() {
   del_images_for samouraiwallet/dojo-nginx "$DOJO_NGINX_VERSION_TAG"
   del_images_for samouraiwallet/dojo-tor "$DOJO_TOR_VERSION_TAG"
   del_images_for samouraiwallet/dojo-indexer "$DOJO_INDEXER_VERSION_TAG"
+  del_images_for samouraiwallet/dojo-whirlpool "$DOJO_WHIRLPOOL_VERSION_TAG"
 }
 
 # Upgrade
@@ -315,11 +323,13 @@ upgrade() {
     fi
     # Start Dojo
     docker_up --remove-orphans
+    # Post start clean-up
+    post_start_cleanup
     # Update the database
     update_dojo_db
     # Display the logs
     if [ $noLog -eq 1 ]; then
-      logs
+      logs "" 0
     fi
   fi
 }
@@ -328,17 +338,20 @@ upgrade() {
 onion() {
   if [ "$EXPLORER_INSTALL" == "on" ]; then
     V3_ADDR_EXPLORER=$( docker exec -it tor cat /var/lib/tor/hsv3explorer/hostname )
-    echo "Explorer hidden service address (v3) = $V3_ADDR_EXPLORER"
+    echo "Explorer hidden service address = $V3_ADDR_EXPLORER"
   fi
 
-  V2_ADDR=$( docker exec -it tor cat /var/lib/tor/hsv2dojo/hostname )
   V3_ADDR=$( docker exec -it tor cat /var/lib/tor/hsv3dojo/hostname )
-  echo "API hidden service address (v3) = $V3_ADDR"
-  echo "API hidden service address (v2) = $V2_ADDR"
+  echo "Maintenance Tool hidden service address = $V3_ADDR"
+
+  if [ "$WHIRLPOOL_INSTALL" == "on" ]; then
+    V3_ADDR_WHIRLPOOL=$( docker exec -it tor cat /var/lib/tor/hsv3whirlpool/hostname )
+    echo "Whirlpool API hidden service address = $V3_ADDR_WHIRLPOOL"
+  fi
 
   if [ "$BITCOIND_INSTALL" == "on" ]; then
     V2_ADDR_BTCD=$( docker exec -it tor cat /var/lib/tor/hsv2bitcoind/hostname )
-    echo "bitcoind hidden service address (v2) = $V2_ADDR_BTCD"
+    echo "bitcoind hidden service address = $V2_ADDR_BTCD"
   fi
 }
 
@@ -347,63 +360,79 @@ version() {
   echo "Dojo v$DOJO_VERSION_TAG"
 }
 
-# Display logs
-logs_node() {
-  if [ $3 -eq 0 ]; then
-    docker exec -ti nodejs tail -f /data/logs/$1-$2.log
-  else
-    docker exec -ti nodejs tail -n $3 /data/logs/$1-$2.log
-  fi 
+# Interact with whirlpool-cli
+whirlpool() {
+  if [ "$WHIRLPOOL_INSTALL" == "off" ]; then
+    echo -e "Command not supported for your setup.\nCause: Your Dojo is not running a whirlpool client"
+  fi
+
+  case $1 in
+    apikey )
+      API_KEY=$( docker exec -it whirlpool cat /home/whirlpool/.whirlpool-cli/whirlpool-cli-config.properties | grep cli.apiKey= | cut -c 12-)
+      echo "$API_KEY"
+      ;;
+    reset )
+      eval "docker exec -it whirlpool rm -f /home/whirlpool/.whirlpool-cli/*.json"
+      eval "docker exec -it whirlpool rm -f /home/whirlpool/.whirlpool-cli/whirlpool-cli-config.properties"
+      yamlFiles=$(select_yaml_files)
+      eval "docker-compose $yamlFiles restart whirlpool"
+      ;;
+    * )
+      echo -e "Unkonwn action for the whirlpool command"
+      ;;
+  esac
 }
 
-logs_explorer() {
-  if [ $3 -eq 0 ]; then
-    docker exec -ti explorer tail -f /data/logs/$1-$2.log
+# Display logs
+display_logs() {
+  yamlFiles=$(select_yaml_files)
+  if [ $2 -eq 0 ]; then
+    docker-compose $yamlFiles logs --tail=50 --follow $1
   else
-    docker exec -ti explorer tail -n $3 /data/logs/$1-$2.log
+    docker-compose $yamlFiles logs --tail=$2 $1
   fi 
 }
 
 logs() {
   source_file "$DIR/conf/docker-bitcoind.conf"
   source_file "$DIR/conf/docker-indexer.conf"
+  source_file "$DIR/conf/docker-explorer.conf"
+  source_file "$DIR/conf/docker-whirlpool.conf"
   source_file "$DIR/conf/docker-common.conf"
 
   case $1 in
-    db )
-      docker-compose logs --tail=50 --follow db
+    db | tor | nginx | node )
+      display_logs $1 $2
       ;;
     bitcoind )
       if [ "$BITCOIND_INSTALL" == "on" ]; then
-        if [ "$COMMON_BTC_NETWORK" == "testnet" ]; then
-          bitcoindDataDir="/home/bitcoin/.bitcoin/testnet3"
-        else
-          bitcoindDataDir="/home/bitcoin/.bitcoin"
-        fi
-        docker exec -ti bitcoind tail -f "$bitcoindDataDir/debug.log"
+        display_logs $1 $2
       else
         echo -e "Command not supported for your setup.\nCause: Your Dojo is using an external bitcoind"
       fi
       ;;
     indexer )
       if [ "$INDEXER_INSTALL" == "on" ]; then
-        yamlFiles=$(select_yaml_files)
-        eval "docker-compose $yamlFiles logs --tail=50 --follow indexer"
+        display_logs $1 $2
       else
-        echo -e "Command not supported for your setup.\nCause: Your Dojo is not using an internal indexer"
+        echo -e "Command not supported for your setup.\nCause: Your Dojo is not running the internal indexer"
       fi
       ;;
-    tor )
-      docker-compose logs --tail=50 --follow tor
-      ;;
-    api | pushtx | pushtx-orchest | tracker )
-      logs_node $1 $2 $3
-      ;;
     explorer )
-      logs_explorer $1 $2 $3
+      if [ "$EXPLORER_INSTALL" == "on" ]; then
+        display_logs $1 $2
+      else
+        echo -e "Command not supported for your setup.\nCause: Your Dojo is not running the internal block explorer"
+      fi
+      ;;
+    whirlpool )
+      if [ "$WHIRLPOOL_INSTALL" == "on" ]; then
+        display_logs $1 $2
+      else
+        echo -e "Command not supported for your setup.\nCause: Your Dojo is not running a whirlpool client"
+      fi
       ;;
     * )
-      yamlFiles=$(select_yaml_files)
       services="nginx node tor db" 
       if [ "$BITCOIND_INSTALL" == "on" ]; then
         services="$services bitcoind"
@@ -414,7 +443,10 @@ logs() {
       if [ "$INDEXER_INSTALL" == "on" ]; then
         services="$services indexer"
       fi
-      eval "docker-compose $yamlFiles logs --tail=0 --follow $services"
+      if [ "$WHIRLPOOL_INSTALL" == "on" ]; then
+        services="$services whirlpool"
+      fi
+      display_logs "$services" $2
       ;;
   esac
 }
@@ -435,25 +467,24 @@ help() {
   echo "  install                       Install your dojo."
   echo " "
   echo "                                Available options:"
-  echo "                                  --nolog     : do not display the logs after Dojo has been laucnhed."
+  echo "                                  --nolog     : do not display the logs after Dojo has been launched."
   echo " "
-  echo "  logs [module] [options]       Display the logs of your dojo. Use CTRL+C to stop the logs."
+  echo "  logs [module] [options]       Display the logs of your dojo."
+  echo "                                  By default, the command displays the live logs. Use CTRL+C to stop the logs."
+  echo "                                  Use the -n option to display past logs."
   echo " "
   echo "                                Available modules:"
   echo "                                  dojo.sh logs                : display the logs of all the Docker containers"
   echo "                                  dojo.sh logs bitcoind       : display the logs of bitcoind"
   echo "                                  dojo.sh logs db             : display the logs of the MySQL database"
   echo "                                  dojo.sh logs tor            : display the logs of tor"
+  echo "                                  dojo.sh logs nginx          : display the logs of nginx"
   echo "                                  dojo.sh logs indexer        : display the logs of the internal indexer"
-  echo "                                  dojo.sh logs api            : display the logs of the REST API (nodejs)"
-  echo "                                  dojo.sh logs tracker        : display the logs of the Tracker (nodejs)"
-  echo "                                  dojo.sh logs pushtx         : display the logs of the pushTx API (nodejs)"
-  echo "                                  dojo.sh logs pushtx-orchest : display the logs of the pushTx Orchestrator (nodejs)"
+  echo "                                  dojo.sh logs node           : display the logs of NodeJS modules (API, Tracker, PushTx API, Orchestrator)"
   echo "                                  dojo.sh logs explorer       : display the logs of the Explorer"
+  echo "                                  dojo.sh logs whirlpool      : display the logs of the Whirlpool client"
   echo " "
-  echo "                                Available options (only available for api, tracker, pushtx, pushtx-orchest and explorer modules):"
-  echo "                                  -d [VALUE]                  : select the type of log to be displayed."
-  echo "                                                                VALUE can be output (default) or error."
+  echo "                                Available options:"
   echo "                                  -n [VALUE]                  : display the last VALUE lines"
   echo " "
   echo "  onion                         Display the Tor onion address allowing your wallet to access your dojo."
@@ -473,6 +504,12 @@ help() {
   echo "                                  --nocache   : rebuild the docker containers without reusing the cached layers."
   echo " "
   echo "  version                       Display the version of dojo"
+  echo " "
+  echo "  whirlpool [action]            Interact with the internal whirlpool-cli mdule."
+  echo " "
+  echo "                                Available actions:"
+  echo "                                  apikey : display the API key generated by whirlpool-cli."
+  echo "                                  reset  : reset the whirlpool-cli instance (delete configuration file)."
 }
 
 
@@ -521,15 +558,11 @@ case "$subcommand" in
     ;;
   logs )
     module=$1; shift
-    display="output"
     numlines=0
 
     # Process package options
-    while getopts ":d:n:" opt; do
+    while getopts ":n:" opt; do
       case ${opt} in
-        d )
-          display=$OPTARG
-          ;;
         n )
           numlines=$OPTARG
           ;;
@@ -545,7 +578,7 @@ case "$subcommand" in
     done
     shift $((OPTIND -1))
 
-    logs $module $display $numlines
+    logs "$module" $numlines
     ;;
   onion )
     onion
@@ -567,5 +600,8 @@ case "$subcommand" in
     ;;
   version )
     version
+    ;;
+  whirlpool )
+    whirlpool "$@"
     ;;
 esac

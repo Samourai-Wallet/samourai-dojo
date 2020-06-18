@@ -28,8 +28,8 @@
   /**
    * Samourai REST API
    */
-  Logger.info('Process ID: ' + process.pid)
-  Logger.info('Preparing the REST API')
+  Logger.info('API : Process ID: ' + process.pid)
+  Logger.info('API : Preparing the REST API')
   
   // Wait for Bitcoind RPC API
   // being ready to process requests
@@ -52,8 +52,9 @@
   hdaHelper.activateExternalDerivation()
 
   // Initialize the http server
+  const host = keys.apiBind
   const port = keys.ports.account
-  const httpServer = new HttpServer(port)
+  const httpServer = new HttpServer(port, host)
 
   // Initialize the rest api endpoints
   const authRestApi = new AuthRestApi(httpServer)

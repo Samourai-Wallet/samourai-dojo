@@ -197,21 +197,21 @@ class PushTxRestApi {
         } catch(e) {}
 
         if (msg.code && msg.message) {
-          Logger.error(null, 'Error ' + msg.code + ': ' + msg.message)
+          Logger.error(null, 'PushTx : Error ' + msg.code + ': ' + msg.message)
           ret = {
             message: msg.message,
             code: msg.code
           }
         } else {
-          Logger.error(err.message, 'ERROR')
+          Logger.error(err.message, 'PushTx : ')
           ret = err.message
         }
       } else {
-        Logger.error(err, 'ERROR')
+        Logger.error(err, 'PushTx : ')
         ret = err
       }
     } catch (e) {
-      Logger.error(e, 'ERROR')
+      Logger.error(e, 'PushTx : ')
       ret = e
     } finally {
       HttpServer.sendError(res, ret)

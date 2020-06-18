@@ -46,7 +46,7 @@ class FeesRestApi {
     } catch (e) {
       HttpServer.sendError(res, e)
     } finally {
-      debugApi && Logger.info(`Completed GET /fees`)
+      debugApi && Logger.info(`API : Completed GET /fees`)
     }
   }
 

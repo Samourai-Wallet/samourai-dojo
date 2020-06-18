@@ -16,8 +16,11 @@ services:
     command: "/home/node/app/restart.sh"
     expose:
       - "3002"
-    volumes:
-      - data-explorer:/data/logs
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "20m"
+        max-file: "10"
     networks:
       dojonet:
         ipv4_address: 172.28.1.7
@@ -25,6 +28,3 @@ services:
   node:
     depends_on:
       - explorer
-
-volumes:
-  data-explorer:

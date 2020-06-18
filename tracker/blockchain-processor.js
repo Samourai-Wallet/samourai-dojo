@@ -55,9 +55,12 @@ class BlockchainProcessor extends AbstractProcessor {
    * @returns {Promise}
    */
   async catchup() {
-    // Consider that we are in IBD mode if Dojo is far in the past
     const highest = await db.getHighestBlock()
-    this.isIBD = highest.blockHeight < 570000
+    const info = await this.client.getblockchaininfo()
+    const daemonNbHeaders = info.headers
+
+    // Consider that we are in IBD mode if Dojo is far in the past (> 13,000 blocks)
+    this.isIBD = (highest.blockHeight < 612000) || (highest.blockHeight < daemonNbHeaders - 13000)
 
     if (this.isIBD)
       return this.catchupIBDMode()
@@ -75,7 +78,7 @@ class BlockchainProcessor extends AbstractProcessor {
    */
   async catchupIBDMode() {
     try {
-      Logger.info('Tracker Startup (IBD mode)')
+      Logger.info('Tracker : Tracker Startup (IBD mode)')
 
       const info = await this.client.getblockchaininfo()
       const daemonNbBlocks = info.blocks
@@ -88,7 +91,7 @@ class BlockchainProcessor extends AbstractProcessor {
 
       // If no header or block loaded by bitcoind => try later
       if (daemonNbHeaders == 0 || daemonNbBlocks == 0) {
-        Logger.info('New attempt scheduled in 30s (waiting for block headers)')
+        Logger.info('Tracker : New attempt scheduled in 30s (waiting for block headers)')
         return util.delay(30000).then(() => {
           return this.catchupIBDMode()
         })
@@ -98,7 +101,7 @@ class BlockchainProcessor extends AbstractProcessor {
 
         // If blocks need to be downloaded by bitcoind => try later
         if (daemonNbBlocks - 1 <= dbMaxHeight) {
-          Logger.info('New attempt scheduled in 10s (waiting for blocks)')
+          Logger.info('Tracker : New attempt scheduled in 10s (waiting for blocks)')
           return util.delay(10000).then(() => {
             return this.catchupIBDMode()
           })
@@ -107,7 +110,7 @@ class BlockchainProcessor extends AbstractProcessor {
         } else {
           const blockRange = _.range(dbMaxHeight + 1, daemonNbBlocks + 1)
 
-          Logger.info(`Sync ${blockRange.length} blocks`)
+          Logger.info(`Tracker : Sync ${blockRange.length} blocks`)
 
           await util.seriesCall(blockRange, async height => {
             try {
@@ -115,13 +118,13 @@ class BlockchainProcessor extends AbstractProcessor {
               const header = await this.client.getblockheader(blockHash, true)
               prevBlockId = await this.processBlockHeader(header, prevBlockId)
             } catch(e) {
-              Logger.error(e, 'BlockchainProcessor.catchupIBDMode()')
+              Logger.error(e, 'Tracker : BlockchainProcessor.catchupIBDMode()')
               process.exit()
             }
           }, 'Tracker syncing', true)
 
           // Schedule a new iteration (in case more blocks need to be loaded)
-          Logger.info('Start a new iteration')
+          Logger.info('Tracker : Start a new iteration')
           return this.catchupIBDMode()
         }
 
@@ -131,7 +134,7 @@ class BlockchainProcessor extends AbstractProcessor {
       }
 
     } catch(e) {
-      Logger.error(e, 'BlockchainProcessor.catchupIBDMode()')
+      Logger.error(e, 'Tracker : BlockchainProcessor.catchupIBDMode()')
       throw e
     }
   }
@@ -146,7 +149,7 @@ class BlockchainProcessor extends AbstractProcessor {
    */
   async catchupNormalMode() {
     try {
-      Logger.info('Tracker Startup (normal mode)')
+      Logger.info('Tracker : Tracker Startup (normal mode)')
 
       const info = await this.client.getblockchaininfo()
       const daemonNbBlocks = info.blocks
@@ -159,7 +162,7 @@ class BlockchainProcessor extends AbstractProcessor {
       // Compute blocks range to be processed
       const blockRange = _.range(highest.blockHeight, daemonNbBlocks + 1)
 
-      Logger.info(`Sync ${blockRange.length} blocks`)
+      Logger.info(`Tracker : Sync ${blockRange.length} blocks`)
 
       // Process the blocks
       return util.seriesCall(blockRange, async height => {
@@ -168,13 +171,13 @@ class BlockchainProcessor extends AbstractProcessor {
           const header = await this.client.getblockheader(hash)
           return this.processBlock(header) 
         } catch(e) {
-          Logger.error(e, 'BlockchainProcessor.catchupNormalMode()')
+          Logger.error(e, 'Tracker : BlockchainProcessor.catchupNormalMode()')
           process.exit()
         }
       }, 'Tracker syncing', true)
 
     } catch(e) {
-      Logger.error(e, 'BlockchainProcessor.catchupNormalMode()')
+      Logger.error(e, 'Tracker : BlockchainProcessor.catchupNormalMode()')
     }
   }
 
@@ -193,11 +196,11 @@ class BlockchainProcessor extends AbstractProcessor {
           this.onBlockHash(message)
           break
         default:
-          Logger.info(topic.toString())
+          Logger.info(`Tracker : ${topic.toString()}`)
       }
     })
 
-    Logger.info('Listening for blocks')
+    Logger.info('Tracker : Listening for blocks')
   }
 
   /**
@@ -238,11 +241,11 @@ class BlockchainProcessor extends AbstractProcessor {
 
       try {
         const header = await this.client.getblockheader(blockHash, true)
-        Logger.info(`Block #${header.height} ${blockHash}`)
+        Logger.info(`Tracker : Block #${header.height} ${blockHash}`)
         // Grab all headers between this block and last known
         headers = await this.chainBacktrace([header])
       } catch(err) {
-        Logger.error(err, `BlockchainProcessor.onBlockHash() : error in getblockheader(${blockHash})`)
+        Logger.error(err, `Tracker : BlockchainProcessor.onBlockHash() : error in getblockheader(${blockHash})`)
       }
       
       if(headers == null)
@@ -264,7 +267,7 @@ class BlockchainProcessor extends AbstractProcessor {
       })
 
     } catch(e) {
-      Logger.error(e, 'BlockchainProcessor.onBlockHash()')
+      Logger.error(e, 'Tracker : BlockchainProcessor.onBlockHash()')
     } finally {
       // Release the semaphor
       await this._onBlockHashSemaphor.release()
@@ -282,7 +285,7 @@ class BlockchainProcessor extends AbstractProcessor {
     const deepest = headers[headers.length - 1]
 
     if (headers.length > 1)
-      Logger.info(`chainBacktrace @ height ${deepest.height}, ${headers.length} blocks`)
+      Logger.info(`Tracker : chainBacktrace @ height ${deepest.height}, ${headers.length} blocks`)
 
     // Look for previous block in the database
     const block = await db.getBlockByHash(deepest.previousblockhash)
@@ -310,7 +313,7 @@ class BlockchainProcessor extends AbstractProcessor {
 
     if (txs.length > 0) {
       // Cancel confirmation of transactions included in reorg'd blocks
-      Logger.info(`Backtrace: unconfirm ${txs.length} transactions in reorg`)
+      Logger.info(`Tracker : Backtrace: unconfirm ${txs.length} transactions in reorg`)
       const txids = txs.map(t => t.txnTxid)
       await db.unconfirmTransactions(txids)
     }
@@ -342,12 +345,12 @@ class BlockchainProcessor extends AbstractProcessor {
     // Process the blocks
     return util.seriesCall(blockRange, async height => {
       try {
-        Logger.info(`Rescanning block ${height}`)
+        Logger.info(`Tracker : Rescanning block ${height}`)
         const hash = await this.client.getblockhash(height)
         const header = await this.client.getblockheader(hash)
         return this.processBlock(header) 
       } catch(e) {
-        Logger.error(e, 'BlockchainProcessor.rescan()')
+        Logger.error(e, 'Tracker : BlockchainProcessor.rescan()')
         throw e
       }
     }, 'Tracker rescan', true)
@@ -376,7 +379,7 @@ class BlockchainProcessor extends AbstractProcessor {
     } catch(e) {
       // The show must go on.
       // TODO: further notification that this block did not check out
-      Logger.error(e, 'BlockchainProcessor.processBlock()')
+      Logger.error(e, 'Tracker : BlockchainProcessor.processBlock()')
     }
   }
 
@@ -391,7 +394,7 @@ class BlockchainProcessor extends AbstractProcessor {
       const block = new Block(null, header)
       return block.checkBlockHeader(prevBlockID)
     } catch(e) {
-      Logger.error(e, 'BlockchainProcessor.processBlockHeader()')
+      Logger.error(e, 'Tracker : BlockchainProcessor.processBlockHeader()')
       throw e
     }
   }

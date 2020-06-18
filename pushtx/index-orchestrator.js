@@ -18,8 +18,8 @@
   /**
    * PushTx Orchestrator
    */
-  Logger.info('Process ID: ' + process.pid)
-  Logger.info('Preparing the pushTx Orchestrator')
+  Logger.info('Orchestrator : Process ID: ' + process.pid)
+  Logger.info('Orchestrator : Preparing the pushTx Orchestrator')
 
   // Wait for Bitcoind RPC API
   // being ready to process requests
@@ -39,7 +39,7 @@
 
   // Initialize notification sockets of singleton pushTxProcessor
   pushTxProcessor.initNotifications({
-    uriSocket: `tcp://*:${keys.ports.orchestrator}`
+    uriSocket: `tcp://127.0.0.1:${keys.ports.orchestrator}`
   })
 
   // Initialize and start the orchestrator

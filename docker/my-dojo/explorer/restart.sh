@@ -13,6 +13,7 @@ explorer_options=(
   --bitcoind-pass "$BITCOIND_RPC_PASSWORD"
   --no-rates
   --privacy-mode
+  --slow-device-mode
 )
 
 # Blacklist all functions provided by the RPC API
@@ -41,4 +42,4 @@ if [ "$NODE_ACTIVE_INDEXER" == "local_indexer" ]; then
   fi
 fi
 
-node ./bin/cli.js "${explorer_options[@]}" > /data/logs/explorer-error.log  2> /data/logs/explorer-output.log
+node ./bin/cli.js "${explorer_options[@]}"

@@ -5,6 +5,7 @@ Push a transaction to the network.
 ```
 POST /pushtx/
 ```
+Parameters must be passed in the body of the request as url encoded arguments.
 
 ## Parameters
 * **tx** - `hex string` - The raw transaction hex
@@ -14,7 +15,9 @@ POST /pushtx/
 ### Example
 
 ```
-POST /pushtx/?tx=abcdef0123456789
+POST /pushtx/
+
+tx=abcdef0123456789
 ```
 
 #### Success

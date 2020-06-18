@@ -1,8 +1,6 @@
 FROM    node:12-buster
 
-ENV     LOGS_DIR    /data/logs
 ENV     APP_DIR     /home/node/app
-
 
 # Add node user to tor group
 RUN     addgroup --system -gid 1107 tor && \
@@ -11,13 +9,9 @@ RUN     addgroup --system -gid 1107 tor && \
 # Install forever
 RUN     npm install -g forever
 
-# Create data directory
-RUN     mkdir -p "$LOGS_DIR" && \
-        chown -R node:node "$LOGS_DIR"
-
 # Create app directory
 RUN     mkdir "$APP_DIR" && \
-        chown -R node:node "$APP_DIR"
+        chown -R node:node "$APP_DIR" 
 
 # Copy app source files into APP_DIR
 COPY    . "$APP_DIR"

@@ -16,8 +16,8 @@
   const TrackerRestApi = require('./tracker-rest-api')
 
 
-  Logger.info('Process ID: ' + process.pid)
-  Logger.info('Preparing the tracker')
+  Logger.info('Tracker : Process ID: ' + process.pid)
+  Logger.info('Tracker : Preparing the tracker')
 
   // Wait for Bitcoind RPC API
   // being ready to process requests
@@ -39,8 +39,9 @@
   const tracker = new Tracker()
 
   // Initialize the http server
+  const host = keys.apiBind
   const port = keys.ports.trackerApi
-  const httpServer = new HttpServer(port)
+  const httpServer = new HttpServer(port, host)
 
   // Initialize the rest api endpoints
   const trackerRestApi = new TrackerRestApi(httpServer, tracker)

@@ -5,10 +5,10 @@ FROM    debian:buster
 # INSTALL BITCOIN
 #################################################################
 ENV     BITCOIN_HOME        /home/bitcoin
-ENV     BITCOIN_VERSION     0.19.1
-ENV     BITCOIN_URL         https://bitcoincore.org/bin/bitcoin-core-0.19.1/bitcoin-0.19.1-x86_64-linux-gnu.tar.gz
-ENV     BITCOIN_SHA256      5fcac9416e486d4960e1a946145566350ca670f9aaba99de6542080851122e4c
-ENV     BITCOIN_ASC_URL     https://bitcoincore.org/bin/bitcoin-core-0.19.1/SHA256SUMS.asc
+ENV     BITCOIN_VERSION     0.20.0
+ENV     BITCOIN_URL         https://bitcoincore.org/bin/bitcoin-core-0.20.0/bitcoin-0.20.0-x86_64-linux-gnu.tar.gz
+ENV     BITCOIN_SHA256      35ec10f87b6bc1e44fd9cd1157e5dfa483eaf14d7d9a9c274774539e7824c427
+ENV     BITCOIN_ASC_URL     https://bitcoincore.org/bin/bitcoin-core-0.20.0/SHA256SUMS.asc
 ENV     BITCOIN_PGP_KS_URI  hkp://keyserver.ubuntu.com:80
 ENV     BITCOIN_PGP_KEY     01EA5486DE18A882D4C2684590C8019E36C2E964
 

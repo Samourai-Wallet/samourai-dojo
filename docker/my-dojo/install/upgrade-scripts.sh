@@ -12,6 +12,12 @@ else
   source ./conf/docker-explorer.conf.tpl
 fi
 
+if [ -f ./conf/docker-whirlpool.conf ]; then
+  source ./conf/docker-whirlpool.conf
+else
+  source ./conf/docker-whirlpool.conf.tpl
+fi
+
 source ./conf/docker-bitcoind.conf
 
 # Confirm upgrade operation
@@ -60,6 +66,9 @@ update_config_files() {
   update_config_file ./conf/docker-indexer.conf ./conf/docker-indexer.conf.tpl
   echo "Initialized docker-indexer.conf"
 
+  update_config_file ./conf/docker-whirlpool.conf ./conf/docker-whirlpool.conf.tpl
+  echo "Initialized docker-whirlpool.conf"
+
   # Initialize config files for nginx and the maintenance tool 
   if [ "$EXPLORER_INSTALL" == "on" ]; then
     cp ./nginx/explorer.conf ./nginx/dojo-explorer.conf
@@ -67,6 +76,13 @@ update_config_files() {
     cp /dev/null ./nginx/dojo-explorer.conf
   fi
   echo "Initialized dojo-explorer.conf (nginx)"
+
+  if [ "$WHIRLPOOL_INSTALL" == "on" ]; then
+    cp ./nginx/whirlpool.conf ./nginx/dojo-whirlpool.conf
+  else
+    cp /dev/null ./nginx/dojo-whirlpool.conf
+  fi
+  echo "Initialized dojo-whirlpool.conf (nginx)"
 
   if [ "$COMMON_BTC_NETWORK" == "testnet" ]; then
     cp ./nginx/testnet.conf ./nginx/dojo.conf
@@ -113,6 +129,40 @@ update_dojo_db() {
 # Clean-up
 cleanup() {
   #################
+  # Clean-up v1.6.0
+  #################
+
+  # Remove docker volume my-dojo_data-explorer
+  explorerVolumeFound=$(docker volume ls | grep my-dojo_data-explorer | wc -l)
+  if [ $explorerVolumeFound -ne 0 ]; then
+    explorerContainerFound=$(docker container ls -a | grep explorer | wc -l)
+    if [ $explorerContainerFound -ne 0 ]; then
+      docker container rm explorer
+    fi
+    docker volume rm my-dojo_data-explorer
+  fi
+
+  # Remove docker volume my-dojo_data-nginx
+  nginxVolumeFound=$(docker volume ls | grep my-dojo_data-nginx | wc -l)
+  if [ $nginxVolumeFound -ne 0 ]; then
+    nginxContainerFound=$(docker container ls -a | grep nginx | wc -l)
+    if [ $nginxContainerFound -ne 0 ]; then
+      docker container rm nginx
+    fi
+    docker volume rm my-dojo_data-nginx
+  fi
+
+  # Remove docker volume my-dojo_data-nodejs
+  nodeVolumeFound=$(docker volume ls | grep my-dojo_data-nodejs | wc -l)
+  if [ $nodeVolumeFound -ne 0 ]; then
+    nodeContainerFound=$(docker container ls -a | grep nodejs | wc -l)
+    if [ $nodeContainerFound -ne 0 ]; then
+      docker container rm nodejs
+    fi
+    docker volume rm my-dojo_data-nodejs
+  fi
+
+  #################
   # Clean-up v1.3.0
   #################
 
@@ -130,4 +180,18 @@ cleanup() {
     rm ./bitcoin/bitcoin.conf
   fi
   
+}
+
+# Post start clean-up
+post_start_cleanup() {
+  #################
+  # Clean-up v1.6.0
+  #################
+
+  # Remove debug.log from bitcoind volume
+  if [ "$COMMON_BTC_NETWORK" == "testnet" ]; then
+    docker exec -it bitcoind rm /home/bitcoin/.bitcoin/testnet3/debug.log
+  else
+    docker exec -it bitcoind rm /home/bitcoin/.bitcoin/debug.log
+  fi
 }

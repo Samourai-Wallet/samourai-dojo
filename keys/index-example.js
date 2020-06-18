@@ -15,7 +15,7 @@ module.exports = {
     /*
      * Dojo version
      */
-    dojoVersion: '1.4.0',
+    dojoVersion: '1.6.0',
     /*
      * Bitcoind
      */
@@ -61,6 +61,10 @@ module.exports = {
       connectionLimitPushTxApi: 5,
       connectionLimitPushTxOrchestrator: 5
     },
+    /*
+     * IP address used to expose the API ports
+     */
+    apiBind: '127.0.0.1',
     /*
      * TCP Ports
      */
@@ -216,6 +220,7 @@ module.exports = {
    * Testnet parameters
    */
   testnet: {
+    dojoVersion: '1.6.0',
     bitcoind: {
       rpc: {
         user: 'user',
@@ -239,6 +244,7 @@ module.exports = {
       connectionLimitPushTxApi: 1,
       connectionLimitPushTxOrchestrator: 5
     },
+    apiBind: '127.0.0.1',
     ports: {
       account: 18080,
       pushtx: 18081,

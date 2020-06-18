@@ -111,9 +111,9 @@ __"Download the most recent release of Dojo from Github"__ until you reach __"La
 Once you Reach Step __"Launch the Installation of Your Dojo with"__ from above you will need to read and follow the instructions from [here](https://github.com/Samourai-Wallet/samourai-dojo/blob/develop/doc/DOCKER_advanced_setups.md)
 Once adjustments are made to your external bitcoind bitcoin.conf __(location dependent on what device you have bitcoind)__ and docker-bitcoind.conf.tpl __(dojo_dir > docker > my-dojo > conf)__ you can proceed with Install and revert back to original instructions [here](https://github.com/Samourai-Wallet/samourai-dojo/blob/develop/doc/DOCKER_setup.md) at section __"Launch the Installation of Your Dojo with"__
 
-_Note: For tracking progress, open terminal, change directory to my-dojo and run /dojo.sh logs tracker
+_Note: For tracking progress, open terminal, change directory to my-dojo and run /dojo.sh logs nodejs
 __Some possible optimization tips:__
-If you notice that progress has stopped. Click the whale icon and select Restart. Restart Logs Tracker from step above to verify progress has resumed.
+If you notice that progress has stopped. Click the whale icon and select Restart. Restart logs nodejs from step above to verify progress has resumed.
 
 This may optimize speed: open __Activity Monitor__, check the PID (Process ID) of your docker process. Open Terminal and type:
 
