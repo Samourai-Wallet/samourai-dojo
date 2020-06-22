@@ -1,5 +1,7 @@
 # Samourai Dojo
 
+## This repository is now maintained at https://code.samourai.io/dojo/samourai-dojo ##
+
 Samourai Dojo is the backing server for Samourai Wallet. Provides HD account & loose addresses (BIP47) balances & transactions lists. Provides unspent output lists to the wallet. PushTX endpoint broadcasts transactions through the backing bitcoind node.
 
 [View API documentation](../master/doc/README.md)
