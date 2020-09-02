@@ -216,25 +216,26 @@ txindex=1
 
 # Check that bitcoind accepts connections from 127.0.0.1 (linux)
 # or from the IP address of the Docker Virtual Machine (MacOS, Windows)
-rpcallowip=... 
+# or the Dojo app, e.g. 172.28.1.xx
+rpcallowip= [insert IP address that Dojo app will be sending RPC requests from]
 
 # Check that a port is defined for the RPC API (or 8332 will be used as default value)
-rpcport=...
+rpcport= [insert port which must match that in docker-bitcoind.conf]
 
-# Check that the RPC API listens on an IP address accessible from the nodejs container
-rpcbind=...
+# Check that the RPC API listens on an IP address where the node is located, e.g. 192.168.1.xx
+rpcbind= [insert IP address of machine where node is located]
 
 # Check that the RPC user is set
-rpcuser=...
+rpcuser= [insert username]
 
 # Check that the RPC password is set
-rpcpassword=
+rpcpassword= [insert password]
 
 # Enable publish hash block on an IP address accessible from the nodejs container
-zmqpubhashblock=...
+zmqpubhashblock= [insert IP address matching that of rpcbind]
 
 # Enable publish raw transaction on an IP address accessible from the nodejs container
-zmqpubrawtx=...
+zmqpubrawtx= [insert IP address matching that of rpcbind]
 ```
 
 
