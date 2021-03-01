@@ -26,7 +26,7 @@ MyDojo is a set of Docker containers providing a full Samourai backend composed 
 
 ## Architecture ##
 
-
+```
   ------------------    --------------------    ---------------     -----------------------
  |  Mobile Wallets  |  | Bitcoin full nodes |  | Whirlpool GUI |   | Whirlpool Coordinator |
   ------------------    --------------------    ---------------     -----------------------
@@ -62,7 +62,7 @@ MyDojo is a set of Docker containers providing a full Samourai backend composed 
       |        whirlnet |                                                      dojonet |
       |_________________|______________________________________________________________|
         Host machine  
-
+```
 
 
 
