@@ -26,7 +26,7 @@
     "helmet": "3.12.1",
     "lodash": "4.17.14",
     "lru-cache": "4.0.2",
-    "minimist": "1.2.2",
+    "minimist": "1.2.6",
     "mysql": "2.16.0",
     "passport": "0.4.0",
     "passport-localapikey-update": "0.6.0",
