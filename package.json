@@ -20,7 +20,7 @@
     "bitcoinjs-lib": "5.1.4",
     "bitcoinjs-message": "1.0.1",
     "body-parser": "1.18.3",
-    "express": "4.16.3",
+    "express": "4.17.3",
     "express-jwt": "5.3.1",
     "generic-pool": "3.4.2",
     "helmet": "3.12.1",
