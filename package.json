@@ -21,7 +21,7 @@
     "bitcoinjs-message": "1.0.1",
     "body-parser": "1.18.3",
     "express": "4.16.3",
-    "express-jwt": "5.3.1",
+    "express-jwt": "8.3.0",
     "generic-pool": "3.4.2",
     "helmet": "3.12.1",
     "lodash": "4.17.14",
